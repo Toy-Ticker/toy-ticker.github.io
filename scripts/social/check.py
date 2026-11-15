@@ -5,13 +5,15 @@ so the writer can't invent, round or compute a price.
 """
 import re
 
-LAYOUTS = {"cover", "ranked_list", "item", "cta"}
+LAYOUTS = {"cover", "ranked_list", "item", "highlight", "cta"}
+TOPICS = ["weekly_board", "card_spotlight", "toy_spotlight", "fast_sellers", "scarce_finds", "set_or_singles",
+          "guess_price", "worth_it", "countdown"]
 BANNED = [
     "will go up", "will rise", "will increase", "going to go up", "will be worth", "will drop", "will fall",
     "invest", "guaranteed", "sure thing", "before prices", "buy now", "act fast", "before it's too late",
     "price prediction", "predict", "skyrocket", "to the moon", "goldmine", "gold mine",
 ]
-LIMITS = {"cover": (40, 70), "ranked_list": (36, 0), "item": (36, 0), "cta": (40, 0)}
+LIMITS = {"cover": (40, 70), "ranked_list": (36, 0), "item": (36, 0), "highlight": (40, 0), "cta": (40, 0)}
 NUMBER = re.compile(r"\$?\d[\d,]*(?:\.\d+)?%?")
 
 
@@ -38,6 +40,8 @@ def check(post, facts):
     ok_nums = allowed_numbers(facts)
     slides = post.get("slides") or []
 
+    if post.get("topic") not in TOPICS:
+        errs.append(f"Unknown topic {post.get('topic')!r}; use one of {', '.join(TOPICS)}.")
     if not 3 <= len(slides) <= 7:
         errs.append(f"Use 3 to 7 slides (got {len(slides)}).")
     if slides and slides[0].get("layout") != "cover":
@@ -73,7 +77,7 @@ def check(post, facts):
             errs.append(f"{where}: note is over 90 characters.")
         for field in ("headline", "subhead", "note"):
             nums_ok(f"{where} {field}", s.get(field, ""))
-        if lay == "cover":
+        if lay in ("cover", "highlight"):
             for iid in s.get("item_ids", []):
                 if iid not in items:
                     errs.append(f"{where}: unknown item {iid}.")
@@ -90,6 +94,12 @@ def check(post, facts):
                     errs.append(f"{where} row {r}: give 1 or 2 fact_ids.")
                 for fid in row.get("fact_ids", []):
                     fact_ok(f"{where} row {r}", fid, iid)
+        if lay == "highlight":
+            if not 1 <= len(s.get("fact_ids", [])) <= 2:
+                errs.append(f"{where}: a highlight needs 1 or 2 fact_ids.")
+            for fid in s.get("fact_ids", []):
+                if fid not in fx:
+                    errs.append(f"{where}: unknown fact {fid}.")
         if lay == "item":
             iid = s.get("item_id")
             if iid not in items:

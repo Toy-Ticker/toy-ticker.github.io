@@ -19,7 +19,7 @@ You are the writer. Code picks the facts, checks your work and draws the slides.
 
 4. **Write the post.** Read `scripts/social/prompt.md` and follow it exactly: it is your brief (topics, slide layouts, caption rules, the number rule, the rules on predictions). Write the post as JSON to `<folder>/post.json` in this shape:
    ```json
-   {"topic": "...", "slides": [{"layout": "cover|ranked_list|item|cta", "headline": "", "subhead": "", "item_ids": [],
+   {"topic": "...", "slides": [{"layout": "cover|ranked_list|item|highlight|cta", "headline": "", "subhead": "", "item_ids": [],
      "rows": [{"item_id": "", "fact_ids": []}], "item_id": "", "fact_ids": [], "note": ""}],
     "caption": "...", "hashtags": ["#HappyMeal"], "alt_text": ["one per slide"]}
    ```

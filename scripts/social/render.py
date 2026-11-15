@@ -14,9 +14,18 @@ from og import DEFAULT, THEMES, Fonts, logo, rgb  # noqa: E402
 W, H = 1080, 1350
 M = 64                      # side margin
 INK, GREY, PANEL = "#1d1d1b", "#6b6b66", (255, 255, 255, 240)
-TOPIC_LABEL = {"weekly_board": "THIS WEEK'S PRICES", "worth_it": "WORTH IT?", "countdown": "COUNTDOWN"}
+# One series per weekday (see scripts/social/draft.py SCHEDULE): its label on the cover, and a dot colour so
+# followers can tell the series apart at a glance.
+TOPIC_LABEL = {"weekly_board": "WEEKLY SUMMARY", "card_spotlight": "CARD SPOTLIGHT", "toy_spotlight": "TOY SPOTLIGHT",
+               "fast_sellers": "FAST SELLERS", "scarce_finds": "SCARCE FINDS", "set_or_singles": "SET OR SINGLES",
+               "guess_price": "GUESS THE PRICE", "worth_it": "WORTH IT?", "countdown": "COUNTDOWN"}
+TOPIC_DOT = {"weekly_board": "#1d1d1b", "card_spotlight": "#2563eb", "toy_spotlight": "#16a34a", "fast_sellers": "#dc2626",
+             "scarce_finds": "#7c3aed", "set_or_singles": "#0891b2", "guess_price": "#db2777"}
 FACT_LABEL = {"ask": "typical asking price", "listings": "listed today", "change": "price change",
-              "sold": "typical sold price", "sold_count": "sold in 30 days", "days_to_sell": "typical time to sell"}
+              "sold": "typical sold price", "days_to_sell": "typical time to sell",
+              "sells_out": "to sell out at this pace", "sold_window": "of sales tracked",
+              "singles": "all bought as singles", "complete_set": "for a complete set",
+              "end": "last day in restaurants", "days_left": "left in restaurants"}
 
 
 def gradient(c1, c2):
@@ -81,6 +90,9 @@ class Slides:
         self.fx = {f["id"]: f for f in facts["facts"]}
         self.items = {i["id"]: i for i in facts["items"]}
         self.kind_of = {fid: k for i in facts["items"] for k, fid in i["facts"].items()}
+        for s in facts["promo"].get("series", []):           # set-level facts (complete set, singles)
+            self.kind_of.update({fid: k for k, fid in s["facts"].items()})
+        self.kind_of.update(dict(zip(facts["promo"].get("facts", []), ("end", "days_left"))))
         c1, c2, ink = THEMES.get(facts["promo"]["id"], DEFAULT)
         self.c1, self.c2, self.ink = c1, c2, ink
         self.accent = "#d62300" if c1 in ("#ffcb05", "#ffb703") else c1
@@ -96,16 +108,22 @@ class Slides:
         d.text((M + 72, 81), "Toy Ticker", font=self.F(34, 700), fill=self.ink, anchor="lm")
         d.text((W - M, 81), f"{n} / {total}", font=self.F(28, 600), fill=self.ink, anchor="rm")
 
-    def footer(self, d, text=None):
-        d.text((W // 2, H - 48), text or f"eBay US asking prices, shipping included · {self.day}",
+    def footer(self, d, text=None, fids=()):
+        """Source line; says "asking and sold prices" when the slide shows a sold price."""
+        kind = "asking and sold prices" if any(self.kind_of.get(f) == "sold" for f in fids) else "asking prices"
+        d.text((W // 2, H - 48), text or f"eBay US {kind}, shipping included · {self.day}",
                font=self.F(24, 500), fill=self.ink, anchor="mm")
 
-    def pill(self, d, x, y, text):
+    def pill(self, d, x, y, text, dot=None):
         f = self.F(26, 700)
         tw = d.textlength(text, font=f)
+        pad = 44 if dot else 0
         light = self.ink == "#ffffff"
-        d.rounded_rectangle([x, y, x + tw + 40, y + 50], radius=25, fill=(255, 255, 255, 70) if light else (0, 0, 0, 30))
-        d.text((x + 20, y + 25), text, font=f, fill=self.ink, anchor="lm")
+        d.rounded_rectangle([x, y, x + tw + 40 + pad, y + 50], radius=25,
+                            fill=(255, 255, 255, 70) if light else (0, 0, 0, 30))
+        if dot:
+            d.ellipse([x + 18, y + 13, x + 42, y + 37], fill=dot, outline="#ffffff", width=3)
+        d.text((x + 20 + pad, y + 25), text, font=f, fill=self.ink, anchor="lm")
 
     def thumb(self, img, d, item, box):
         """Item photo (official toy photo) fitted into box, or a card tile when there's no local photo."""
@@ -136,7 +154,8 @@ class Slides:
     def cover(self, s, n, total, topic):
         img, d = self.canvas()
         self.header(d, n, total)
-        self.pill(d, M, 168, f"{TOPIC_LABEL.get(topic, 'PRICES')} · {self.day.rsplit(',', 1)[0].upper()}")
+        self.pill(d, M, 168, f"{TOPIC_LABEL.get(topic, 'PRICES')} · {self.day.rsplit(',', 1)[0].upper()}",
+                  TOPIC_DOT.get(topic))
         y = text_block(d, (M, 250), s["headline"], self.F, W - 2 * M, 112, 700, self.ink, 3, 60, 1.02)
         if s.get("subhead"):
             text_block(d, (M, y + 24), s["subhead"], self.F, W - 2 * M, 44, 500, self.ink, 2, 30)
@@ -150,7 +169,8 @@ class Slides:
                 self.thumb(img, d, it, (x0 + 30, top + 30, int(x0 + col - 30), bot - 120))
                 d.text((x0 + col / 2, bot - 88), it["name"], font=fit_font(d, it["name"], self.F, col - 30, 32, 600),
                        fill=INK, anchor="mm")
-                d.text((x0 + col / 2, bot - 44), self.display(it["facts"]["ask"]), font=self.F(38, 700),
+                price = "$ ?" if topic == "guess_price" else self.display(it["facts"]["ask"])  # quiz: no spoiler
+                d.text((x0 + col / 2, bot - 44), price, font=self.F(38, 700),
                        fill=self.accent, anchor="mm")
         self.footer(d)
         return img
@@ -184,7 +204,7 @@ class Slides:
             if len(fids) > 1:
                 small = f"{self.display(fids[1])}"
                 d.text((nx, mid + 26), small, font=fit_font(d, small, self.F, name_w, 28, 500), fill=GREY, anchor="lm")
-        self.footer(d)
+        self.footer(d, fids=[f for row in rows for f in row.get("fact_ids", [])])
         return img
 
     def item(self, s, n, total, topic):
@@ -213,7 +233,49 @@ class Slides:
                 d.text((tx + 30, ty + 115), self.label(fid), font=fit_font(d, self.label(fid), self.F, tw - 60, 28, 500), fill=GREY)
         if s.get("note"):
             text_block(d, (M + 60, bot - 190), s["note"], self.F, W - 2 * M - 120, 38, 500, INK, 3, 26)
-        self.footer(d)
+        self.footer(d, fids=fids)
+        return img
+
+    def highlight(self, s, n, total, topic):
+        """One takeaway: a headline, one big number (optionally a second), photos, a short note, centred in the panel."""
+        img, d = self.canvas()
+        self.header(d, n, total)
+        y = text_block(d, (M, 170), s["headline"], self.F, W - 2 * M, 84, 700, self.ink, 2, 52, 1.04)
+        fids = s.get("fact_ids", [])[:2]
+        picks = [self.items[i] for i in s.get("item_ids", []) if i in self.items][:3]
+        top, bot = max(y + 34, 380), H - 110
+        d.rounded_rectangle([M, top, W - M, bot], radius=32, fill=PANEL)
+        cx, inner = W // 2, W - 2 * M - 120
+        note_h = 150 if s.get("note") else 0
+        facts_h = (260 if fids else 0) + (172 if len(fids) > 1 else 0)
+        ph = max(0, min(240, bot - note_h - top - 80 - facts_h - 30)) if picks else 0
+        if ph < 120:                       # not enough room for photos to read: leave them out
+            picks, ph = [], 0
+        content = facts_h + (ph + 30 if picks else 0)
+        yy = top + max(40, (bot - note_h - top - content) / 2)
+        if fids:
+            big = self.display(fids[0])
+            d.text((cx, yy), big, font=fit_font(d, big, self.F, inner, 168, 700), fill=self.accent, anchor="ma")
+            d.text((cx, yy + 190), self.label(fids[0]), font=fit_font(d, self.label(fids[0]), self.F, inner, 36, 500),
+                   fill=GREY, anchor="ma")
+            yy += 260
+        if len(fids) > 1:
+            d.line([M + 200, yy, W - M - 200, yy], fill="#e6e5df", width=2)
+            prices = {"ask", "sold", "complete_set", "singles"}
+            both_prices = {self.kind_of.get(f) for f in fids} <= prices
+            second = f"{'vs ' if both_prices else ''}{self.display(fids[1])}"
+            d.text((cx, yy + 30), second, font=fit_font(d, second, self.F, inner, 64, 700), fill=INK, anchor="ma")
+            d.text((cx, yy + 112), self.label(fids[1]), font=fit_font(d, self.label(fids[1]), self.F, inner, 30, 500),
+                   fill=GREY, anchor="ma")
+            yy += 172
+        if picks:
+            col = inner / len(picks)
+            for i, it in enumerate(picks):
+                x0 = int(M + 60 + i * col)
+                self.thumb(img, d, it, (x0 + 20, int(yy + 20), int(x0 + col - 20), int(yy + 20 + ph)))
+        if s.get("note"):
+            text_block(d, (M + 60, bot - 130), s["note"], self.F, inner, 38, 600, INK, 2, 26)
+        self.footer(d, fids=fids)
         return img
 
     def cta(self, s, n, total, topic):

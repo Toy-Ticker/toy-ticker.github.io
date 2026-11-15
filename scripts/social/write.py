@@ -7,7 +7,7 @@ from pathlib import Path
 
 import anthropic
 
-from check import check
+from check import TOPICS, check
 
 MODEL = "claude-opus-5-5"
 PROMPT = (Path(__file__).with_name("prompt.md")).read_text()
@@ -15,7 +15,7 @@ PROMPT = (Path(__file__).with_name("prompt.md")).read_text()
 SLIDE = {
     "type": "object",
     "properties": {
-        "layout": {"type": "string", "enum": ["cover", "ranked_list", "item", "cta"]},
+        "layout": {"type": "string", "enum": ["cover", "ranked_list", "item", "highlight", "cta"]},
         "headline": {"type": "string"},
         "subhead": {"type": "string"},
         "item_ids": {"type": "array", "items": {"type": "string"}},
@@ -33,7 +33,7 @@ SLIDE = {
 SCHEMA = {
     "type": "object",
     "properties": {
-        "topic": {"type": "string", "enum": ["weekly_board", "worth_it", "countdown"]},
+        "topic": {"type": "string", "enum": TOPICS},
         "slides": {"type": "array", "items": SLIDE},
         "caption": {"type": "string"},
         "hashtags": {"type": "array", "items": {"type": "string"}},

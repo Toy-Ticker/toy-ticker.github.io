@@ -45,6 +45,22 @@ Setup checklist (one sitting, ~1 hour):
 - [ ] Pinned post: "What Toy Ticker is" (template A below).
 - [ ] Add the social links to the site footer and About page.
 
+## Daily lineup (from Nov 16)
+
+One Instagram carousel a day, drafted at 7pm Pacific by the local scheduled task (see SOCIAL_AGENT.md). Each weekday is its own series, labelled on the cover with its own colour dot. Every slide is a quick highlight: one point, one big number.
+
+| Day | Series | What it shows |
+| --- | --- | --- |
+| Sun | WEEKLY SUMMARY | The week's 3–4 takeaways |
+| Mon | CARD SPOTLIGHT | One card not featured lately: sold vs asking, how fast it sells, what to do |
+| Tue | TOY SPOTLIGHT | The same for one toy; a thin market is the story when listings are few |
+| Wed | FAST SELLERS | Top 5 by how fast today's listings would sell out |
+| Thu | SCARCE FINDS | Fewest listings, and why that makes prices jumpy |
+| Fri | SET OR SINGLES | Complete set vs singles, per series |
+| Sat | GUESS THE PRICE | Quiz: cover hides the price, slide 2 reveals what buyers paid |
+
+After Dec 14: Thursday becomes AFTER THE PROMO and Friday THEN VS NOW (needs facts for finished series; not built yet). The schedule lives in `SCHEDULE` in `scripts/social/draft.py`; series rules are in `scripts/social/prompt.md`.
+
 ## Content pillars
 
 Every post is one of these. Each one comes straight from data the site already has, so there's nothing to research.

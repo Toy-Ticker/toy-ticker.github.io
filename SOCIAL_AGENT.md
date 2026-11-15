@@ -42,9 +42,9 @@ Secrets live only in GitHub secrets, never in the repo or in a post file.
 
 Goal: every Sunday a PR shows up with a finished post that you then upload by hand. This tests the content before anything is automated.
 
-**How it runs (decided Nov 15): a weekly Claude Code routine**, on your Claude plan instead of API billing. A cloud Claude Code session checks out the repo every Sunday and follows [scripts/social/ROUTINE.md](scripts/social/ROUTINE.md): `draft.py --facts-only` writes the facts, the session writes `post.json` itself following `prompt.md`, `draft.py --post` checks it and draws the slides, and the session opens the PR. Manage it at claude.ai/code/routines. It needs GitHub connected to your Claude account (claude.ai/connect-github).
+**How it runs (updated Nov 15): a daily local scheduled task**, "Toy Ticker daily Instagram draft", in the Claude desktop app at **7pm Pacific every day** (on your Claude plan, no API key, no GitHub connection). It follows [scripts/social/LOCAL.md](scripts/social/LOCAL.md): pull the latest prices, `draft.py --facts-only --topic today` picks the weekday's series (see the daily lineup in SOCIAL.md) and writes the facts, the session writes `post.json` following `prompt.md`, `draft.py --post` checks it and draws the slides into `social/<date>-<series>/`. It never posts, commits or overwrites an existing draft (a second draft on the same day goes to `<folder>-2`). Your Mac must be awake with the app open; a missed run happens the next time the app opens. Manage it in the app's Scheduled section. You review the draft, then posting goes through Chrome with your OK before Share.
 
-The GitHub Action `social-draft.yml` does the same with the Claude API instead. It is manual-only and needs the `ANTHROPIC_API_KEY` secret; keep it as a fallback.
+Alternatives kept for later: [scripts/social/ROUTINE.md](scripts/social/ROUTINE.md) (a cloud Claude Code routine that opens a PR; needs GitHub connected on the Claude account the app uses) and the manual GitHub Action `social-draft.yml` (Claude API; needs the `ANTHROPIC_API_KEY` secret).
 
 **Each week:** open the PR, check the slides and caption, save the slides from the Files tab, post them to Instagram as one carousel, paste the caption, then merge the PR (merged posts are how the agent avoids repeating itself).
 

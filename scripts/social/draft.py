@@ -17,10 +17,13 @@ import os
 from pathlib import Path
 
 import facts as facts_mod
-from check import check
+from check import TOPICS, check
 from render import render
 
 ROOT = Path(__file__).resolve().parents[2]
+# One series per weekday (Monday = 0), local time. "--topic today" picks from this.
+SCHEDULE = ["card_spotlight", "toy_spotlight", "fast_sellers", "scarce_finds", "set_or_singles", "guess_price",
+            "weekly_board"]
 
 
 def sample_post(f):
@@ -83,13 +86,17 @@ def caption_text(post):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--topic", default="weekly_board", choices=["weekly_board", "worth_it", "countdown"])
+    ap.add_argument("--topic", default="weekly_board", choices=TOPICS + ["today"],
+                    help="series to draft; 'today' picks the weekday's series from SCHEDULE")
     ap.add_argument("--date", help="data date (default: the latest update)")
     ap.add_argument("--sample", action="store_true", help="skip Claude and use a fixed sample post")
     ap.add_argument("--branch", default="main", help="branch the PR images will live on")
     ap.add_argument("--facts-only", action="store_true", help="only write facts.json (for a writer outside this script)")
     ap.add_argument("--post", help="a post.json someone else wrote, next to its facts.json: check it and draw it")
     args = ap.parse_args()
+    if args.topic == "today":
+        from datetime import datetime
+        args.topic = SCHEDULE[datetime.now().weekday()]
 
     if args.post:
         folder = Path(args.post).resolve().parent
@@ -97,6 +104,10 @@ def main():
     else:
         f = facts_mod.build(ROOT, args.date)
         folder = ROOT / "social" / f"{f['date']}-{args.topic.replace('_', '-')}{'-sample' if args.sample else ''}"
+        n = 2
+        base = folder
+        while (folder / "post.json").exists() and not args.sample:   # never overwrite a drafted post
+            folder, n = base.with_name(f"{base.name}-{n}"), n + 1
         folder.mkdir(parents=True, exist_ok=True)
         (folder / "facts.json").write_text(json.dumps(f, indent=1, ensure_ascii=False))
         if args.facts_only:

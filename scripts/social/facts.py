@@ -14,6 +14,7 @@ RULE_CHANGES = ["2026-11-14"]
 MIN_LISTINGS = 5        # thinner markets than this don't make rankings
 MIN_CHANGE_DAYS = 3     # a "change" needs at least this many days between the two prices
 MIN_CHANGE = 0.10       # risers/fallers move at least 10%
+SPOTLIGHTS = {"card_spotlight", "toy_spotlight", "guess_price"}   # topics that feature one item
 
 
 def money(v):
@@ -22,6 +23,10 @@ def money(v):
 
 def pct(v):
     return f"{'+' if v >= 0 else '-'}{abs(v) * 100:.0f}%"
+
+
+def days(n):
+    return f"{n} day{'s' if n != 1 else ''}"
 
 
 def short_date(iso):
@@ -93,7 +98,14 @@ def build(root, today=None, social_dir="social"):
         word = "card" if kind == "cards" else "toy"
         series_data = load(root, f"data/series/{sid}.json")
         sets = index["sets"][sid]
-        sales = (sets.get("insights", {}).get("sales") or {}).get("items", {})
+        ins = sets.get("insights") or {}
+        sales = (ins.get("sales") or {}).get("items", {})
+        # Days of sales behind the sold counts: the sales window, but no longer than tracking has run
+        # (same as the site's supplyDays()).
+        span = None
+        if ins.get("since"):
+            span = min((ins.get("sales") or {}).get("window", 30),
+                       (date.fromisoformat(sets.get("lastUpdate") or ins["since"]) - date.fromisoformat(ins["since"])).days)
         singles = 0.0
         for c in s["items"]:
             iid = f"{sid}-{c['number']}"
@@ -116,10 +128,18 @@ def build(root, today=None, social_dir="social"):
                 fid["sold"] = F.add(iid, f"typical sold price, {short_date(p['date'])} to {short_date(p['end'])}",
                                     p["median"], money(p["median"]))
             sl = sales.get(iid)
-            if sl and sl.get("sold", 0) >= MIN_LISTINGS:
-                fid["sold_count"] = F.add(iid, "listings sold in the last 30 days", sl["sold"], f"{sl['sold']} sold")
-                fid["days_to_sell"] = F.add(iid, "typical days to sell", sl["days"],
-                                            f"{sl['days']} day{'s' if sl['days'] != 1 else ''}")
+            sells = None
+            if sl and sl.get("sold", 0) >= MIN_LISTINGS and span and span >= MIN_CHANGE_DAYS:
+                fid["sold_count"] = F.add(iid, f"in the last {days(span)}", sl["sold"], f"{sl['sold']} sold")
+                fid["sold_window"] = F.add(iid, "days of sales those counts cover", span, days(span))
+                fid["days_to_sell"] = F.add(iid, "typical days to sell", sl["days"], days(sl["days"]))
+                # "Sells out in": today's listings / sales per day, as the site's market read. Not rated when the
+                # search only follows a small sample of the item's listings (supply estimate 5x+ the count).
+                supply = latest.get("supply") or 0
+                if latest["count"] >= MIN_LISTINGS and not (supply and latest["count"] / supply < 0.2):
+                    d = sells = latest["count"] / (sl["sold"] / span)
+                    fid["sells_out"] = F.add(iid, "days today's listings would last at the recent sales pace", round(d, 1),
+                                             "60+ days" if d > 60 else f"about {days(max(1, round(d)))}")
             # A local photo only (official toy photo or official card scan), never a seller's eBay photo.
             local = next((p for p in (ix.get("image", ""), f"assets/cards/{iid}.png")
                           if p and not p.startswith("http") and (root / p).exists()), None)
@@ -128,7 +148,7 @@ def build(root, today=None, social_dir="social"):
                 "rarity": ix.get("rarity") or ("Holo" if c.get("holo") else None),
                 "image": local,
                 "listings": latest["count"], "ask": latest["median"],
-                "change": ch[0] if ch else None, "sold_count": (sl or {}).get("sold"),
+                "change": ch[0] if ch else None, "sold_count": (sl or {}).get("sold"), "sells_out": sells,
                 "facts": fid,
             })
         # Complete set vs singles.
@@ -152,15 +172,24 @@ def build(root, today=None, social_dir="social"):
     rankings["risers"] = top([r for r in moved if r["change"] >= MIN_CHANGE], lambda r: r["change"])
     rankings["fallers"] = top([r for r in moved if r["change"] <= -MIN_CHANGE], lambda r: r["change"], reverse=False)
     rankings["most_sold"] = top([r for r in ok if r["sold_count"]], lambda r: r["sold_count"])
+    # Daily series: fastest to sell out, fewest listed, and spotlight picks not featured in recent posts.
+    rankings["fast_sellers"] = top([r for r in items if r["sells_out"]], lambda r: r["sells_out"], reverse=False)
+    rankings["fewest_listings"] = top([r for r in items if r["listings"] >= 1], lambda r: r["listings"], reverse=False)
+    recent = recent_posts(root / social_dir)
+    featured = {i for p in recent if p.get("topic") in SPOTLIGHTS for i in p.get("items", [])}
+    for kind in ("cards", "toys"):
+        pool = [r for r in ok if r["kind"] == kind and r["image"] and r["id"] not in featured]
+        rankings[f"spotlight_{kind}"] = top(pool, lambda r: (r["sold_count"] or 0, r["ask"]), n=8)
 
     return {
         "date": today,
         "source": "eBay US Buy It Now asking prices, shipping included; sold prices from listings that ended",
         "promo": promo,
         "facts": F.list,
-        "items": [{k: v for k, v in r.items() if k not in ("ask", "change", "sold_count", "listings")} for r in items],
+        "items": [{k: v for k, v in r.items() if k not in ("ask", "change", "sold_count", "listings", "sells_out")}
+                  for r in items],
         "rankings": rankings,
-        "recent_posts": recent_posts(root / social_dir),
+        "recent_posts": recent,
     }
 
 
@@ -172,8 +201,11 @@ def recent_posts(folder, n=8):
             post = json.loads(p.read_text())
         except (OSError, ValueError):
             continue
+        slides = post.get("slides", [])
+        items = {i for s in slides for i in [s.get("item_id"), *s.get("item_ids", []),
+                                             *(r.get("item_id") for r in s.get("rows", []))] if i}
         out.append({"date": p.parent.name[:10], "topic": post.get("topic"),
-                    "headlines": [s.get("headline") for s in post.get("slides", [])]})
+                    "headlines": [s.get("headline") for s in slides], "items": sorted(items)})
     return out
 
 

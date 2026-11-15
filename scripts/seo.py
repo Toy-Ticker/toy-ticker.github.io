@@ -196,6 +196,7 @@ PAGE = """<!doctype html>
 <a href="../../about.html">How prices work</a></div>
 {body}
 <footer>
+<p class="support">Toy Ticker is a free, ad-free side project. If it helped you, you can <a class="kofi" href="https://ko-fi.com/toyticker" target="_blank" rel="noopener">support it on Ko-fi ☕</a></p>
 <p>Prices are eBay US Buy It Now <b>asking</b> prices including shipping, collected daily with the eBay Browse API. Lots, sets and graded copies are filtered out. Not financial advice. <a href="../../about.html">Methodology</a></p>
 <p>Unofficial fan site. Not affiliated with or endorsed by McDonald’s, eBay or any toy brand. All trademarks belong to their owners. As an eBay Partner, Toy Ticker may earn a commission from qualifying purchases made through its eBay links.</p>
 </footer>

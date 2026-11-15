@@ -1,0 +1,59 @@
+name: Draft Instagram post
+
+# Alternative to the weekly Claude Code routine (scripts/social/ROUTINE.md): drafts a post with the Claude API
+# and opens a PR. Manual only, and needs the ANTHROPIC_API_KEY repo secret. Nothing is posted to Instagram.
+
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: "What to post"
+        type: choice
+        options: [weekly_board, worth_it, countdown]
+        default: weekly_board
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency: social-draft
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pillow anthropic
+      - name: Pick a branch name
+        id: branch
+        run: echo "name=social/$(date -u +%F)-${TOPIC//_/-}" >> "$GITHUB_OUTPUT"
+        env:
+          TOPIC: ${{ inputs.topic || 'weekly_board' }}
+      - name: Draft the post (facts, Claude, check, slides)
+        id: draft
+        run: python scripts/social/draft.py --topic "$TOPIC" --branch "$BRANCH"
+        env:
+          TOPIC: ${{ inputs.topic || 'weekly_board' }}
+          BRANCH: ${{ steps.branch.outputs.name }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      - name: Open a PR for review
+        run: |
+          git config user.name "toy-ticker-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$BRANCH"
+          git add "$FOLDER"
+          git commit -m "Instagram draft: $(basename "$FOLDER")"
+          git push -f origin "$BRANCH"
+          title="Instagram: $(basename "$FOLDER")"
+          [ "$NEEDS_EDIT" = "true" ] && title="[Needs edit] $title"
+          gh pr create --base main --head "$BRANCH" --title "$title" --body-file "$FOLDER/pr.md"
+        env:
+          BRANCH: ${{ steps.branch.outputs.name }}
+          FOLDER: ${{ steps.draft.outputs.folder }}
+          NEEDS_EDIT: ${{ steps.draft.outputs.needs_edit }}
+          GH_TOKEN: ${{ github.token }}

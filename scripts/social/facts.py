@@ -1,0 +1,179 @@
+"""Pick this week's postable facts from Toy Ticker's data. No AI here: every number a post may use comes from this file.
+
+Reads data/index.json, data/series/<id>.json and data/config.json for the series in restaurants now and returns
+facts.json: a flat list of numbered facts ("f12": Pikachu card's typical asking price is $12.99), the items they
+belong to, ready-made rankings, and the topics of recent posts so the writer doesn't repeat itself.
+"""
+import json
+from datetime import date, timedelta
+from pathlib import Path
+
+# Days the price rules changed (e.g. Nov 14: unreported shipping counts as paid). Price changes are never
+# measured across one of these, so a rule change can't show up as a market move.
+RULE_CHANGES = ["2026-11-14"]
+MIN_LISTINGS = 5        # thinner markets than this don't make rankings
+MIN_CHANGE_DAYS = 3     # a "change" needs at least this many days between the two prices
+MIN_CHANGE = 0.10       # risers/fallers move at least 10%
+
+
+def money(v):
+    return f"${v:,.2f}"
+
+
+def pct(v):
+    return f"{'+' if v >= 0 else '-'}{abs(v) * 100:.0f}%"
+
+
+def short_date(iso):
+    return date.fromisoformat(iso).strftime("%b %-d")
+
+
+def load(root, rel):
+    return json.loads((Path(root) / rel).read_text())
+
+
+def current_series(config, today):
+    """Series in restaurants on `today`, plus the group that shows them as one (if any)."""
+    live = [s for s in config["series"] if s.get("current") or (s.get("end") and s["start"] <= today <= s["end"])]
+    ids = {s["id"] for s in live}
+    group = next((g for g in config.get("groups", []) if ids & set(g["members"])), None)
+    return live, group
+
+
+def change(history, today):
+    """Price change over the last week (or as far back as allowed), never across a rule change.
+    Returns (fraction, base_date) or None."""
+    pts = [p for p in history if p.get("median") is not None and p.get("count", 0) >= MIN_LISTINGS]
+    if len(pts) < 2:
+        return None
+    last = pts[-1]
+    floor = max([d for d in RULE_CHANGES if d <= last["date"]], default="0000")
+    week_ago = (date.fromisoformat(last["date"]) - timedelta(days=7)).isoformat()
+    base = next((p for p in pts if p["date"] >= max(floor, week_ago)), None)
+    if not base or (date.fromisoformat(last["date"]) - date.fromisoformat(base["date"])).days < MIN_CHANGE_DAYS:
+        return None
+    return last["median"] / base["median"] - 1, base["date"]
+
+
+class Facts:
+    def __init__(self):
+        self.list = []
+
+    def add(self, about, what, value, display):
+        fid = f"f{len(self.list) + 1}"
+        self.list.append({"id": fid, "about": about, "what": what, "value": value, "display": display})
+        return fid
+
+
+def build(root, today=None, social_dir="social"):
+    root = Path(root)
+    index = load(root, "data/index.json")
+    config = load(root, "data/config.json")
+    today = today or index["updated"][:10]
+    live, group = current_series(config, today)
+    if not live:
+        raise SystemExit("No series in restaurants today; nothing to post about.")
+    F = Facts()
+    items, kinds = [], {}
+
+    end = max(s["end"] for s in live)
+    days_left = (date.fromisoformat(end) - date.fromisoformat(today)).days
+    promo = {
+        "id": group["id"] if group else live[0]["id"],
+        "name": group["name"] if group else live[0]["name"],
+        "description": group["description"] if group else live[0]["description"],
+        "start": min(s["start"] for s in live), "end": end,
+        "facts": [F.add(None, "last day in restaurants", end, short_date(end)),
+                  F.add(None, "days left in restaurants", days_left, f"{days_left} days")],
+    }
+
+    for s in live:
+        sid, kind = s["id"], s.get("kind", "toys")
+        kinds[sid] = kind
+        word = "card" if kind == "cards" else "toy"
+        series_data = load(root, f"data/series/{sid}.json")
+        sets = index["sets"][sid]
+        sales = (sets.get("insights", {}).get("sales") or {}).get("items", {})
+        singles = 0.0
+        for c in s["items"]:
+            iid = f"{sid}-{c['number']}"
+            ix = index["items"].get(iid, {})
+            latest = ix.get("latest") or {}
+            if latest.get("median") is None:
+                continue
+            name = f"{c['name']} {word}" if group else c["name"]
+            fid = {"ask": F.add(iid, "typical eBay asking price today, shipping included", latest["median"], money(latest["median"])),
+                   "listings": F.add(iid, "listings priced today", latest["count"], f"{latest['count']} listings")}
+            singles += latest["median"]
+            ch = change(series_data["history"].get(iid, []), today)
+            if ch:
+                fid["change"] = F.add(iid, f"change in asking price since {short_date(ch[1])}", round(ch[0], 4),
+                                      f"{pct(ch[0])} since {short_date(ch[1])}")
+            sold = [p for p in series_data.get("sold", {}).get(iid, []) if p.get("count", 0) >= MIN_LISTINGS]
+            if sold:
+                p = sold[-1]
+                fid["sold"] = F.add(iid, f"typical sold price, {short_date(p['date'])} to {short_date(p['end'])}",
+                                    p["median"], money(p["median"]))
+            sl = sales.get(iid)
+            if sl and sl.get("sold", 0) >= MIN_LISTINGS:
+                fid["sold_count"] = F.add(iid, "listings sold in the last 30 days", sl["sold"], f"{sl['sold']} sold")
+                fid["days_to_sell"] = F.add(iid, "typical days to sell", sl["days"],
+                                            f"{sl['days']} day{'s' if sl['days'] != 1 else ''}")
+            local = ix.get("image", "")
+            items.append({
+                "id": iid, "name": name, "series": sid, "kind": kind, "number": c["number"],
+                "rarity": ix.get("rarity") or ("Holo" if c.get("holo") else None),
+                "image": local if local and not local.startswith("http") and (root / local).exists() else None,
+                "listings": latest["count"], "ask": latest["median"],
+                "change": ch[0] if ch else None, "sold_count": (sl or {}).get("sold"),
+                "facts": fid,
+            })
+        # Complete set vs singles.
+        full = [p for p in (sets.get("fullSet") or {}).get("history", []) if p.get("median") is not None]
+        set_facts = {"singles": F.add(sid, f"all {len(s['items'])} {word}s bought as singles (sum of typical asking prices)",
+                                      round(singles, 2), money(singles))}
+        if full and full[-1].get("count", 0) >= 3:
+            set_facts["complete_set"] = F.add(sid, "typical asking price for a complete set listing",
+                                              full[-1]["median"], money(full[-1]["median"]))
+        promo.setdefault("series", []).append({"id": sid, "name": s["name"], "kind": kind, "size": len(s["items"]),
+                                               "facts": set_facts})
+
+    def top(rows, key, n=5, reverse=True):
+        return [r["id"] for r in sorted(rows, key=key, reverse=reverse)[:n]]
+
+    ok = [r for r in items if r["listings"] >= MIN_LISTINGS]
+    rankings = {}
+    for sid, kind in kinds.items():
+        rankings[f"most_valuable_{kind}"] = top([r for r in ok if r["series"] == sid], lambda r: r["ask"])
+    moved = [r for r in ok if r["change"] is not None]
+    rankings["risers"] = top([r for r in moved if r["change"] >= MIN_CHANGE], lambda r: r["change"])
+    rankings["fallers"] = top([r for r in moved if r["change"] <= -MIN_CHANGE], lambda r: r["change"], reverse=False)
+    rankings["most_sold"] = top([r for r in ok if r["sold_count"]], lambda r: r["sold_count"])
+
+    return {
+        "date": today,
+        "source": "eBay US Buy It Now asking prices, shipping included; sold prices from listings that ended",
+        "promo": promo,
+        "facts": F.list,
+        "items": [{k: v for k, v in r.items() if k not in ("ask", "change", "sold_count", "listings")} for r in items],
+        "rankings": rankings,
+        "recent_posts": recent_posts(root / social_dir),
+    }
+
+
+def recent_posts(folder, n=8):
+    """Topic and headlines of the last n drafted posts, newest first."""
+    out = []
+    for p in sorted(Path(folder).glob("*/post.json"), reverse=True)[:n]:
+        try:
+            post = json.loads(p.read_text())
+        except (OSError, ValueError):
+            continue
+        out.append({"date": p.parent.name[:10], "topic": post.get("topic"),
+                    "headlines": [s.get("headline") for s in post.get("slides", [])]})
+    return out
+
+
+if __name__ == "__main__":
+    import sys
+    print(json.dumps(build(Path(__file__).resolve().parents[2], *(sys.argv[1:2])), indent=1, ensure_ascii=False))

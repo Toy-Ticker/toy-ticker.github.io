@@ -1889,13 +1889,19 @@ const MIN_SPAN = .3;
 const headroom = (k) => ({ afterDataLimits(sc) {
   const mid = (sc.max + sc.min) / 2, span = Math.max(sc.max - sc.min, mid * MIN_SPAN);
   if (span > sc.max - sc.min) { sc.min = Math.max(0, mid - span / 2); sc.max = sc.min + span; }
+  // Room under the lowest line too, so it never sits on the axis and reads as zero.
+  sc.min = Math.max(0, sc.min - (sc.max - sc.min) * .15);
   sc.max += (sc.max - sc.min || sc.max || 1) * k * (sc.chart.width < 500 ? 1.8 : 1); } });
+// Nov 14: listings with no shipping in search were filled at the median of paid shipping instead of $0.
+const DATA_FIXES = [{ date: "2026-11-14", label: "Shipping fix" }];
 function chartEvents(sid) {
   const s = DATA.sets[sid], own = (THEMES[sid] || DEFAULT_THEME).chart, ev = [];
   if (s.start) ev.push({ date: s.start, label: "In restaurants", color: own });
   if (s.end && !s.current) ev.push({ date: s.end, label: "Promo ended", color: "#5f5e5a" });
   for (const [id, o] of shownSets())
     if (id !== shownId(sid) && o.start) ev.push({ date: o.start, label: `${shortName(id)} launched`, color: (THEMES[id] || DEFAULT_THEME).chart });
+  // Site-wide data changes that moved every price, so a step on these days isn't read as the market.
+  for (const m of DATA_FIXES) ev.push({ ...m, color: css("--muted") });
   return ev.sort((a, b) => a.date.localeCompare(b.date));
 }
 

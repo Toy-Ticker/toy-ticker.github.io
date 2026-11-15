@@ -622,26 +622,16 @@
      },
      {
       "date": "2026-11-15",
-      "median": 152.5,
+      "median": 160.75,
       "p25": 135.0,
-      "p75": 198.0,
-      "low": 55.0,
-      "count": 7,
+      "p75": 201.0,
+      "low": 135.0,
+      "count": 6,
       "itemMedian": 152.5,
       "shipMedian": 10.0
      }
     ],
-    "deals": [
-     {
-      "title": "Pokemon McDonald's 2026 M26 Complete Set 1-15 Happy Meal English 30 Anniversary",
-      "price": 55.0,
-      "item": 45.0,
-      "ship": 10.0,
-      "url": "https://www.ebay.com/itm/147681703669?_skw=mcdonalds+pokemon+2026+complete+set+15+toys&hash=item226283f6f5:g:pXwAAeSwVzVq9PQi&amdata=enc%3AAQALAAABEOf5zIIojhOf%2BkQK%2Bxzjn7npEXh0aCeX7dt4fUkj%2BxcLA1iu64RBmZQUoUvB%2F6uQgkOw77sTubGDQp8yqtPdRORjOYObYhOV6qSZJ7MedUq3HgjQoTULRJvnh%2FvazZhhFFYLbDgwqAfJdbeAo8tp%2BwRCdemWjPnOy1qeP6dvER1mUWqSuZp7%2FokUOIBXA1JnSOJ9yrirAyWgcCdJQak5TauoZnxfEJmFxVEuA%2FXKO2iPt8ZEsyoEsSy55RKbSl9RuKEG9cOBRCf1G925JINb2GHBd30WY8TBgVJ4gQ1PvbrojuQbuXacYKVQP5gP5Dkvq8lPMUANLSoOHDFfWIEINvo5iNMu0zFHjS8iuOwTCnrx",
-      "below": 0.639,
-      "image": "https://i.ebayimg.com/images/g/pXwAAeSwVzVq9PQi/s-l225.jpg"
-     }
-    ],
+    "deals": [],
     "size": 15,
     "search": "https://www.ebay.com/sch/i.html?_nkw=mcdonalds+pokemon+2026+complete+set+15+toys"
    },

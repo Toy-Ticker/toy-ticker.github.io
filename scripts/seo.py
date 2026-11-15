@@ -196,9 +196,8 @@ PAGE = """<!doctype html>
 <a href="../../about.html">How prices work</a></div>
 {body}
 <footer>
-<p class="support">Toy Ticker is a free, ad-free side project. If it helped you, you can <a class="kofi" href="https://ko-fi.com/toyticker" target="_blank" rel="noopener">support it on Ko-fi ☕</a></p>
-<p>Prices are eBay US Buy It Now <b>asking</b> prices including shipping, collected daily with the eBay Browse API. Lots, sets and graded copies are filtered out. Not financial advice. <a href="../../about.html">Methodology</a></p>
-<p>Unofficial fan site. Not affiliated with or endorsed by McDonald’s, eBay or any toy brand. All trademarks belong to their owners. As an eBay Partner, Toy Ticker may earn a commission from qualifying purchases made through its eBay links.</p>
+<p>Daily eBay US asking prices, shipping included. Not financial advice. <a href="../../about.html">How prices work</a></p>
+<p>Unofficial fan site, not affiliated with McDonald’s, eBay or any toy brand. Toy Ticker may earn a commission from eBay links. Free and ad-free: <a class="kofi" href="https://ko-fi.com/toyticker" target="_blank" rel="noopener">support it on Ko-fi ☕</a></p>
 </footer>
 </div>
 </body></html>
@@ -410,7 +409,7 @@ def home_blocks(site, root, shown, updated):
 def about_faq(root):
     path = root / "about.html"
     text = path.read_text()
-    qa = re.findall(r"<details><summary>(.*?)</summary>\s*<p>(.*?)</p></details>", text, re.S)
+    qa = re.findall(r"<details[^>]*><summary>(.*?)</summary>\s*<p>(.*?)</p></details>", text, re.S)
     if qa:
         replace_block(path, "faq", ld({"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
             {"@type": "Question", "name": strip_tags(q), "acceptedAnswer": {"@type": "Answer", "text": strip_tags(a)}} for q, a in qa]}))

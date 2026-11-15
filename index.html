@@ -105,12 +105,12 @@
   tbody tr:hover, tbody tr.sel { background: var(--accent-soft); }
   tbody tr:last-child td { border-bottom: 0; }
   .no { color: var(--muted); font-size: 12px; margin-right: 6px; }
-  .up { color: var(--up); } .down { color: var(--down); } .flat { color: var(--muted); }
+  .up { color: var(--up); } .down { color: var(--down); } .flat, .muted { color: var(--muted); }
   canvas.spark { width: 90px; height: 26px; display: block; margin-left: auto; }
   .detail { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
             padding: 16px; margin-top: 20px; }
   .detail h2 { margin: 0 0 2px; font-size: 18px; }
-  .detail .chart-box { position: relative; height: 300px; margin-top: 12px; }
+  .detail .chart-box { position: relative; height: 300px; margin: 12px 0 28px; }
   .note { color: var(--muted); font-size: 13px; margin-top: 8px; }
   a { color: var(--accent); }
   .holo { color: var(--gold); font-size: 12px; }
@@ -177,7 +177,7 @@
   .meal-result .share-btn, .mine-share { margin-top: 12px; color: #fff; background: var(--accent); border-color: var(--accent); padding: 8px 18px; }
   .meal-result .share-btn:hover, .mine-share:hover { filter: brightness(1.08); background: var(--accent); }
   .mr-list { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 4px 12px; }
-  .mr-row { display: grid; grid-template-columns: 34px minmax(0, 1fr) 40px 76px 26px; gap: 10px; align-items: center;
+  .mr-row { display: grid; grid-template-columns: 34px minmax(0, 1fr) 86px 76px; gap: 10px; align-items: center;
             padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
   .mr-row .pic, .mr-row .ph { width: 34px; }
   .mr-head { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 6px 0; }
@@ -190,6 +190,16 @@
   .mr-n.dupe { color: var(--text); font-weight: 700; }
   .mr-p { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
   .mr-p.na { color: var(--muted); font-weight: 400; }
+  .mr-step { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+  .mr-step b { min-width: 1.2em; color: var(--text); }
+  .mr-step button { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--line); background: var(--panel); color: var(--text);
+                    font: inherit; font-size: 14px; line-height: 1; cursor: pointer; padding: 0; }
+  .mr-step button:hover { border-color: var(--accent); color: var(--accent); }
+  .mr-name .mr-spare { color: var(--up); }
+  .mr-ask { display: block; margin-top: -4px; }
+  .mr-trend { margin: 6px 0 0; font-size: 13px; }
+  .mr-empty { text-align: center; padding: 18px 8px; }
+  .mr-empty p { margin: 0 0 10px; color: var(--muted); }
   .mr-rm { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 4px; border-radius: 6px; }
   .mr-rm:hover { color: var(--down); background: var(--bg); }
   .mr-total { border-bottom: 0; font-weight: 700; }
@@ -200,10 +210,8 @@
   @media (max-width: 640px) {
     .meal-result { padding: 12px 8px; }
     .mr-list { padding: 2px 10px; }
-    .mr-row { grid-template-columns: 30px minmax(0, 1fr) auto 22px; gap: 8px; }
+    .mr-row { grid-template-columns: 30px minmax(0, 1fr) auto auto; gap: 8px; }
     .mr-row .pic, .mr-row .ph { width: 30px; }
-    .mr-row > .mr-n { display: none; }
-    .mr-qty { display: inline; }
   }
   .mine-share { margin-top: 10px; }
   @media (max-width: 640px) {
@@ -286,7 +294,7 @@
   .resell summary { cursor: pointer; }
   .resell summary b { color: var(--accent); font-weight: 600; }
   .resell details .flipbar { margin: 8px 0 0; }
-  .item-deals .see-all { margin-top: 10px; font: inherit; font-size: 14px; font-weight: 600; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; }
+  .see-all { margin-top: 10px; font: inherit; font-size: 14px; font-weight: 600; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; }
   .deal .scarce { font-size: 12px; font-weight: 700; color: #8a4b00; background: #fdf0d8; border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
   .deal .off { font-size: 12px; font-weight: 700; color: #17663b; background: #e3f1ea; border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
   .deal small { display: block; color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -295,7 +303,14 @@
   .deal-take { display: grid; gap: 6px; margin: 0 0 14px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 12px; font-size: 14px; line-height: 1.45; }
   .deal-take[hidden] { display: none; }
   .deal-take p { margin: 0; }
-  .deal-take b.who { font-family: var(--display); font-weight: 600; margin-right: 4px; }
+  .market-today { margin-bottom: 16px; }
+  .market-today h3 { margin: 0 0 8px; font-family: var(--display); font-size: 19px; }
+  .market-today p { margin: 6px 0 0; line-height: 1.5; }
+  .market-today p.foot { margin-top: 10px; font-size: 12px; color: var(--muted); }
+  .flip-settings { margin: -4px 0 12px; font-size: 13px; color: var(--muted); }
+  .flip-settings summary { cursor: pointer; }
+  .flip-settings .flipbar { margin: 8px 0 0; }
+  .market-today b.who, .deal-take b.who { font-family: var(--display); font-weight: 600; margin-right: 4px; }
   .flipbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: 13px; color: var(--muted); margin: -4px 0 12px; }
   .flipbar label { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
   .flipbar input { width: 4.6em; font: inherit; color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 2px 6px; text-align: right; }
@@ -607,13 +622,36 @@
   .stack span { display: block; height: 100%; }
   .legend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 8px; font-size: 12px; color: var(--muted); }
   .legend i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+  .sd-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 6px 0 4px; }
+  .sd-stats b { display: block; font-family: var(--display); font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .sd-stats small { color: var(--muted); font-size: 12px; }
+  .sd-table { min-width: 0; }
+  .sd-table td:first-child { overflow-wrap: anywhere; }
+  .sd-lead { font-size: 15px; line-height: 1.5; margin: 6px 0 10px; }
+  .sd-pay b { display: block; font-weight: 600; }
+  .sd-pay small { display: block; color: var(--muted); font-size: 12px; }
+  th .tip { font-size: 12px; text-transform: none; letter-spacing: 0; padding-left: 3px; }
+  .tip { font: inherit; font-size: 13px; color: var(--muted); background: none; border: 0; padding: 0 0 0 6px; cursor: help; }
+  .tip:hover, .tip:focus-visible, .tip[aria-expanded="true"] { color: var(--accent); outline: none; }
+  .tip-bubble { white-space: pre-line; position: fixed; z-index: 50; max-width: 280px; padding: 10px 12px; border-radius: 10px; background: var(--text); color: var(--panel);
+                font-size: 13px; line-height: 1.45; box-shadow: 0 8px 24px rgba(0,0,0,.18); pointer-events: none; }
+  .sd-gap td { color: var(--muted); font-size: 12px; text-align: center; padding: 4px 0; }
+  .sd-item { font: inherit; color: var(--text); background: none; border: 0; padding: 0; cursor: pointer; text-align: left; }
+  .sd-item:hover { color: var(--accent); }
+  .flip-more > summary { cursor: pointer; list-style: none; }
+  .flip-more > summary::-webkit-details-marker { display: none; }
+  .flip-more > summary h4 { display: inline; }
+  .flip-more > summary::before { content: "▸ "; color: var(--muted); }
+  .flip-more[open] > summary::before { content: "▾ "; }
+  .ins-note { font-size: 13px; color: var(--muted); margin: 8px 0 0; }
   .ins-sub { font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin: 14px 0 0; }
   .hero-chart { margin-top: 14px; }
   .hero-chart > summary { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--accent); }
   .set-chart { margin-top: 18px; }
   .set-chart h3 { margin: 0 0 2px; font-size: 17px; }
   .set-chart .sub { color: var(--muted); font-size: 13px; }
-  .set-chart .chart-box { position: relative; height: 300px; margin-top: 10px; }
+  .set-chart .chart-box { position: relative; height: 300px; margin: 10px 0 28px; }
+  .chart-tip { position: absolute; right: 0; bottom: -22px; font-size: 12px; }
   .set-chart .note { font-size: 13px; color: var(--muted); margin-top: 8px; }
   @media (max-width: 640px) {
     .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
@@ -717,10 +755,10 @@
   </nav>
 
   <div class="sec" data-sec="deals" hidden>
+    <section class="deals-card market-today" id="dealsTake" hidden></section>
     <section class="deals-card" id="deals">
       <div class="ret-head"><h3>Deal finder<small id="dealsNote"></small></h3></div>
-      <div class="deal-take" id="dealsTake" hidden></div>
-      <div class="flipbar" id="flipBarDeals"></div>
+      <details class="flip-settings" id="flipSet"><summary id="flipSum">⚙ Resale settings</summary><div class="flipbar" id="flipBarDeals"></div></details>
       <div class="deal-ctrls" id="dealCtrls"></div>
       <div class="deal-grid" id="dealGrid"></div>
       <div class="deal-more" id="dealMore" hidden></div>
@@ -736,10 +774,9 @@
     </div>
     <p class="meal-hint" id="mealHint"></p>
     <div class="meal-controls">
-      <label>Price per Happy Meal <span class="paid"><span>$</span><input id="mealPaid" type="number" min="0" step="0.01" value="4.99" inputmode="decimal"></span></label>
+      <label>Price per Happy Meal <span class="paid"><span>$</span><input id="mealPaid" type="number" min="0" step="0.01" value="5.99" inputmode="decimal"></span></label>
       <button class="mine-clear" id="mineClear" type="button" hidden>Clear this series</button>
     </div>
-    <div class="meal-pick" id="mealPick"></div>
     <div class="meal-result" id="mealResult"></div>
     <div class="complete" id="complete" hidden></div>
   </section>
@@ -760,6 +797,7 @@
         <option value="d1:1">Biggest 1-day drop</option>
         <option value="since:-1">Biggest rise since tracking began</option>
         <option value="since:1">Biggest drop since tracking began</option>
+        <option value="dos:1">Sells out soonest</option>
         <option value="number:1">Number</option>
         <option value="name:1">Name</option>
       </select>
@@ -777,9 +815,11 @@
         <th data-k="name" id="thName">Item</th>
         <th data-k="price" class="num" title="Median of today's listings, item + shipping to the US">Median incl. ship</th>
         <th data-k="d1" class="num">1-day</th>
-        <th data-k="d30" class="num">vs 30-day avg</th>
         <th data-k="low" class="num" title="Cheapest listing today, item + shipping">Lowest incl. ship</th>
-        <th data-k="count" class="num">Listings</th>
+        <th data-k="count" class="num" data-tip="Existing listings: everything still for sale on eBay today. Ones that already sold aren't counted here.">Listings</th>
+        <th data-k="sold" class="num" data-tip="Sales Toy Ticker spotted recently (since tracking began, up to 30 days). It can be bigger than Listings: sold ones drop off the listings and sellers keep adding new ones.">Sold</th>
+        <th data-k="pay" class="num" data-tip="What it actually sold for, shipping included. Compare with the median asking price: a big gap means offers under asking often work. Needs 5+ sales.">Buyers pay</th>
+        <th data-k="dos" class="num" data-tip="How long today's listings would last if sales keep their recent pace and nobody lists more. Green: 2 weeks or less, buyers snap them up. Red: over 60 days, far more for sale than buyers.">Sells out in</th>
         <th class="num">History</th>
       </tr></thead>
       <tbody id="rows"></tbody>
@@ -798,7 +838,7 @@
         <div class="returns" id="dReturns"></div>
         <div class="resell" id="dResell" hidden></div>
         <div class="item-deals" id="dDeals"></div>
-        <div class="chart-box"><canvas id="dChart"></canvas></div>
+        <div class="chart-box"><canvas id="dChart"></canvas><button type="button" class="tip chart-tip" id="dChartTip" aria-label="How to read this chart">ⓘ How to read</button></div>
         <div class="note" id="dNote"></div>
       </div>
     </div>
@@ -822,9 +862,8 @@
   </div>
 
   <footer>
-    <p id="foot"></p>
-    <p class="support">Toy Ticker is a free, ad-free side project. If it helped you, you can <a class="kofi" href="https://ko-fi.com/toyticker" target="_blank" rel="noopener">support it on Ko-fi ☕</a></p>
-    <p class="disclaimer">Unofficial fan site, not affiliated with McDonald’s or The Pokémon Company. As an eBay Partner, Toy Ticker may earn a commission from qualifying purchases made through its eBay links. <a href="about.html">About Toy Ticker</a></p>
+    <p>Daily eBay US asking prices, shipping included. Photos link to their eBay listings. Not financial advice. <a href="about.html">How prices work</a></p>
+    <p class="disclaimer">Unofficial fan site, not affiliated with McDonald’s or any toy brand. Toy Ticker may earn a commission from eBay links. Free and ad-free: <a class="kofi" href="https://ko-fi.com/toyticker" target="_blank" rel="noopener">support it on Ko-fi ☕</a></p>
     <!-- seo:links -->
 <p class="disclaimer">Price lists: <a href="s/pokemon-happy-meal-2026/">Pokémon toys &amp; cards (2026)</a> · <a href="s/boo-buckets-2026/">Disney Villains Boo Buckets (2026)</a> · <a href="s/spongebob-onepiece-2026/">SpongeBob × One Piece (2026)</a> · <a href="s/hello-kitty-godzilla-2026/">Hello Kitty × Godzilla (2026)</a> · <a href="s/bt21-2026/">BT21 (2026)</a> · <a href="s/world-cup-squishmallows-2026/">FIFA World Cup Squishmallows (2026)</a></p>
 <!-- /seo:links -->
@@ -841,6 +880,31 @@ const usd = (v) => v == null ? "—" : "$" + v.toFixed(2);
 const money = (v) => "$" + (+v).toLocaleString("en-US", { maximumFractionDigits: 2 });
 const mean = (a) => a.length ? a.reduce((s, x) => s + x, 0) / a.length : null;
 const daysBetween = (a, b) => Math.round((new Date(b + "T12:00:00") - new Date(a + "T12:00:00")) / 864e5);
+// Days of supply: how long today's tracked listings would last at the recent pace of sales (both counted on the
+// same listings Toy Ticker follows). Needs 3+ sales for a number; with fewer, `days` is null but the counts are kept.
+// Not rated when Toy Ticker follows under 20% of an item's listings (a broad search that only prices a sample): the
+// sample rotates day to day, so sales pile up from more listings than today's count and the ratio reads too tight.
+function supplyDays(r) {
+  const s = DATA.sets[r.set], ins = s?.insights, st = ins?.sales?.items?.[r.id];
+  if (!ins?.since || !r.count) return null;
+  const span = Math.min(ins.sales?.window || 30, daysBetween(ins.since, s.lastUpdate || ins.since));
+  if (span < 3) return null;
+  const sold = st?.sold || 0, sampled = r.last?.supply > 0 && r.count / r.last.supply < 0.2;
+  return { n: r.count, sold, span, sampled, days: sold >= 3 && r.count >= 5 && !sampled ? r.count / (sold / span) : null };
+}
+// What buyers pay vs what sellers ask: sales-weighted sold median over the last 4 weeks against today's asking
+// median. Needs 5+ sales (fewer swing too much on one sale). Negative = sells under asking.
+function soldGap(r) {
+  const w = (DATA.sold[r.id] || []).slice(-4), n = w.reduce((t, x) => t + (x.count || 0), 0);
+  if (n < 5 || !r.price) return null;
+  const sold = w.reduce((t, x) => t + x.median * (x.count || 0), 0) / n;
+  return { sold, n, gap: sold / r.price - 1 };
+}
+// "Sells out in": capped at 60+ days, since a few days of sales can't support a precise long forecast.
+const SELLOUT_CAP = 60;
+const sellOut = (d) => { if (d > SELLOUT_CAP) return `${SELLOUT_CAP}+ days`; d = Math.max(1, Math.round(d)); return `~${d} day${d > 1 ? "s" : ""}`; };
+const sellOutMeaning = (d) => d <= 14 ? "buyers are snapping them up about as fast as they're listed, so sellers can hold firm on price"
+  : d <= SELLOUT_CAP ? "supply and demand are roughly balanced" : "there are far more for sale than buyers right now, so there's room to negotiate";
 const pct = (v) => v == null || !isFinite(v) ? "—" : (v > 0 ? "+" : "") + (v * 100).toFixed(1) + "%";
 const cls = (v) => v == null || Math.abs(v) < 0.005 ? "flat" : v > 0 ? "up" : "down";
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -1168,9 +1232,6 @@ function go(sid) {
   $("sDesc").textContent = s.description || "";
   $("sDesc").hidden = !s.description;
   $("thName").textContent = s.kind === "cards" ? "Card" : s.kind === "mixed" ? "Item" : "Toy";
-  $("foot").innerHTML = `Prices are <b>asking prices including shipping</b> (item + cheapest shipping to the US) of active eBay US Buy It Now listings, collected daily with the eBay Browse API. ` +
-    (s.kind === "cards" ? "Lots, graded slabs and multi-card listings are filtered out. " : s.kind === "mixed" ? "Lots, full sets, graded slabs and multi-item listings are filtered out. " : "Lots, full sets and multi-toy listings are filtered out. ") +
-    `Shown is the median of what's left; asking prices usually run above what items actually sell for. Photos are from eBay listings and link to them. Not financial advice.`;
   renderNav();
   render();
   countUp();
@@ -1187,6 +1248,10 @@ function render() {
   // Change since the first day of tracking, for the "since tracking began" sorts.
   const first = [...new Set(full.flatMap(r => r.h.map(p => p.date)))].sort()[0];
   for (const r of all) { const a = r.h.find(p => p.date === first)?.median; r.since = a && r.price != null && r.h.length > 1 ? r.price / a - 1 : null; }
+  for (const r of all) {
+    const sd = supplyDays(r); r.dos = sd?.days ?? null;
+    r.sold = DATA.sets[r.set].insights?.sales?.items?.[r.id]?.sold ?? null; r.pay = soldGap(r)?.sold ?? null;
+  }
 
   const onlyMine = $("ownedOnly").checked;
   const rows = all.filter(r => !onlyMine || owns(r.id)).sort((a, b) => {
@@ -1234,9 +1299,11 @@ function render() {
       <td><div class="cardcell">${thumb(r, "sm")}<div>${isGroup() ? `<span class="kind-tag">${kindOf(r) === "cards" ? "Card" : "Toy"}</span>` : ""}<span class="no">#${esc(r.number)}</span>${esc(r.name)}${r.rarity === "Holo" ? ' <span class="holo" title="Holo">✦</span>' : ""}</div></div></td>
       <td class="num">${usd(r.price)}</td>
       <td class="num ${cls(r.d1)}">${pct(r.d1)}</td>
-      <td class="num ${cls(r.d30)}">${pct(r.d30)}</td>
       <td class="num">${usd(r.low)}</td>
       <td class="num">${r.count != null ? confBadge(r, true) : "—"}</td>
+      <td class="num">${r.sold ?? "—"}</td>
+      <td class="num">${r.pay != null ? `<b>${usd(r.pay)}</b>` : `<small class="muted">${r.sold ? "few sales" : "—"}</small>`}</td>
+      <td class="num">${r.dos != null ? `<b class="${r.dos <= 14 ? "up" : r.dos > SELLOUT_CAP ? "down" : ""}">${sellOut(r.dos)}</b>` : "—"}</td>
       <td class="num"><canvas class="spark" data-id="${r.id}"></canvas></td>
     </tr>`).join("");
 
@@ -1251,14 +1318,16 @@ function render() {
       <div class="tile-name">${isGroup() ? `<span class="kind-tag">${kindOf(r) === "cards" ? "Card" : "Toy"}</span>` : ""}<span class="no">#${esc(r.number)}</span>${esc(r.name)}${r.rarity === "Holo" ? ' <span class="holo" title="Holo">✦</span>' : ""}</div>
       <div class="tile-row">
         <span class="tile-price">${usd(r.price)}</span>
-        ${ch != null ? `<span class="badge ${cls(ch)}">${ch > 0 ? "▲" : ch < 0 ? "▼" : ""} ${pct(Math.abs(ch)).replace("+", "")} <small>${label}</small></span>` : ""}
+        ${sortKey === "dos" ? (r.dos != null ? `<span class="badge" title="How long today's listings would take to sell at the recent pace of sales">${r.dos > SELLOUT_CAP ? SELLOUT_CAP + "+d" : "~" + Math.max(1, Math.round(r.dos)) + "d"} <small>to sell out</small></span>` : "")
+          : ch != null ? `<span class="badge ${cls(ch)}">${ch > 0 ? "▲" : ch < 0 ? "▼" : ""} ${pct(Math.abs(ch)).replace("+", "")} <small>${label}</small></span>` : ""}
       </div>
       ${r.share ? `<div class="share" title="${(r.share * 100).toFixed(1)}% of the full set's value"><i style="width:${Math.max(2, r.share * 100 / (top.share || 1))}%"></i></div>` : ""}
-      <div class="tile-sub">${r.count != null ? `${confBadge(r)} ${r.count} listings · ${(r.share * 100).toFixed(0)}% of ${isGroup() && KIND === "all" ? "total" : "set"}` : "No price yet"}</div>
+      <div class="tile-sub">${r.count != null ? `${confBadge(r)} ${r.count} listings · ${r.dos != null ? `sells out ${sellOut(r.dos).replace("~", "~")}` : `${(r.share * 100).toFixed(0)}% of ${isGroup() && KIND === "all" ? "total" : "set"}`}` : "No price yet"}</div>
     </div>`;
   }).join("") || `<p class="note">Nothing here yet. Tap ＋ on items you own, or untick "Show only mine".</p>`;
   $("gallery").hidden = VIEW !== "gallery";
   $("tableWrap").hidden = VIEW !== "list";
+  document.querySelector(".sortby").hidden = VIEW === "list";  // in List view the column headers sort
   document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.view === VIEW)));
   $("sortSel").value = `${sortKey}:${sortDir}`;
 
@@ -1373,7 +1442,7 @@ async function drawQuoteCard(o) {
     y += 32;
     x.fillStyle = "#fff"; x.beginPath(); R(x, M, y, W - 2 * M, itemsH, 28); x.fill();
     x.strokeStyle = LINE; x.lineWidth = 2; x.stroke();
-    x.fillStyle = MUTED; x.font = F(700, 22); x.fillText("ITEM", P, y + 46); x.textAlign = "right"; x.fillText("PRICE INCL. SHIPPING", W - P, y + 46); x.textAlign = "left";
+    x.fillStyle = MUTED; x.font = F(700, 22); x.fillText("ITEM", P, y + 46); x.textAlign = "right"; x.fillText(o.priceHead || "PRICE INCL. SHIPPING", W - P, y + 46); x.textAlign = "left";
     const colW = (W - 2 * P - (cols - 1) * 40) / cols, perCol = Math.ceil(rows.length / cols);
     const nameSize = two ? 26 : 32, priceSize = two ? 28 : 34;
     rows.forEach((r, i) => {
@@ -1403,7 +1472,7 @@ async function drawQuoteCard(o) {
   const fy = H - footH + 20, qs = 150;
   x.fillStyle = INK; x.font = F(700, 38); x.fillText(o.footer || "What's your Happy Meal worth?", M, fy + 60);
   x.fillStyle = MUTED; x.font = F(600, 26); x.fillText("Scan or visit nglungfai.github.io/toy-ticker", M, fy + 104);
-  x.font = F(500, 21); x.fillText("eBay asking prices incl. shipping. Just for fun, not financial advice.", M, fy + 146);
+  x.font = F(500, 21); x.fillText(o.note || "eBay asking prices incl. shipping. Just for fun, not financial advice.", M, fy + 146);
   const qr = await loadQR();
   if (qr) {
     const q = qr(0, "M"); q.addData(o.qr || SITE); q.make();
@@ -1451,99 +1520,112 @@ function renderMineTab() {
   if (!DATA || !SID) return;
   const full = rowsFor(SID);
   const pokemon = members(SID).some(id => id.startsWith("pokemon"));
-  $("mealHint").textContent = `${pokemon ? MEAL_HINTS.pokemon + " " : ""}Tap what you got, and tap again for duplicates. Long-press or right-click to take one away. Saved in this browser.`;
+  $("mealHint").textContent = `${pokemon ? MEAL_HINTS.pokemon + " " : ""}Mark what you got with ＋ on the Items tab, then set how many here. Saved in this browser.`;
   const byId = Object.fromEntries(Object.keys(DATA.sets).filter(id => !isGroup(id)).flatMap(id => rowsFor(id)).map(r => [r.id, r]));
   let allN = 0, allVal = 0;
   for (const [id, n] of OWN) { const r = byId[id]; if (!r) continue; allN += n; allVal += (r.price || 0) * n; }
   const here = mineRows(full).reduce((t, { n }) => t + n, 0);
   $("mineAll").innerHTML = allN > here ? `All series: <b>${allN}</b> items · <b>${usd(allVal)}</b>` : "";
-  $("mealPick").innerHTML = members(SID).map(sid => (isGroup() ? `<div class="pick-group">${DATA.sets[sid].kind === "cards" ? "Cards" : "Toys"}</div>` : "") +
-    rowsFor(sid).sort((a, b) => String(a.number).localeCompare(String(b.number), undefined, { numeric: true })).map(r => `
-      <button class="pick ${owns(r.id) ? "on" : ""}" data-id="${r.id}" title="Tap to add one, long-press or right-click to remove one">
-        <span class="n">${OWN.get(r.id) || ""}</span>${thumb(r, "sm", false)}<b>${esc(r.name)}</b><small>${usd(r.price)}</small></button>`).join("")).join("");
-  $("mealPick").querySelectorAll(".pick").forEach(b => {
-    const id = b.dataset.id;
-    let timer = null, held = false;
-    b.onpointerdown = () => { held = false; timer = setTimeout(() => { held = true; setOwn(id, (OWN.get(id) || 0) - 1); afterOwnChange(); }, 550); };
-    b.onpointerup = b.onpointerleave = () => clearTimeout(timer);
-    b.onclick = () => { if (held) return; setOwn(id, (OWN.get(id) || 0) + 1); afterOwnChange(); };
-    b.oncontextmenu = (e) => { e.preventDefault(); clearTimeout(timer); if (!held) { setOwn(id, (OWN.get(id) || 0) - 1); afterOwnChange(); } };
-  });
   $("mineClear").hidden = !here;
   renderMineResult(full);
   renderComplete(full);
   $("mineMeal").innerHTML = insMeal();
 }
 // Keep the picker's scroll position while counts change.
-function afterOwnChange() {
-  const y = $("mealPick").scrollTop;
-  render();
-  if (SECTION !== "mine") return;
-  $("mealPick").scrollTop = y;
-}
+function afterOwnChange() { render(); }
+// Your haul: what it would sell for (sold prices where an item has 5+ sales, asking otherwise), against what the
+// meals cost, how its value has moved, and which spares are worth selling. Counts are edited right in the list.
 function renderMineResult(full) {
   const rows = mineRows(full), perMeal = Math.max(0, parseFloat($("mealPaid").value) || 0);
-  if (!rows.length) { $("mealResult").innerHTML = `<p class="mr-empty">Tap the items you got to see what they're worth.</p>`; return; }
-  const worth = rows.reduce((t, { r, n }) => t + (r.price || 0) * n, 0);
+  if (!rows.length) {
+    $("mealResult").innerHTML = `<div class="mr-empty"><p>Nothing marked yet. Tap ＋ on the toys${isGroup() || series().kind === "cards" ? " and cards" : ""} you got on the Items tab.</p>
+      <button type="button" class="share-btn" id="mineGo">＋ Add what you got</button></div>`;
+    $("mineGo").onclick = () => showSection("items"); return;
+  }
+  const nm = (r) => esc(r.name);
+  const each = (r) => r.price == null ? null : soldGap(r)?.sold ?? r.price;
+  const worth = rows.reduce((t, { r, n }) => t + (each(r) || 0) * n, 0);
+  const asking = rows.reduce((t, { r, n }) => t + (r.price || 0) * n, 0);
+  const withSales = rows.filter(x => x.r.price != null && soldGap(x.r)).length;
   const items = rows.reduce((t, { n }) => t + n, 0), meals = mealsFor(rows), paid = perMeal * meals;
   const mult = paid ? worth / paid : null;
   const msg = !worth ? "No prices yet for what you have. Check back after the next daily update."
     : mult == null ? "" : mult >= 5 ? "Jackpot! That's a seriously good haul."
     : mult >= 2 ? "Nice haul: worth more than the meals." : mult >= 1 ? "Your Happy Meals paid for themselves."
     : "Worth less than the meals, but the fun's included.";
+  // Value over time (asking medians, the daily series) and the biggest riser and faller among your items.
+  const priced = rows.filter(x => x.r.price != null), vs = valueSeries(priced), first = vs[0];
+  const ch = vs.length >= 2 ? vs[vs.length - 1].v / first.v - 1 : null;
+  const moves = priced.map(({ r }) => { const a = r.h.find(q => q.date === first?.date)?.median; return a ? { r, m: r.price / a - 1 } : null; })
+    .filter(Boolean).sort((a, b) => b.m - a.m);
+  const up = moves[0]?.m > 0.02 ? moves[0] : null, down = moves.at(-1)?.m < -0.02 ? moves.at(-1) : null;
+  const trend = ch == null ? "" : `<p class="mr-trend">${ch >= 0 ? "Up" : "Down"} <b class="${cls(ch)}">${pct(Math.abs(ch)).replace("+", "")}</b> since ${fmtDate(first.date).replace(/,? \d{4}$/, "")}` +
+    (up ? `, led by <b>${nm(up.r)}</b> (${pct(up.m)})` : "") + (down ? `${up ? "; " : ", while "}<b>${nm(down.r)}</b> fell most (${pct(down.m)})` : "") + `.</p>`;
+  // Spares: what one would take home after fees and postage, and how fast it would likely sell.
+  const spare = (r) => { const g = soldGap(r), sale = g ? g.sold : r.price * FLIP.at / 100; return takeHome(sale, postFor(r)); };
+  const spares = rows.filter(x => x.n > 1 && x.r.price != null).map(x => ({ ...x, net: spare(x.r) }));
+  const spareTotal = spares.filter(x => x.net > 0).reduce((t, x) => t + x.net * (x.n - 1), 0);
+  const spareN = spares.reduce((t, x) => t + x.n - 1, 0);
+  const sorted = [...rows].sort((a, b) => (each(b.r) ?? -1) * b.n - (each(a.r) ?? -1) * a.n);
   const mixed = isGroup();
-  const sorted = [...rows].sort((a, b) => (b.r.price ?? -1) * b.n - (a.r.price ?? -1) * a.n);
-  const dupes = rows.filter(x => x.n > 1).reduce((t, x) => t + x.n - 1, 0);
   $("mealResult").innerHTML = `
     <div class="mr-grid">
       <div class="mr-sum">
-        <small>Your ${esc(series().name)} haul is worth</small>
+        <small>Your ${esc(series().name)} haul's estimated value${tipBtn(`What buyers actually pay for items with 5+ sales (${withSales} of your ${priced.length}), and today's asking median for the rest, shipping included. At asking prices it's ${usd(asking)}.`)}</small>
         <div class="worth">${worth ? usd(worth) : "—"}</div>
+        ${worth && Math.abs(asking - worth) >= 1 ? `<small class="mr-ask">asking prices: ${usd(asking)}</small>` : ""}
         ${mult != null && worth ? `<span class="x ${mult >= 1 ? "up" : "down"}">${mult.toFixed(1)}× what you paid</span>` : ""}
         <p class="mr-msg">${msg}</p>
-        <p class="mr-paid">${rows.length} of ${full.length} collected${dupes ? ` · ${dupes} duplicate${dupes > 1 ? "s" : ""}` : ""}<br>about ${meals} Happy Meal${meals > 1 ? "s" : ""} · paid ${usd(paid)}</p>
+        ${trend}
+        ${spareN ? `<p class="mr-trend">${spareTotal > 0 ? `Selling your ${spareN} spare${spareN > 1 ? "s" : ""} would take home about <b class="up">${usd(spareTotal)}</b> after fees and postage.` : `Your spares cost more to post than they'd sell for: better kept, traded or sold as a lot.`}</p>` : ""}
+        <p class="mr-paid">${rows.length} of ${full.length} collected${spareN ? ` · ${spareN} spare${spareN > 1 ? "s" : ""}` : ""}<br>about ${meals} Happy Meal${meals > 1 ? "s" : ""} · paid ${usd(paid)}</p>
         ${worth ? `<button class="share-btn" id="mineShare" type="button">📸 Share my haul</button>` : ""}
       </div>
       <div class="mr-list" role="table" aria-label="Your items">
-        <div class="mr-row mr-head" role="row"><span></span><span>Item</span><span class="mr-n">Qty</span><span class="mr-p">Value</span><span></span></div>
-        ${sorted.map(({ r, n }) => `
+        <div class="mr-row mr-head" role="row"><span></span><span>Item</span><span class="mr-n">Qty</span><span class="mr-p">Est. value</span></div>
+        ${sorted.map(({ r, n }) => { const e = each(r), sp = n > 1 && r.price != null ? spare(r) : null, sd = sp != null ? supplyDays(r) : null;
+          return `
           <div class="mr-row" role="row">
             ${thumb(r, "sm")}
             <span class="mr-name"><b>${esc(r.name)}</b>
-              <small>${mixed ? `<span class="mr-kind">${kindLabel(r) === "card" ? "Card" : "Toy"}</span>` : ""}${r.price == null ? "No listings yet" : `#${esc(r.number)} · ${usd(r.price)} each`}${n > 1 ? `<span class="mr-qty">×${n}</span>` : ""}</small></span>
-            <span class="mr-n ${n > 1 ? "dupe" : ""}" ${n > 1 ? `title="${n - 1} duplicate${n > 2 ? "s" : ""}"` : ""}>${n}</span>
-            <span class="mr-p ${r.price == null ? "na" : ""}">${r.price == null ? "—" : usd(r.price * n)}</span>
-            <button class="mr-rm" data-rm="${r.id}" aria-label="Remove one ${esc(r.name)}" title="Remove one">✕</button>
-          </div>`).join("")}
-        <div class="mr-row mr-total" role="row"><span></span><span>Total</span><span class="mr-n">${items}</span><span class="mr-p">${worth ? usd(worth) : "—"}</span><span></span></div>
+              <small>${mixed ? `<span class="mr-kind">${kindLabel(r) === "card" ? "Card" : "Toy"}</span>` : ""}${e == null ? "No listings yet" : `#${esc(r.number)} · ${usd(e)} each`}</small>
+              ${sp != null ? `<small class="mr-spare">Spare${n > 2 ? "s" : ""}: ${sp > 0 ? `take home ${usd(sp)} each` : "doesn't pay to post"}${sd?.days != null ? ` · sells out ${sellOut(sd.days)}` : ""}</small>` : ""}</span>
+            <span class="mr-n mr-step"><button type="button" data-dec="${r.id}" aria-label="One fewer ${esc(r.name)}">−</button><b>${n}</b><button type="button" data-inc="${r.id}" aria-label="One more ${esc(r.name)}">＋</button></span>
+            <span class="mr-p ${e == null ? "na" : ""}">${e == null ? "—" : usd(e * n)}</span>
+          </div>`; }).join("")}
+        <div class="mr-row mr-total" role="row"><span></span><span>Total</span><span class="mr-n">${items}</span><span class="mr-p">${worth ? usd(worth) : "—"}</span></div>
       </div>
-    </div>
-    <p class="mr-note">Today's median eBay prices including shipping. Sellers often accept less.</p>`;
-  $("mealResult").querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { setOwn(b.dataset.rm, (OWN.get(b.dataset.rm) || 0) - 1); afterOwnChange(); });
+    </div>`;
+  $("mealResult").querySelectorAll("[data-dec]").forEach(b => b.onclick = () => { setOwn(b.dataset.dec, (OWN.get(b.dataset.dec) || 0) - 1); afterOwnChange(); });
+  $("mealResult").querySelectorAll("[data-inc]").forEach(b => b.onclick = () => { setOwn(b.dataset.inc, (OWN.get(b.dataset.inc) || 0) + 1); afterOwnChange(); });
   $("mineShare")?.addEventListener("click", shareCollection);
 }
 async function shareCollection() {
   await loadSeries(SID);
   const full = rowsFor(SID), rows = mineRows(full);
-  const worth = rows.reduce((t, { r, n }) => t + (r.price || 0) * n, 0);
+  // Same value as the haul summary: sold prices where an item has 5+ sales, asking otherwise.
+  const worth = rows.reduce((t, { r, n }) => t + (r.price == null ? 0 : soldGap(r)?.sold ?? r.price) * n, 0);
   const items = rows.reduce((t, { n }) => t + n, 0), meals = mealsFor(rows);
   const paid = Math.max(0, parseFloat($("mealPaid").value) || 0) * meals;
   const vs = valueSeries(rows.filter(x => x.r.price != null));
   const cutoff = vs.length ? new Date(new Date(vs[vs.length - 1].date + "T12:00:00") - 30 * 864e5).toISOString().slice(0, 10) : "";
   const recent = vs.filter(p => p.date >= cutoff), ch = recent.length >= 2 ? recent[recent.length - 1].v / recent[0].v - 1 : null;
-  const sorted = [...rows].sort((a, b) => (b.r.price ?? -1) * b.n - (a.r.price ?? -1) * a.n);
+  const each = (r) => r.price == null ? null : soldGap(r)?.sold ?? r.price;
+  const sorted = [...rows].sort((a, b) => (each(b.r) ?? -1) * b.n - (each(a.r) ?? -1) * a.n);
   const done = rows.length === full.length;
+  const since = vs.length ? fmtDate(recent[0].date).replace(/,? \d{4}$/, "") : "";
   openShareImage({
-    sid: SID, pill: "MY HAPPY MEALS", title: series().name, value: usd(worth),
+    sid: SID, pill: "MY HAPPY MEALS", title: `${series().name} · estimated value`, value: usd(worth),
     sub: `${done ? `Complete set · all ${full.length}` : `${rows.length} of ${full.length}`} ${kindWord(series())}${done ? "" : " collected"} · ${meals} Happy Meal${meals > 1 ? "s" : ""}${paid ? ` · paid ${usd(paid)}` : ""}`,
     tiles: [
       { val: `${rows.length}/${full.length}`, label: "collected", tone: done ? "up2" : "flat" },
       paid ? { val: `${(worth / paid).toFixed(1)}×`, label: "what I paid", tone: worth >= paid ? "up1" : "down1" }
-           : { val: usd(sorted[0]?.r.price ?? 0), label: "most valuable", tone: "flat" },
-      { val: ch != null ? bigPct(ch) : "–", label: recent.length > 25 ? "30-day change" : "since tracking", tone: toneOf(ch) },
+           : { val: usd(each(sorted[0]?.r) ?? 0), label: "most valuable", tone: "flat" },
+      { val: ch != null ? bigPct(ch) : "–", label: recent.length > 25 ? "30-day change" : `since ${since}`, tone: toneOf(ch) },
     ],
     rows: sorted.map(({ r, n }) => ({ name: `${n > 1 ? n + "× " : ""}${r.name}`,
-      tag: isGroup() ? kindLabel(r).toUpperCase() : r.rarity === "Holo" ? "HOLO" : "", price: r.price != null ? usd(r.price * n) : "—" })),
+      tag: isGroup() ? kindLabel(r).toUpperCase() : r.rarity === "Holo" ? "HOLO" : "", price: each(r) != null ? usd(each(r) * n) : "—" })),
+    priceHead: "EST. VALUE", note: "eBay prices incl. shipping: sold prices where known, else asking. Just for fun.",
     qr: `${SITE}s/${SID}/`, footer: "What's your Happy Meal worth?",
   }, `my-${SID}-happy-meals.png`, `My ${series().name} Happy Meal haul is worth ${usd(worth)} on Toy Ticker`);
 }
@@ -1626,37 +1708,58 @@ function flipBar(id, withSet = false, kinds = [...new Set(rowsFor(SID).map(kindO
   $(id).querySelector("[data-flip-reset]").onclick = () => { FLIP = { ...FLIP_DEFAULT }; try { localStorage.removeItem("flip"); } catch (e) {} render(); };
 }
 // Complete sets vs singles, both ways: break a set up and sell the pieces, or buy the pieces and sell a set.
+// Shared ⓘ button: the definition or method behind a number, shown as a tooltip.
+const tipBtn = (t, label = "What this means") => `<button type="button" class="tip" data-tip="${esc(t)}" aria-label="${esc(label)}">ⓘ</button>`;
+let SET_LEADS = [], FLIP_MORE = false;
 function insFlip() {
+  SET_LEADS = [];
   const blocks = members(SID).map(id => {
     const s = DATA.sets[id], fs = s.fullSet, last = fs?.history?.[fs.history.length - 1];
     const rows = rowsFor(id), priced = rows.filter(r => r.price != null);
     if (!last || priced.length < rows.length) return null;
-    const n = rows.length, word = s.kind === "cards" ? "cards" : "toys";
-    const setBuy = fs.deals?.[0]?.price ?? last.median;
+    const n = rows.length, word = s.kind === "cards" ? "cards" : "toys", one = word.slice(0, -1);
+    // A set listed more than 40% under the usual price is an outlier: work from the typical set price instead,
+    // and mention the listing without guessing why it's cheap.
+    const cheapest = fs.deals?.[0], odd = cheapest && cheapest.price < last.median * 0.6 ? cheapest : null;
+    const cheap = odd ? null : cheapest, setBuy = cheap?.price ?? last.median;
     const singlesNet = priced.reduce((t, r) => t + netSale(r.price, postFor(r)), 0);
     const breakProfit = singlesNet - setBuy;
     const lows = priced.reduce((t, r) => t + (r.low ?? r.price), 0);
     const setNet = netSale(last.median, FLIP.setPost);
     const buildProfit = setNet - lows;
-    const row = (title, sub, buy, sell, profit, sales) => `<tr><td><b>${title}</b><small>${sub}</small></td>
+    // The insight: does splitting pay, and is a whole set the cheaper way to own every piece?
+    const setWord = isGroup() ? `${one} set` : "set";
+    const under = cheap && cheap.price < last.median * 0.7 ? Math.round((1 - cheap.price / last.median) * 100) : 0;
+    const label = isGroup() ? `<b>${word === "cards" ? "Card" : "Toy"} set:</b> ` : "";
+    const lead = label + (breakProfit > 0
+      ? `splitting the ${cheap ? "cheapest" : "typical"} set (${usd(setBuy)}) into singles makes about <b class="up">${signUsd(breakProfit)}</b> over ${n} sales${under ? `, but it's ${under}% under the usual price, so check it's complete` : ""}`
+      : `splitting a set into singles doesn't pay`) +
+      (lows > setBuy ? `; to own every ${one}, the whole set (${usd(setBuy)}) costs less than singles (${usd(lows)}).`
+        : buildProfit > 0 ? `; building one from the cheapest singles and selling it whole makes about <b class="up">${signUsd(buildProfit)}</b>.`
+        : `; to own every ${one}, the cheapest singles (${usd(lows)}) cost less than a whole set.`) +
+      (odd ? ` One set is listed at <a href="${esc(aff(odd.url, "set-odd"))}" target="_blank" rel="sponsored noopener">${usd(odd.price)} ↗</a>, far under the usual ${usd(last.median)}; read the listing to confirm what's included.` : "");
+    const row = (title, tip, buy, sell, profit, sales) => `<tr><td><b>${title}</b>${tipBtn(tip, `What "${title}" means`)}</td>
       <td class="num">${usd(buy)}</td><td class="num hide-sm">${usd(sell)}</td>
       <td class="num ${profit >= 0 ? "up" : "down"}">${signUsd(profit)}<small>${buy ? (profit < 0 ? "−" : "") + Math.abs(Math.round(profit / buy * 100)) + "% return" : ""}</small></td>
       <td class="num hide-sm">${sales}</td></tr>`;
+    SET_LEADS.push(label ? lead : lead.charAt(0).toUpperCase() + lead.slice(1));
     return `${isGroup() ? `<p class="ins-sub">${word === "cards" ? "Cards" : "Toys"}</p>` : ""}
-      <table class="flip-table"><thead><tr><th>Play</th><th class="num">You pay</th><th class="num hide-sm">You take home</th><th class="num">Profit</th><th class="num hide-sm">Sales</th></tr></thead><tbody>
-      ${row("Break up a set", `Buy ${fs.deals?.length ? "the cheapest" : "a typical"} complete set, sell all ${n} ${word} one by one`, setBuy, singlesNet, breakProfit, n)}
-      ${row("Build a set", `Buy each of the ${n} ${word} at today's lowest price, sell as one set`, lows, setNet, buildProfit, 1)}
+      <table class="flip-table"><thead><tr><th>Play</th><th class="num">You pay${tipBtn("Break up: the cheapest complete-set listing today (or the typical set price if there's none). Build: every item at today's cheapest listing, shipping included.")}</th>
+        <th class="num hide-sm">You take home${tipBtn(`What selling brings in after costs: median asking price incl. shipping × your "sell at" % (${FLIP.at}%), minus ~${FLIP.fee}% eBay fees, ${usd(FLIP.order)} per order and your postage (${[...new Set(rowsFor(SID).map(kindOf))].map(k => `${usd(k === "cards" ? FLIP.cardPost : FLIP.post)} per ${k === "cards" ? "card" : "toy"}`).join(", ")}, ${usd(FLIP.setPost)} per set). Change these in the resale settings above.`)}</th>
+        <th class="num">Profit${tipBtn("Take-home minus what you pay. Return is profit as a share of what you pay.")}</th>
+        <th class="num hide-sm">Sales${tipBtn("How many separate eBay sales the play takes. More sales means more time, packing and risk.")}</th></tr></thead><tbody>
+      ${row("Break up a set", `Buy ${cheap ? "the cheapest" : "a typical"} complete set and sell all ${n} ${word} one by one.`, setBuy, singlesNet, breakProfit, n)}
+      ${row("Build a set", `Buy each of the ${n} ${word} at today's cheapest listing and sell them together as one set.`, lows, setNet, buildProfit, 1)}
       </tbody></table>`;
   }).filter(Boolean);
   if (!blocks.length) return "";
-  return `<div class="ins wide"><h4>Reseller math: sets vs singles</h4><p class="q">Is there money in splitting complete sets, or in assembling them? Uses the resale settings above.</p>
+  return `<details class="ins wide flip-more" id="flipMore" ${FLIP_MORE ? "open" : ""}><summary><h4>Sets vs singles: show the numbers</h4></summary>
     ${blocks.join("")}
-    <div class="foot">Take-home = median asking price incl. shipping × your "sell at" %, minus eBay fees and your postage (${[...new Set(rowsFor(SID).map(kindOf))].map(k => `${usd(k === "cards" ? FLIP.cardPost : FLIP.post)} per ${k === "cards" ? "card" : "toy"}`).join(", ")}, ${usd(FLIP.setPost)} per set).
-      Fees are approximate and vary by category and seller. Asking prices run above what things sell for, and selling ${"many"} singles takes time. An estimate, not financial advice.</div></div>`;
+    <div class="foot">Estimates from asking prices, which run above what things sell for. Not financial advice. Tap ⓘ for how each number is worked out.</div></details>`;
 }
 // ---------- Insights: what the numbers mean for buyers, sellers and parents ----------
 const avg = (a) => a.length ? a.reduce((t, x) => t + x, 0) / a.length : null;
-const mealPrice = () => Math.max(0, parseFloat($("mealPaid").value) || 4.99);
+const mealPrice = () => Math.max(0, parseFloat($("mealPaid").value) || 5.99);
 // What one Happy Meal's collectibles are worth on average, assuming every item is equally likely.
 // Pokémon meals come with 1 toy + 2 cards; other series 1 item.
 function mealValue(sid) {
@@ -1692,23 +1795,6 @@ function insMeal() {
     ${insBars(rank.map(r => ({ label: THEMES[r.id]?.short || r.s.name, v: r.m.ev, cur: r.id === SID, c: seriesColor(r.id) })), usd)}
     <div class="foot">Assumes every item is equally likely and uses today's median asking prices incl. shipping. A seller pockets less after eBay fees and postage. Change the meal price above.</div></div>`;
 }
-function insSellers() {
-  const parts = members(SID).map(id => ({ id, x: DATA.sets[id].insights?.sellers })).filter(p => p.x);
-  if (!parts.length) return `<div class="ins"><h4>Who's selling</h4><p class="q">Collectors, or a few big resellers?</p>
-    <p class="wait">Starts with the next daily update.</p></div>`;
-  const C = ["var(--accent)", "#f08a00", "#f2b705", "#cfccc4"];
-  return `<div class="ins"><h4>Who's selling</h4><p class="q">Collectors, or a few big resellers?</p>` + parts.map(({ id, x }) => {
-    const seg = [x.top1, x.top3 - x.top1, x.top10 - x.top3, 1 - x.top10];
-    const verdict = x.top3 >= 0.4 ? "A few resellers control much of this market, so their asking prices set the going rate."
-      : x.top10 >= 0.5 ? "A mix of resellers and collectors." : "Lots of individual sellers: prices are set by the crowd, not a few shops.";
-    return `${isGroup() ? `<p class="ins-sub">${DATA.sets[id].kind === "cards" ? "Cards" : "Toys"}</p>` : ""}
-      <div class="big">${x.sellers.toLocaleString()}<small>sellers · ${x.listings.toLocaleString()} listings</small></div>
-      <div class="stack">${seg.map((v, i) => `<span style="width:${Math.max(0, v * 100)}%;background:${C[i]}"></span>`).join("")}</div>
-      <div class="legend"><span><i style="background:${C[0]}"></i>Top seller ${Math.round(x.top1 * 100)}%</span><span><i style="background:${C[1]}"></i>Next 2 ${Math.round((x.top3 - x.top1) * 100)}%</span>
-        <span><i style="background:${C[2]}"></i>Next 7 ${Math.round((x.top10 - x.top3) * 100)}%</span><span><i style="background:${C[3]}"></i>Everyone else</span></div>
-      <p>${verdict} ${Math.round(x.one * 100)}% of sellers have just one listing.</p>`;
-  }).join("") + `<div class="foot">Share of today's matching listings (single items and complete sets) by seller. Seller names aren't shown.</div></div>`;
-}
 function insDemand() {
   const rows = rowsFor(SID).filter(r => r.last?.watched >= 3);
   // eBay shares watcher counts only with apps it has approved; the panel stays hidden until they arrive.
@@ -1721,31 +1807,6 @@ function insDemand() {
     ${insBars(per.slice(0, 5).map(x => ({ label: label(x.r), v: x.v, c: "#1a7f37" })), v => v.toFixed(1))}
     ${per.length > 6 ? `<p class="ins-sub">Least watched</p>${insBars(per.slice(-3).reverse().map(x => ({ label: label(x.r), v: x.v, c: "var(--muted)" })), v => v.toFixed(1))}` : ""}
     <div class="foot">From eBay's watcher counts on today's matching listings. Watchers aren't buyers, but they show interest. Trends appear as days add up.</div></div>`;
-}
-function insSales() {
-  const parts = members(SID).map(id => ({ id, x: DATA.sets[id].insights })).filter(p => p.x);
-  const since = parts.map(p => p.x.since).sort()[0];
-  const sold = parts.reduce((t, p) => t + (p.x.sales?.sold || 0), 0);
-  const head = `<div class="ins wide"><h4>How fast things sell</h4><p class="q">Estimated from listings that disappear from eBay</p>`;
-  const auc = parts.map(p => p.x.auctions).filter(Boolean);
-  const aucSold = auc.reduce((t, a) => t + a.sold, 0);
-  const ratios = parts.flatMap(p => Object.entries(p.x.auctions?.items || {}).map(([k, v]) => {
-    const it = DATA.cards[k]; return it?.latest?.median ? v.median / it.latest.median : null; })).filter(v => v != null).sort((a, b) => a - b);
-  const aucLine = aucSold >= 3 ? `<p><b>${aucSold}</b> auction${aucSold > 1 ? "s" : ""} ended with a winning bid${ratios.length ? `, typically at <b>${Math.round(ratios[Math.floor(ratios.length / 2)] * 100)}%</b> of the asking median` : ""}. That's what buyers actually paid.</p>` : "";
-  if (sold < 5) return head + `<p class="wait">Collecting since ${since ? fmtDate(since) : "the next daily update"}. Results show once at least 5 sales have been spotted.</p>${aucLine}</div>`;
-  const items = parts.flatMap(p => Object.entries(p.x.sales.items || {}).map(([key, v]) => ({ key, v })))
-    .filter(x => DATA.cards[x.key] && x.v.sold).sort((a, b) => b.v.sold - a.v.sold);
-  const nm = (key) => `${DATA.cards[key].name}${isGroup() ? (DATA.sets[DATA.cards[key].set].kind === "cards" ? " card" : " toy") : ""}`;
-  const closed = parts.reduce((t, p) => t + (p.x.sales?.closed || 0), 0);
-  const days = parts.map(p => p.x.sales?.days).filter(v => v != null);
-  const win = parts[0].x.sales.window, recent = daysBetween(since, new Date().toISOString().slice(0, 10)) < win;
-  return head + `<div class="big">${sold}<small>sold ${recent ? `since ${fmtDate(since)}` : `in the last ${win} days`}</small></div>
-    <p><b>${Math.round(sold / Math.max(1, closed) * 100)}%</b> of listings that came down were sold (the rest were ended or removed)${days.length ? `, and a typical sale happened <b>${Math.round(avg(days))} days</b> after listing` : ""}.</p>
-    ${aucLine}
-    <p class="ins-sub">Most sold</p>
-    ${insBars(items.slice(0, 6).map(x => ({ label: nm(x.key), v: x.v.sold, d: x.v.days, c: "#1a7f37" })),
-      (v, r) => `${v} sold${r.d == null ? "" : r.d === 0 ? " · same day" : ` · ~${r.d} day${r.d > 1 ? "s" : ""}`}`)}
-    <div class="foot">A listing counts as sold when eBay shows it sold out with sales. It's an estimate: sellers can also revise or relist. Collecting since ${fmtDate(since)}.</div></div>`;
 }
 
 // Chart event markers: a coloured line per event with a readable label pill at the top, e.g. "Promo ended".
@@ -1845,45 +1906,60 @@ const DEAL_SORTS = {
   price: { label: "Lowest price", key: (x) => x.d.price },
 };
 // One line each for collectors and resellers: what today's listings mean for them.
+// "Today's market": the series in a few plain lines (buying, reselling, complete sets, who's selling).
+// Per-item numbers live in the Items list; the method lives on About.
 function dealTakeaways(all, every) {
   const name = (r) => esc(r.name), lines = [];
-  // Collectors: the set-vs-singles comparison itself is in the header; here, the cheapest complete set when it's
-  // well under the usual set price, else the biggest single discount today.
-  const sets = KIND === "all" ? members(SID) : members(SID).filter(id => DATA.sets[id].kind === KIND);
-  const setLine = sets.map(id => {
-    const fs = DATA.sets[id].fullSet, last = fs?.history?.[fs.history.length - 1], cheap = fs?.deals?.[0];
-    if (!last || !cheap || cheap.price >= last.median * 0.9) return null;
-    const word = isGroup() ? (DATA.sets[id].kind === "cards" ? "card " : "toy ") : "";
-    return `The cheapest complete ${word}set is <a href="${esc(aff(cheap.url, "set-cheapest"))}" target="_blank" rel="sponsored noopener">${usd(cheap.price)} ↗</a>, ${Math.round((1 - cheap.price / last.median) * 100)}% under the usual ${usd(last.median)}; check it's complete.`;
-  }).filter(Boolean);
-  const best = every.slice().sort((a, b) => b.d.below - a.d.below)[0];
-  const covered = new Set(every.map(x => x.r.id)).size;
-  lines.push(["", setLine.length ? setLine.join(" ")
-    : best ? `The deepest discount is <b>${name(best.r)} at ${usd(best.d.price)}</b>, ${Math.round(best.d.below * 100)}% under its usual ${usd(best.r.price)}. ${covered} of ${all.length} have a listing 20%+ under.`
-    : `Nothing is listed well under the going price today. Check back after the next update.`]);
-  // Resellers: does any single deal pay after fees and postage? Sets vs singles has its own card below.
+  const nm = (r) => esc(`${r.name}${isGroup() ? (kindOf(r) === "cards" ? " card" : " toy") : ""}`);
+  // Buying: what buyers pay vs asking, the item that's moving and the ones piling up.
+  const rows = all.map(r => ({ r, sd: supplyDays(r), sold: DATA.sets[r.set].insights?.sales?.items?.[r.id]?.sold || 0 }));
+  const rated = rows.filter(x => x.sd?.days != null).sort((a, b) => a.sd.days - b.sd.days);
+  const gaps = all.map(r => soldGap(r)?.gap).filter(v => v != null).sort((a, b) => a - b);
+  const gapMid = gaps.length >= 3 ? gaps[Math.floor(gaps.length / 2)] : null;
+  const fast = rated.find(x => x.sd.days <= 30);
+  const stuck = rows.filter(x => x.sd && x.sd.days == null && !x.sd.sampled && x.sd.n >= 20 && x.sd.sold <= 1);
+  const piling = [...rated.filter(x => x.sd.days > SELLOUT_CAP), ...stuck].filter(x => x !== fast).sort((a, b) => b.r.count - a.r.count).slice(0, 2);
+  const buy = [];
+  if (gapMid != null && gapMid <= -0.05) buy.push(`Buyers typically pay <b>${Math.round(-gapMid * 100)}% under</b> what sellers ask.`);
+  if (fast) { const g = soldGap(fast.r);
+    buy.push(`<b>${nm(fast.r)}</b> is the one moving: ${fast.sold} sold and only ${fast.r.count} listed.` +
+      (g ? ` It sells for about ${usd(g.sold)} (sellers ask ${usd(fast.r.price)}), and ones near that price sell fast, so don't count on getting one for much less.`
+         : ` They sell fast, so don't count on getting one far below asking.`)); }
+  if (piling.length) buy.push(`${piling.map(x => `<b>${nm(x.r)}</b>`).join(" and ")} ${piling.length > 1 ? "are" : "is"} piling up (${piling.reduce((t, x) => t + x.r.count, 0)} listed, ${piling.reduce((t, x) => t + x.sold, 0)} sold), so offers under asking are worth a try.`);
+  if (!buy.length) {
+    const best = every.slice().sort((a, b) => b.d.below - a.d.below)[0];
+    buy.push(best ? `The deepest discount is <b>${name(best.r)} at ${usd(best.d.price)}</b>, ${Math.round(best.d.below * 100)}% under its usual ${usd(best.r.price)}.`
+      : `Nothing is listed well under the going price today.`);
+  }
+  lines.push(["Buying", buy.join(" ")]);
+  // Reselling: does any cheap single pay after fees and postage, and which item is scarce?
   const flips = every.filter(x => x.p > 0).sort((a, b) => b.p - a.p);
   let resell = flips.length
-    ? `${flips.length} cheap listing${flips.length > 1 ? "s" : ""} would resell at a profit after fees and postage. Best: <b>${name(flips[0].r)} at ${usd(flips[0].d.price)}, about ${signUsd(flips[0].p)}</b>.`
-    : every.length ? `No cheap single resells at a profit after fees and postage; these are buys to keep, not to flip.`
-    : `No cheap listings to flip today.`;
-  // Scarcity: the item with the fewest listings for its set, when it stands well apart from the rest.
+    ? `${flips.length} cheap listing${flips.length > 1 ? "s" : ""} would resell at a profit after fees and postage; best is <b>${name(flips[0].r)} at ${usd(flips[0].d.price)}</b> (about ${signUsd(flips[0].p)}).`
+    : every.length ? `No cheap single resells at a profit after fees and postage today.` : `No cheap listings to flip today.`;
   const sc = all.filter(r => SCARCE.has(r.id)).sort((a, b) => SCARCE.get(a.id).n / SCARCE.get(a.id).typical - SCARCE.get(b.id).n / SCARCE.get(b.id).typical)[0];
-  if (sc) {
-    const x = SCARCE.get(sc.id), deal = every.filter(e => e.r.id === sc.id).sort((a, b) => b.p - a.p)[0];
-    const priciest = all.filter(r => kindOf(r) === kindOf(sc) && r.price != null).every(r => r.price <= sc.price);
-    resell += ` <b>${name(sc)}</b> is the scarce one: ${x.n} listed vs about ${x.typical} for each of the others${priciest ? ", with the highest median" : ""}.` +
-      (deal ? deal.p > 0 ? ` Its ${usd(deal.d.price)} listing pays today, about ${signUsd(deal.p)}.` : ` Its ${usd(deal.d.price)} listing doesn't pay today, but it's the one to watch.` : " It's the one to watch.");
-  }
-  if (sets.some(id => DATA.sets[id].fullSet?.history?.length && rowsFor(id).every(r => r.price != null)))
-    resell += ` For splitting or building complete sets, see <a href="#dealsFlip" data-jump="dealsFlip">Reseller math</a> below.`;
+  if (sc) resell += ` <b>${name(sc)}</b> is the scarce one: ${SCARCE.get(sc.id).n} listed vs about ${SCARCE.get(sc.id).typical} for each of the others.`;
   lines.push(["If you resell", resell]);
-  return lines.map(([who, t]) => `<p>${who ? `<b class="who">${who}:</b> ` : ""}${t}</p>`).join("");
+  // Complete sets: the Reseller math sentence(s), worked out in insFlip.
+  if (SET_LEADS.length) lines.push(["Complete sets", SET_LEADS.join(" ")]);
+  // Who's selling, in one line.
+  const sel = members(SID).map(id => ({ k: DATA.sets[id].kind, x: DATA.sets[id].insights?.sellers })).filter(p => p.x);
+  if (sel.length) {
+    const top3 = Math.max(...sel.map(p => p.x.top3));
+    lines.push(["Sellers", `${sel.map(p => `${p.x.sellers.toLocaleString()}${isGroup() ? ` ${p.k === "cards" ? "card" : "toy"}` : ""} sellers`).join(" and ")}; ` +
+      (top3 >= 0.4 ? `a few big resellers hold ${Math.round(top3 * 100)}% of listings, so their prices set the going rate.`
+        : top3 >= 0.2 ? `a mix of resellers and collectors.` : `no seller dominates, so prices are set by the crowd.`)]);
+  }
+  return `<h3>Today's market</h3>` + lines.map(([who, t]) => `<p><b class="who">${who}:</b> ${t}</p>`).join("") +
+    `<p class="foot">Estimates from eBay listings and the sales Toy Ticker spots. Per-item numbers are in the Items list view · <a href="about.html#supply">How this works</a></p>`;
 }
 function resetDeals() { DEAL_PAGE = 1; DEAL_ITEM = ""; DEAL_OPEN.clear(); }
 function renderDeals(all) {
   flipBar("flipBarDeals", true);
-  $("dealsFlip").innerHTML = insFlip() + insSales() + insSellers() + insDemand();
+  const postKinds = [...new Set(rowsFor(SID).map(kindOf))];
+  $("flipSum").textContent = `⚙ Resale settings: sell at ${FLIP.at}% of median, ${FLIP.fee}% fees, ${postKinds.map(k => `${usd(k === "cards" ? FLIP.cardPost : FLIP.post)} ${k === "cards" ? "card" : "toy"} postage`).join(", ")}`;
+  $("dealsFlip").innerHTML = insFlip() + insDemand();
+  $("flipMore")?.addEventListener("toggle", (e) => { FLIP_MORE = e.target.open; });
   const priced = all.some(r => r.price != null);
   const every = all.flatMap(r => (r.deals || []).map(d => ({ d, r, p: dealProfit(d, r) })));
   SCARCE = scarcity(SID);
@@ -1980,8 +2056,8 @@ function renderComplete(all) {
       <div class="mr-row miss-row mr-total" role="row"><span></span><span>Complete the set${priced.length < missing.length ? `<small>${missing.length - priced.length} with no listing yet</small>` : ""}</span>
         <span class="mr-p">${priced.length ? usd(cost) : "—"}</span><span></span></div>
     </div>
-    <p class="mr-note">Today's lowest asking prices incl. shipping; the cheapest listings go fast.${setPrice != null && priced.length === missing.length
-      ? ` ${setPrice < cost ? `<b>Tip:</b> whole complete sets start at about ${usd(setPrice)} on eBay, less than buying the ${missing.length} you're missing.` : `Whole complete sets start at about ${usd(setPrice)} on eBay.`}` : ""}</p>
+    <p class="mr-note">Today's lowest asking prices incl. shipping.${setPrice != null && priced.length === missing.length && setPrice < cost
+      ? ` A whole set costs less (about ${usd(setPrice)}): <a href="${esc(aff(members(SID).map(id => DATA.sets[id].fullSet).find(fs => fs?.search)?.search || ebaySearch(missing[0]), "missing-set"))}" target="_blank" rel="sponsored noopener">find a complete set ↗</a>` : ""}</p>
   </div>`;
 }
 
@@ -1999,13 +2075,12 @@ function renderSetCharts() {
   $("setCharts").innerHTML = sets.map(([sid, s]) => `<section class="set-chart">
       <h3>Complete ${esc(s.name)} set</h3>
       <div class="sub">All ${s.fullSet.size} in one listing, shipping included · today ${usd(s.fullSet.history.at(-1).median)} median asking, ${s.fullSet.history.at(-1).count} listed</div>
-      <div class="chart-box"><canvas id="setChart-${sid}"></canvas></div>
-      <p class="note" id="setNote-${sid}"></p></section>`).join("");
+      <div class="chart-box"><canvas id="setChart-${sid}"></canvas><button type="button" class="tip chart-tip" id="setNote-${sid}" aria-label="How to read this chart">ⓘ How to read</button></div></section>`).join("");
   for (const [sid, s] of sets) {
     const sold = DATA.sold[`${sid}-SET`] || [], soldTo = s.backfill?.to;
     const { chart: c, weeks } = priceChart($(`setChart-${sid}`), s.fullSet.history, sold, soldTo, chartEvents(sid));
     SET_CHARTS.push(c);
-    $(`setNote-${sid}`).textContent = weeks.length
+    $(`setNote-${sid}`).dataset.tip = weeks.length
       ? `Green: what complete sets actually sold for each week${weeks.some(w => w.src === "terapeak") ? ` (eBay's Terapeak up to ${fmtDate(soldTo)}, then sales Toy Ticker detects)` : " (sales Toy Ticker detects)"}. Red line and band: asking prices on complete-set listings today. Bars: how many are listed.`
       : `Red line and band: asking prices on complete-set listings. Bars: how many are listed. Sold prices for whole sets appear here once Toy Ticker detects sales.`;
   }
@@ -2120,7 +2195,8 @@ function renderSeriesReturns(all, fsH, note = "complete set") {
 function renderItemReturns(id) {
   const r = rowsFor(SID).find(x => x.id === id);
   if (!r) return;
-  const tiles = returnTiles(r.h.map(p => ({ date: p.date, v: p.median })));
+  // Until there's a week of history the tiles only repeat the chart (1D, or a few days as "YTD").
+  const tiles = r.h.length >= 7 ? returnTiles(r.h.map(p => ({ date: p.date, v: p.median }))) : [];
   $("dReturns").hidden = !tiles.length;
   $("dReturns").innerHTML = returnsBlock("Returns", "", tiles);
 }
@@ -2253,6 +2329,26 @@ document.addEventListener("pointermove", (e) => {
   el.style.setProperty("--my", `${y * 100}%`);
 });
 document.addEventListener("pointerleave", () => document.querySelectorAll(".tilt.active").forEach(resetTilt));
+// Tooltips: any [data-tip] shows a bubble on hover or focus, and on tap (phones have no hover). Tap elsewhere to close.
+(() => {
+  let bubble = null, owner = null;
+  const hide = () => { bubble?.remove(); bubble = null; owner?.setAttribute("aria-expanded", "false"); owner = null; };
+  const show = (el) => {
+    if (owner === el) return;
+    hide(); owner = el; el.setAttribute("aria-expanded", "true");
+    bubble = document.createElement("div"); bubble.className = "tip-bubble"; bubble.setAttribute("role", "tooltip");
+    bubble.textContent = el.dataset.tip; document.body.append(bubble);
+    const r = el.getBoundingClientRect(), b = bubble.getBoundingClientRect();
+    const top = r.bottom + 6 + b.height > innerHeight - 8 ? r.top - b.height - 6 : r.bottom + 6;
+    bubble.style.left = Math.min(Math.max(8, r.left + r.width / 2 - b.width / 2), innerWidth - b.width - 8) + "px";
+    bubble.style.top = top + "px";
+  };
+  document.addEventListener("mouseover", (e) => { const t = e.target.closest?.("[data-tip]"); if (t) show(t); else if (owner && document.activeElement !== owner) hide(); });
+  document.addEventListener("focusin", (e) => { const t = e.target.closest?.("[data-tip]"); if (t) show(t); });
+  document.addEventListener("focusout", (e) => { if (e.target === owner) hide(); });
+  document.addEventListener("click", (e) => { const t = e.target.closest?.("[data-tip]"); if (t) show(t); else hide(); });
+  addEventListener("scroll", hide, { passive: true });
+})();
 function resetTilt(t) {
   t.classList.remove("active");
   ["--rx", "--ry", "--mx", "--my"].forEach(p => t.style.removeProperty(p));
@@ -2302,7 +2398,7 @@ function priceChart(canvas, h, sold, soldTo, events) {
     borderDash: dash || [], tension: .25, pointRadius: h.length < 15 ? 3 : 0, spanGaps: true,
   });
   const soldLine = weeks.length ? [{
-    label: "Sold median (what people paid, weekly)", data: days.map(d => weekOf(d)?.median ?? null),
+    label: "Sold", data: days.map(d => weekOf(d)?.median ?? null),
     borderColor: css("--up"), backgroundColor: css("--up"), borderWidth: 3, stepped: true, tension: 0,
     pointRadius: 0, pointHoverRadius: 4, spanGaps: false,
   }] : [];
@@ -2317,10 +2413,10 @@ function priceChart(canvas, h, sold, soldTo, events) {
   const askColor = css("--accent");
   const datasets = [
     ...soldLine,
-    line("median", "Asking median (what sellers want)", askColor),
+    line("median", "Asking", askColor),
     { ...line("p25", "_p25", "transparent"), pointRadius: 0, pointHoverRadius: 0, borderWidth: 0,
       data: days.map(d => byDay[d]?.p75 != null ? byDay[d].p25 : null) },
-    { ...line("p75", "Middle half of asking prices", "transparent"), pointRadius: 0, pointHoverRadius: 0, borderWidth: 0,
+    { ...line("p75", "Asking range", "transparent"), pointRadius: 0, pointHoverRadius: 0, borderWidth: 0,
       backgroundColor: alpha(askColor, .16), fill: "-1" },
     { type: "bar", label: "Listings", data: counts, yAxisID: "vol", order: 10,
       backgroundColor: counts.map((_, i) => volColor(i)), borderWidth: 0, barPercentage: .9, categoryPercentage: 1 },
@@ -2335,14 +2431,14 @@ function priceChart(canvas, h, sold, soldTo, events) {
         vol: { position: "right", beginAtZero: true, max: maxCount * 4, display: false, grid: { display: false } },
       },
       plugins: {
-        legend: { labels: { filter: l => !l.text.startsWith("_") } },
+        legend: { labels: { filter: l => !l.text.startsWith("_"), boxWidth: 14, boxHeight: 10 } },
         tooltip: { filter: c => c.parsed.y != null && !c.dataset.label.startsWith("_"),
           callbacks: {
             label: c => c.dataset === soldLine[0]
-              ? (w => `Sold ${fmtShort(w.date)}–${fmtShort(w.end)}: ${usd(c.parsed.y)} median of ${w.count} sale${w.count === 1 ? "" : "s"} (${w.src === "ebay" ? "tracked by Toy Ticker" : "Terapeak"})`)(weekOf(days[c.dataIndex]))
+              ? (w => `Sold, ${fmtShort(w.date)}–${fmtShort(w.end)}: ${usd(c.parsed.y)} (${w.count} sale${w.count === 1 ? "" : "s"})`)(weekOf(days[c.dataIndex]))
               : c.dataset.yAxisID === "vol" ? `Listings: ${c.parsed.y}`
               : c.dataset.fill ? `Asking, middle half: ${usd(byDay[days[c.dataIndex]]?.p25)}–${usd(c.parsed.y)}`
-              : `${c.dataset.label}: ${usd(c.parsed.y)}`,
+              : `${c.dataset.label === "Asking" ? "Asking median" : c.dataset.label}: ${usd(c.parsed.y)}`,
             footer: items => { const p = byDay[days[items[0]?.dataIndex]];
               return p && p.p75 == null && p.p25 != null ? `Asking 25th percentile: ${usd(p.p25)}` : ""; },
           } },
@@ -2369,19 +2465,20 @@ function showDetail(id) {
     (r.last.supply > (r.count ?? 0) ? ` (about ${r.last.supply.toLocaleString()} on eBay in all)` : "") + ` · ` +
     `<a href="${esc(aff(`https://www.ebay.com/sch/i.html?_nkw=${q}&LH_Sold=1&LH_Complete=1`, "sold"))}" target="_blank" rel="sponsored noopener">eBay sold listings</a>`;
   renderVariants(r);
-  renderAuction(r);
+  $("dAuction").hidden = true;  // auction sales are part of Market read's sold line now
   if (chart) chart.destroy();
   const sold = DATA.sold[id] || [], soldTo = DATA.sets[r.set].backfill?.to;
   let weeks;
   ({ chart, weeks } = priceChart($("dChart"), r.h, sold, soldTo, chartEvents(SID)));
   renderItemReturns(id);
   renderResell(id);
-  $("dNote").textContent = (sold.length
+  $("dChartTip").dataset.tip = (sold.length
     ? `The green steps are what people actually paid, shipping included: weekly median sold prices, each drawn across the days it covers (${fmtDate(weeks[0].date)} to ${fmtDate(weeks[weeks.length - 1].end)}). ` +
       (weeks.some(w => w.src === "terapeak") ? `Weeks up to ${fmtDate(soldTo)} come from eBay's Terapeak; after that, from sales Toy Ticker detects on the listings it follows. ` : `They come from sales Toy Ticker detects on the listings it follows. `) +
-      `The red line and shaded band are asking prices on live listings (the median, and the middle half of them), a different measure, collected daily; the bars count those listings. `
-    : "") + (!r.h.length ? "No asking prices collected yet."
-    : r.h.length < 3 && !sold.length ? "Only a few days collected so far. The chart fills in as the daily job runs." : "");
+      `The red line and shaded band are asking prices on live listings (the median, and the middle half of them), a different measure, collected daily; the bars count those listings.`
+    : `The red line and shaded band are asking prices on live listings (the median, and the middle half of them), collected daily; the bars count those listings. Sold prices appear as green steps once Toy Ticker spots sales.`);
+  $("dNote").textContent = !r.h.length ? "No asking prices collected yet."
+    : r.h.length < 3 && !sold.length ? "Only a few days collected so far. The chart fills in as the daily job runs." : "";
   render();
   $("detail").scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
@@ -2395,10 +2492,13 @@ function renderResell(id) {
   const own = DATA.sets[r.set], lines = [];
   // What it sells for: the last 4 weeks of sold medians, weighted by sales.
   const weeks = (DATA.sold[id] || []).slice(-4), nSold = weeks.reduce((t, w) => t + (w.count || 0), 0);
-  const sold = nSold ? weeks.reduce((t, w) => t + w.median * (w.count || 0), 0) / nSold : null;
+  // Same 5-sale minimum as "Buyers pay" elsewhere: fewer sales swing too much on one sale.
+  const sold = nSold >= 5 ? weeks.reduce((t, w) => t + w.median * (w.count || 0), 0) / nSold : null;
   const sale = sold ?? r.price * FLIP.at / 100, early = nSold < 5;
   const post = postFor(r), be = takeHome(sale, post);
-  if (sold) lines.push(`Sells for about <b>${usd(sold)}</b> (${nSold} sale${nSold > 1 ? "s" : ""}), ${Math.abs(Math.round((1 - sold / r.price) * 100))}% ${sold < r.price ? "under" : "over"} what sellers ask (${usd(r.price)}).`);
+  const auc = auctionFacts(r);
+  if (sold) lines.push(`Sells for about <b>${usd(sold)}</b> (${nSold} sale${nSold > 1 ? "s" : ""}${auc?.n ? `, ${auc.n} at auction` : ""}), ${Math.abs(Math.round((1 - sold / r.price) * 100))}% ${sold < r.price ? "under" : "over"} what sellers ask (${usd(r.price)}).`);
+  else if (auc?.n >= 3) lines.push(`${auc.n} auctions ended at about <b>${usd(auc.median)}</b>, final bid plus shipping${auc.vsAsk != null ? `, ${Math.abs(Math.round((1 - auc.vsAsk) * 100))}% ${auc.vsAsk < 1 ? "under" : "over"} what sellers ask` : ""}.`);
   // Rank within its set (same kind), against the average of the others.
   const peers = rowsFor(r.set).filter(x => x.price != null && kindOf(x) === kindOf(r));
   if (peers.length >= 4) {
@@ -2409,6 +2509,10 @@ function renderResell(id) {
       : `#${rank} of ${peers.length} by price, ${Math.abs(Math.round(diff * 100))}% ${diff >= 0 ? "above" : "below"} the others' average.`);
   }
   // How fast it sells: listings Toy Ticker followed until they closed.
+  // Supply vs demand: how long today's listings would take to sell at the recent pace.
+  const sd = supplyDays(r);
+  if (sd?.days != null) lines.push(`<b>Sells out in ${sd.days > SELLOUT_CAP ? "60+ days" : sellOut(sd.days).replace("~", "about ")}</b> at the current pace: ${sd.sold} sales in the last ${sd.span} days against ${sd.n} listings today. That means ${sellOutMeaning(sd.days)}.`);
+  else if (sd && !sd.sampled && sd.n >= 20 && sd.sold <= 1) lines.push(`${sd.sold ? "Only 1 sale" : "No sales"} in ${sd.span} days against ${sd.n} listings: far more for sale than buyers right now.`);
   const st = own.insights?.sales?.items?.[id];
   if (st?.closed >= 3) lines.push(`${st.sold} of ${st.closed} followed listings sold${st.days ? `, in about ${st.days} day${st.days > 1 ? "s" : ""}` : ""}: ${st.rate >= .7 ? "sells fast" : st.rate >= .4 ? "sells steadily" : "slow to sell"}.`);
   // Sealed premium, once there are enough sealed listings to trust it.
@@ -2433,7 +2537,7 @@ function renderResell(id) {
     <ul>${lines.map(l => `<li>${l}</li>`).join("")}</ul>
     <details ${FLIP_OPEN ? "open" : ""}><summary>Resale settings: sell at ${FLIP.at}% of median, ${FLIP.fee}% fees + ${usd(FLIP.order)}, ${usd(post)} postage · <b>Edit</b></summary>
       <div class="flipbar" id="flipBarItem"></div></details>
-    <div class="foot">The same settings as the Deals tab. Estimates from eBay data, not financial advice.</div>`;
+`;
   flipBar("flipBarItem", false, [kindOf(r)]);
   box.querySelector("details").ontoggle = (e) => { FLIP_OPEN = e.target.open; };
   renderItemDeals(r);
@@ -2467,7 +2571,7 @@ fetch("data/index.json", { cache: "no-store" })
     await loadSeries(first);
     $("meta").textContent = `Daily eBay prices, including shipping, for McDonald's Happy Meal toys and cards · updated ${new Date(d.updated).toLocaleString()}`;
     document.querySelectorAll("th[data-k]").forEach(th => th.onclick = () => {
-      sortDir = th.dataset.k === sortKey ? -sortDir : (th.dataset.k === "name" ? 1 : -1);
+      sortDir = th.dataset.k === sortKey ? -sortDir : (["name", "dos"].includes(th.dataset.k) ? 1 : -1);
       sortKey = th.dataset.k; render();
     });
     $("sortSel").onchange = () => {

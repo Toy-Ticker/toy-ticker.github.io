@@ -511,8 +511,13 @@ def set_reason(title, series, size):
     counts = {int(a or b or c) for a, b, c in SET_COUNT.findall(t)}
     if counts and size not in counts:
         return f"wrong count: {sorted(counts)} (set has {size})"
-    if series["kind"] == "toys" and EXCLUDE_TOYS.search(t):
+    if series["kind"] == "toys" and (EXCLUDE_TOYS.search(t) or CARDNUM.search(t)):
         return "includes cards"
+    # The series' own exclude words apply to sets too: e.g. "M26", the code on the 2026 Pokémon promo cards,
+    # marks a card set that a toy-set search also returns.
+    for w in series.get("exclude", []):
+        if has(t, w):
+            return f"series exclude: {w}"
     if series["kind"] == "cards" and re.search(r"\b(toy|toys|figure|figures|charm|keychain)\b", t):
         return "includes toys"
     return None

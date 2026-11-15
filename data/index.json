@@ -339,12 +339,6 @@
      }
     }
    },
-   "backfill": {
-    "source": "Terapeak",
-    "from": "2026-10-27",
-    "to": "2026-11-11",
-    "sales": 356
-   },
    "name": "Disney Villains Boo Buckets",
    "description": "The Halloween Boo Buckets came back as five Disney Villains pails, each with its own coloured lid and stickers: Jafar, Ursula, Scar, Cruella de Vil and Maleficent.",
    "kind": "toys",

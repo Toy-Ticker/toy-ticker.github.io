@@ -180,7 +180,11 @@ def main():
         try:
             led = listings.update(s["id"], today)
             calls += (led or {}).get("checked", 0)
-            data["sets"][s["id"]]["insights"] = listings.insights(s["id"], today)
+            prev_ins = data["sets"][s["id"]].get("insights") or {}
+            ins = listings.insights(s["id"], today)
+            if "sellers" not in ins and prev_ins.get("sellers"):
+                ins["sellers"] = prev_ins["sellers"]
+            data["sets"][s["id"]]["insights"] = ins
             after = (data["sets"][s["id"]].get("backfill") or {}).get("to")
             data.setdefault("sold", {}).update(listings.sold_weeks(s["id"], today, after))
         except Exception as e:  # noqa: BLE001

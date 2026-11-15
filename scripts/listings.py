@@ -32,6 +32,9 @@ CHECK_BUDGET = 1500   # getItem lookups per run (Browse API allows a few thousan
 RECHECK_DAYS = 2      # a missing listing that's still for sale is looked up again after this many days
 DROP_AFTER_DAYS = 21  # stop following a listing that hasn't appeared in our searches for this long
 _budget = {"left": CHECK_BUDGET}
+# Seller usernames for today's listings, kept in memory only for the seller-concentration stats in insights().
+# They are never written to data/listings/, which is published with the site.
+_sellers = {}
 
 
 def days(a, b):
@@ -89,6 +92,8 @@ def update(sid, today):
     if not run:
         return None
     active, events, auctions = load(sid, with_auctions=True)
+    _sellers[sid] = {it["itemId"]: it["seller"]["username"] for _, it, *_ in run["rows"]
+                     if it.get("itemId") and (it.get("seller") or {}).get("username")}
     for key, it, price, ship, total in run["rows"]:
         lid = it.get("itemId")
         if not lid:
@@ -97,7 +102,6 @@ def update(sid, today):
         active[lid] = {"key": key, "title": (it.get("title") or "")[:90], "legacy": it.get("legacyItemId"),
                        "listed": (it.get("itemCreationDate") or today)[:10], "first": old.get("first", today),
                        "seen": today, "price": round(price, 2), "ship": round(ship, 2), "total": total,
-                       **({"seller": it["seller"]["username"]} if (it.get("seller") or {}).get("username") else {}),
                        **({"watch": ebay.watchers(it)} if ebay.watchers(it) is not None else {}),
                        **({"sold": old["sold"]} if "sold" in old else {})}
     # Still in the raw results (e.g. now rejected by a stricter rule): it's listed, so not missing.
@@ -201,14 +205,13 @@ def update_auctions(run, auctions, events, today):
 
 def insights(sid, today, window=30):
     """Series facts from the ledger for the site: seller concentration and how fast listings sell.
-    Seller names never leave the ledger; the site only gets shares."""
+    Seller names are never stored; they come from today's run (in memory) and the site only gets shares."""
     active, events = load(sid)
-    live = [a for a in active.values() if a["seen"] == today]
     out = {"since": min([a["first"] for a in active.values()] + [e["first"] for e in events], default=today)}
-    by_seller = {}
-    for a in live:
-        if a.get("seller"):
-            by_seller[a["seller"]] = by_seller.get(a["seller"], 0) + 1
+    by_seller, names = {}, _sellers.get(sid, {})
+    for lid, a in active.items():
+        if a["seen"] == today and names.get(lid):
+            by_seller[names[lid]] = by_seller.get(names[lid], 0) + 1
     if by_seller:
         n = sum(by_seller.values())
         top = sorted(by_seller.values(), reverse=True)

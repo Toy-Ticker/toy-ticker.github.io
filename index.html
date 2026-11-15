@@ -1602,15 +1602,21 @@ function renderAuction(r) {
 // ---------- Reseller math: what you'd take home after eBay fees and postage ----------
 // Defaults are rough: eBay's fee for this kind of item is about 13% of the total (item + shipping the buyer pays)
 // plus a small per-order charge, and fees vary by category and seller. Everything is editable and saved in this browser.
-const FLIP_DEFAULT = { fee: 13.25, order: 0.40, post: 5.00, setPost: 12.00, at: 90 };
+// Cards go in a padded envelope (about $1.50 with materials); toys need a box or mailer.
+const FLIP_DEFAULT = { fee: 13.25, order: 0.40, post: 5.00, cardPost: 1.50, setPost: 12.00, at: 90 };
 let FLIP = { ...FLIP_DEFAULT };
 try { FLIP = { ...FLIP_DEFAULT, ...JSON.parse(localStorage.getItem("flip") || "{}") }; } catch (e) {}
 // Take-home from selling at `asking` (a median delivered price), after fees and your own postage.
+// Postage for one item: cards and toys ship differently.
+const postFor = (r) => kindOf(r) === "cards" ? FLIP.cardPost : FLIP.post;
 const netSale = (asking, post = FLIP.post) => asking * FLIP.at / 100 * (1 - FLIP.fee / 100) - FLIP.order - post;
 const signUsd = (v) => (v >= 0 ? "+" : "−") + usd(Math.abs(v));
-function flipBar(id, withSet = false) {
+function flipBar(id, withSet = false, kinds = [...new Set(rowsFor(SID).map(kindOf))]) {
   const f = (k, label, step, pre = "", post = "") => `<label>${label} ${pre}<input type="number" min="0" step="${step}" data-flip="${k}" value="${FLIP[k]}">${post}</label>`;
-  $(id).innerHTML = `<b>If you resell:</b>${f("at", "sell at", 1, "", "% of median")}${f("fee", "eBay fees", 0.25, "", "%")}${f("order", "+", 0.05, "$", " per order")}${f("post", "postage", 0.25, "$")}${withSet ? f("setPost", "set postage", 0.5, "$") : ""}` +
+  const both = kinds.length > 1;
+  const posts = (kinds.includes("toys") ? f("post", both ? "toy postage" : "postage", 0.25, "$") : "") +
+    (kinds.includes("cards") ? f("cardPost", both ? "card postage" : "postage", 0.25, "$") : "");
+  $(id).innerHTML = `<b>If you resell:</b>${f("at", "sell at", 1, "", "% of median")}${f("fee", "eBay fees", 0.25, "", "%")}${f("order", "+", 0.05, "$", " per order")}${posts}${withSet ? f("setPost", "set postage", 0.5, "$") : ""}` +
     `<button type="button" class="mine-clear" data-flip-reset>Reset</button>`;
   $(id).querySelectorAll("[data-flip]").forEach(i => i.onchange = () => {
     FLIP[i.dataset.flip] = Math.max(0, parseFloat(i.value) || 0);
@@ -1627,7 +1633,7 @@ function insFlip() {
     if (!last || priced.length < rows.length) return null;
     const n = rows.length, word = s.kind === "cards" ? "cards" : "toys";
     const setBuy = fs.deals?.[0]?.price ?? last.median;
-    const singlesNet = priced.reduce((t, r) => t + netSale(r.price), 0);
+    const singlesNet = priced.reduce((t, r) => t + netSale(r.price, postFor(r)), 0);
     const breakProfit = singlesNet - setBuy;
     const lows = priced.reduce((t, r) => t + (r.low ?? r.price), 0);
     const setNet = netSale(last.median, FLIP.setPost);
@@ -1645,7 +1651,7 @@ function insFlip() {
   if (!blocks.length) return "";
   return `<div class="ins wide"><h4>Reseller math: sets vs singles</h4><p class="q">Is there money in splitting complete sets, or in assembling them? Uses the resale settings above.</p>
     ${blocks.join("")}
-    <div class="foot">Take-home = median asking price incl. shipping × your "sell at" %, minus eBay fees and your postage (${usd(FLIP.post)} per single, ${usd(FLIP.setPost)} per set).
+    <div class="foot">Take-home = median asking price incl. shipping × your "sell at" %, minus eBay fees and your postage (${[...new Set(rowsFor(SID).map(kindOf))].map(k => `${usd(k === "cards" ? FLIP.cardPost : FLIP.post)} per ${k === "cards" ? "card" : "toy"}`).join(", ")}, ${usd(FLIP.setPost)} per set).
       Fees are approximate and vary by category and seller. Asking prices run above what things sell for, and selling ${"many"} singles takes time. An estimate, not financial advice.</div></div>`;
 }
 // ---------- Insights: what the numbers mean for buyers, sellers and parents ----------
@@ -1823,7 +1829,7 @@ function dealCard(d, r) {
     <div><b>${esc(r.name)}</b>
     <div class="deal-row"><span class="deal-price">${usd(d.price)}</span><span class="off">${Math.round(d.below * 100)}% under</span>${SCARCE.has(r.id) ? `<span class="scarce" title="${SCARCE.get(r.id).n} listings today vs about ${SCARCE.get(r.id).typical} for each of the others">Only ${SCARCE.get(r.id).n} listed</span>` : ""}</div>
     <small>${d.ship != null ? (d.ship ? `${usd(d.item)} + ${usd(d.ship)} shipping` : "free shipping") : "incl. shipping"}</small>
-    ${r.price ? (() => { const p = netSale(r.price) - d.price; return `<small class="flip ${p >= 0 ? "up" : "down"}" title="Resell at ${FLIP.at}% of the ${usd(r.price)} median, minus ~${FLIP.fee}% fees + ${usd(FLIP.order)} and ${usd(FLIP.post)} postage">${p >= 0 ? `≈ ${signUsd(p)} if resold` : `≈ ${signUsd(p)} if resold (no flip)`}</small>`; })() : ""}
+    ${r.price ? (() => { const p = netSale(r.price, postFor(r)) - d.price; return `<small class="flip ${p >= 0 ? "up" : "down"}" title="Resell at ${FLIP.at}% of the ${usd(r.price)} median, minus ~${FLIP.fee}% fees + ${usd(FLIP.order)} and ${usd(postFor(r))} postage">${p >= 0 ? `≈ ${signUsd(p)} if resold` : `≈ ${signUsd(p)} if resold (no flip)`}</small>`; })() : ""}
     <small>${esc(d.title)} · eBay ↗</small></div></a>`;
 }
 const list_count = (all) => all.reduce((n, r) => n + (r.deals || []).length, 0);
@@ -1832,7 +1838,7 @@ const list_count = (all) => all.reduce((n, r) => n + (r.deals || []).length, 0);
 const DEALS_PER_PAGE = 9;
 let DEAL_SORT = "profit", DEAL_PROFIT = false, DEAL_ITEM = "", DEAL_PAGE = 1;
 const DEAL_OPEN = new Set();
-const dealProfit = (d, r) => r.price ? netSale(r.price) - d.price : null;
+const dealProfit = (d, r) => r.price ? netSale(r.price, postFor(r)) - d.price : null;
 const DEAL_SORTS = {
   profit: { label: "Best resale profit", key: (x) => -(x.p ?? -1e9) - x.d.below / 1000 },
   price: { label: "Lowest price", key: (x) => x.d.price },
@@ -2381,7 +2387,7 @@ function showDetail(id) {
 
 // "Market read": facts from this item's own numbers, each shown only when there's enough data behind it.
 // No buy/hold advice: the break-even price and the evidence, and the reader decides.
-const takeHome = (sale) => sale * (1 - FLIP.fee / 100) - FLIP.order - FLIP.post;
+const takeHome = (sale, post = FLIP.post) => sale * (1 - FLIP.fee / 100) - FLIP.order - post;
 function renderResell(id) {
   const r = rowsFor(SID).find(x => x.id === id), box = $("dResell");
   if (!r || r.price == null) { box.hidden = true; if (r) renderItemDeals(r); return; }
@@ -2390,7 +2396,7 @@ function renderResell(id) {
   const weeks = (DATA.sold[id] || []).slice(-4), nSold = weeks.reduce((t, w) => t + (w.count || 0), 0);
   const sold = nSold ? weeks.reduce((t, w) => t + w.median * (w.count || 0), 0) / nSold : null;
   const sale = sold ?? r.price * FLIP.at / 100, early = nSold < 5;
-  const be = takeHome(sale);
+  const post = postFor(r), be = takeHome(sale, post);
   if (sold) lines.push(`Sells for about <b>${usd(sold)}</b> (${nSold} sale${nSold > 1 ? "s" : ""}), ${Math.abs(Math.round((1 - sold / r.price) * 100))}% ${sold < r.price ? "under" : "over"} what sellers ask (${usd(r.price)}).`);
   // Rank within its set (same kind), against the average of the others.
   const peers = rowsFor(r.set).filter(x => x.price != null && kindOf(x) === kindOf(r));
@@ -2418,16 +2424,16 @@ function renderResell(id) {
   }
   // If you resell: the break-even buy price, after the market facts.
   lines.push(be > 0
-    ? `<b>Pays to resell if you buy at ${usd(be)} or less</b>, shipping included. That's selling at ${sold ? `the ${usd(sold)} it has been selling for` : `${FLIP.at}% of the ${usd(r.price)} asking median`}, after ~${FLIP.fee}% fees, ${usd(FLIP.order)} per order and ${usd(FLIP.post)} postage.` +
+    ? `<b>Pays to resell if you buy at ${usd(be)} or less</b>, shipping included. That's selling at ${sold ? `the ${usd(sold)} it has been selling for` : `${FLIP.at}% of the ${usd(r.price)} asking median`}, after ~${FLIP.fee}% fees, ${usd(FLIP.order)} per order and ${usd(post)} postage.` +
       (r.low != null ? ` The cheapest listing today is ${usd(r.low)}${r.low <= be ? ", under that" : `, ${usd(r.low - be)} over`}.` : "")
-    : `<b>Doesn't pay to resell on its own:</b> at about ${usd(sale)} a sale, fees and ${usd(FLIP.post)} postage take it all. Sell it in a lot or a set.`);
+    : `<b>Doesn't pay to resell on its own:</b> at about ${usd(sale)} a sale, fees and ${usd(post)} postage take it all. Sell it in a lot or a set.`);
   box.hidden = false;
   box.innerHTML = `<h4>Market read${early ? `<small>Early read: ${nSold ? `${nSold} sale${nSold > 1 ? "s" : ""}` : "no sales yet"}</small>` : ""}</h4>
     <ul>${lines.map(l => `<li>${l}</li>`).join("")}</ul>
-    <details ${FLIP_OPEN ? "open" : ""}><summary>Resale settings: sell at ${FLIP.at}% of median, ${FLIP.fee}% fees + ${usd(FLIP.order)}, ${usd(FLIP.post)} postage · <b>Edit</b></summary>
+    <details ${FLIP_OPEN ? "open" : ""}><summary>Resale settings: sell at ${FLIP.at}% of median, ${FLIP.fee}% fees + ${usd(FLIP.order)}, ${usd(post)} postage · <b>Edit</b></summary>
       <div class="flipbar" id="flipBarItem"></div></details>
     <div class="foot">The same settings as the Deals tab. Estimates from eBay data, not financial advice.</div>`;
-  flipBar("flipBarItem");
+  flipBar("flipBarItem", false, [kindOf(r)]);
   box.querySelector("details").ontoggle = (e) => { FLIP_OPEN = e.target.open; };
   renderItemDeals(r);
 }

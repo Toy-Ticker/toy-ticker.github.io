@@ -134,6 +134,21 @@ def units(data):
     return out
 
 
+def set_value(data, sid, rows):
+    """A series' headline value, as the site shows it: its complete set(s) on eBay (summed for a group, on the
+    latest day every part has a price), or the sum of item medians when a part has no complete-set prices.
+    Returns (label, value) or None."""
+    members = next((g["members"] for g in data.get("groups", []) if g["id"] == sid), [sid])
+    hists = [(data["sets"].get(m, {}).get("fullSet") or {}).get("history") or [] for m in members]
+    if all(hists):
+        by = [{p["date"]: p["median"] for p in h if p.get("median") is not None} for h in hists]
+        days = sorted(set(by[0]).intersection(*by[1:]))
+        if days:
+            return ("COMPLETE SETS" if len(members) > 1 else "COMPLETE SET", sum(b[days[-1]] for b in by))
+    priced = [p for _, p in rows if p is not None]
+    return ("ALL ITEMS", sum(priced)) if priced else None
+
+
 def kind_word(s):
     return {"cards": "cards", "mixed": "toys and cards"}.get(s.get("kind"), "toys")
 
@@ -142,7 +157,7 @@ def money(v):
     return f"${v:,.2f}"
 
 
-def series_image(s, sid, rows, today, F, site_label):
+def series_image(data, s, sid, rows, today, F, site_label):
     c1, c2, ink = THEMES.get(sid, DEFAULT)
     img = gradient(c1, c2)
     dots(img, ink)
@@ -160,11 +175,12 @@ def series_image(s, sid, rows, today, F, site_label):
     d.text((62, 316), f"{len(rows)} {kind_word(s)} · daily eBay prices", font=F(30, 500), fill=ink)
 
     priced = sorted([r for r in rows if r[1] is not None], key=lambda r: -r[1])
-    # Right column: full-set value.
+    # Right column: the complete-set price (as the site's header shows it).
     rx = W - 60
-    if priced:
-        d.text((rx, 170), "FULL SET", font=F(24, 600), fill=ink, anchor="ra")
-        d.text((rx, 200), money(sum(p for _, p in priced)), font=F(88, 700), fill=ink, anchor="ra")
+    val = set_value(data, sid, rows)
+    if val:
+        d.text((rx, 170), val[0], font=F(24, 600), fill=ink, anchor="ra")
+        d.text((rx, 200), money(val[1]), font=F(88, 700), fill=ink, anchor="ra")
     else:
         d.text((rx, 200), "Prices", font=F(64, 700), fill=ink, anchor="ra")
         d.text((rx, 276), "coming soon", font=F(40, 600), fill=ink, anchor="ra")
@@ -189,7 +205,7 @@ def series_image(s, sid, rows, today, F, site_label):
     return img
 
 
-def site_image(units_, F, site_label):
+def site_image(data, units_, F, site_label):
     img = gradient("#d62300", "#ffb703")
     dots(img, "#ffffff")
     d = ImageDraw.Draw(img, "RGBA")
@@ -205,13 +221,13 @@ def site_image(units_, F, site_label):
     fs = int(min(34, rh * 0.5))
     for i, (sid, s, rows) in enumerate(units_):
         c1, c2, ink = THEMES.get(sid, DEFAULT)
-        priced = [p for _, p in rows if p is not None]
+        val = set_value(data, sid, rows)
         x0 = 60 + (i // per_col) * (cw + 20)
         y = y0 + (i % per_col) * (rh + gap)
         d.rounded_rectangle([x0, y, x0 + cw, y + rh], radius=14, fill=(255, 255, 255, 235))
         d.rounded_rectangle([x0, y, x0 + 14, y + rh], radius=7, fill=c1)
         d.text((x0 + 36, y + rh / 2), s["name"], font=F(fs, 600), fill="#1d1d1b", anchor="lm")
-        d.text((x0 + cw - 26, y + rh / 2), money(sum(priced)) if priced else "coming soon", font=F(fs, 700), fill="#1d1d1b", anchor="rm")
+        d.text((x0 + cw - 26, y + rh / 2), money(val[1]) if val else "coming soon", font=F(fs, 700), fill="#1d1d1b", anchor="rm")
     return img
 
 
@@ -226,6 +242,6 @@ def build(data, root, site_url):
     # Every series and group gets an image (old links to a group's members keep working).
     pages = shown + [(sid, data["sets"][sid], series_rows(data, sid)) for sid in order if sid not in {u[0] for u in shown}]
     for sid, s, rows in pages:
-        series_image(s, sid, rows, today, F, site_label).save(root / "og" / f"{sid}.png", optimize=True)
-    site_image(shown, F, site_label).save(root / "og" / "site.png", optimize=True)
+        series_image(data, s, sid, rows, today, F, site_label).save(root / "og" / f"{sid}.png", optimize=True)
+    site_image(data, shown, F, site_label).save(root / "og" / "site.png", optimize=True)
     return [u[0] for u in pages]

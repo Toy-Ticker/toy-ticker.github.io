@@ -530,7 +530,14 @@
   .badge.up { background: color-mix(in srgb, var(--up) 15%, transparent); }
   .badge.down { background: color-mix(in srgb, var(--down) 15%, transparent); }
   .badge.flat { background: var(--bg); }
-  .tile-sub { font-size: 12px; color: var(--muted); }
+  .tile-sub { font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
+  .tile-sells { font-size: 13px; color: var(--muted); margin-top: -2px; }
+  .tile-sells b { color: var(--text); font-weight: 600; }
+  .speed { font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 999px; white-space: nowrap; }
+  .speed.fast { background: color-mix(in srgb, var(--up) 15%, transparent); color: var(--up); }
+  .speed.steady { background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+  .speed.rare { background: color-mix(in srgb, var(--gold) 22%, transparent); color: color-mix(in srgb, var(--gold) 45%, var(--text)); }
+  .speed.slow { background: color-mix(in srgb, var(--down) 13%, transparent); color: var(--down); }
 
   /* Confidence badges: how much to trust a price, from listing count and how tightly prices cluster */
   .conf { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; letter-spacing: .02em;
@@ -900,6 +907,11 @@ function soldGap(r) {
   const sold = w.reduce((t, x) => t + x.median * (x.count || 0), 0) / n;
   return { sold, n, gap: sold / r.price - 1 };
 }
+// Selling-speed tag for gallery tiles, from "Sells out in": a word anyone can read at a glance.
+const speedTag = (r) => r.dos == null ? "" : `<span class="speed ${r.dos <= 14 ? "fast" : r.dos > SELLOUT_CAP ? "slow" : "steady"}" title="Today's listings would sell out in ${sellOutText(r.dos)} at the recent pace">${r.dos <= 14 ? "Selling fast" : r.dos > SELLOUT_CAP ? "Piling up" : "Steady"}</span>`;
+// "Rare find": far fewer listed than the rest of its set, on both the priced count and eBay's estimate (scarcity()).
+const rareTag = (r) => { const x = SCARCE.get(r.id); return x ? `<span class="speed rare" title="Only ${x.n} listed vs about ${x.typical} for each of the others in its set">Rare find</span>` : ""; };
+const sellOutText = (d) => d > 60 ? "60+ days" : `about ${Math.max(1, Math.round(d))} day${Math.round(d) > 1 ? "s" : ""}`;
 // "Sells out in": capped at 60+ days, since a few days of sales can't support a precise long forecast.
 const SELLOUT_CAP = 60;
 const sellOut = (d) => { if (d > SELLOUT_CAP) return `${SELLOUT_CAP}+ days`; d = Math.max(1, Math.round(d)); return `~${d} day${d > 1 ? "s" : ""}`; };
@@ -1321,8 +1333,9 @@ function render() {
         ${sortKey === "dos" ? (r.dos != null ? `<span class="badge" title="How long today's listings would take to sell at the recent pace of sales">${r.dos > SELLOUT_CAP ? SELLOUT_CAP + "+d" : "~" + Math.max(1, Math.round(r.dos)) + "d"} <small>to sell out</small></span>` : "")
           : ch != null ? `<span class="badge ${cls(ch)}">${ch > 0 ? "▲" : ch < 0 ? "▼" : ""} ${pct(Math.abs(ch)).replace("+", "")} <small>${label}</small></span>` : ""}
       </div>
-      ${r.share ? `<div class="share" title="${(r.share * 100).toFixed(1)}% of the full set's value"><i style="width:${Math.max(2, r.share * 100 / (top.share || 1))}%"></i></div>` : ""}
-      <div class="tile-sub">${r.count != null ? `${confBadge(r)} ${r.count} listings · ${r.dos != null ? `sells out ${sellOut(r.dos).replace("~", "~")}` : `${(r.share * 100).toFixed(0)}% of ${isGroup() && KIND === "all" ? "total" : "set"}`}` : "No price yet"}</div>
+      ${r.pay != null ? `<div class="tile-sells" title="What it actually sold for, shipping included (${r.sold} sales)">sells for <b>${usd(r.pay)}</b></div>` : ""}
+      ${r.share ? `<div class="share" title="${(r.share * 100).toFixed(1)}% of the set's value"><i style="width:${Math.max(2, r.share * 100 / (top.share || 1))}%"></i></div>` : ""}
+      <div class="tile-sub">${r.count != null ? `${confBadge(r)} ${r.count} listings${speedTag(r)}${rareTag(r)}` : "No price yet"}</div>
     </div>`;
   }).join("") || `<p class="note">Nothing here yet. Tap ＋ on items you own, or untick "Show only mine".</p>`;
   $("gallery").hidden = VIEW !== "gallery";

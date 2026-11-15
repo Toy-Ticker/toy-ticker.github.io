@@ -245,6 +245,13 @@ def series_page(site, uid, s, members, today, parent=None):
     dates = sorted({p["date"] for _, p in priced})
     asof = dates[-1] if dates else None
     total = sum(p["median"] for _, p in priced)
+    # Headline value as the site shows it: complete set(s) on eBay when every part has prices, else the item sum.
+    hists = [(site.d["sets"].get(m, {}).get("fullSet") or {}).get("history") or [] for m in members]
+    by = [{q["date"]: q["median"] for q in h if q.get("median") is not None} for h in hists] if all(hists) else []
+    days = sorted(set(by[0]).intersection(*by[1:])) if by else []
+    setval = sum(b[days[-1]] for b in by) if days else None
+    stat_label = "Complete set on eBay" if setval else "All items"
+    headline = f"complete set {money(setval)}" if setval else f"all items {money(total)}"
     listings = sum(p["count"] for _, p in priced)
     yr = year(s)
     kw = kind_words(s)
@@ -254,10 +261,11 @@ def series_page(site, uid, s, members, today, parent=None):
 
     title = f"McDonald's {s['name']} {yr}: Happy Meal prices · {BRAND}"
     if priced:
-        desc = (f"All {len(rows)} McDonald's {s['name']} ({yr}) Happy Meal {kw}: full set {money(total)} on {nice(asof)}. "
+        desc = (f"All {len(rows)} McDonald's {s['name']} ({yr}) Happy Meal {kw}: {headline} on {nice(asof)}. "
                 f"Most valuable: {name_of(top[0])} at {money(top[1]['median'])}. eBay prices, updated daily.")
         answer = (f"As of {nice(asof)}, a complete set of all {len(rows)} {yr} McDonald's {esc(s['name'])} Happy Meal {kw} "
-                  f"costs about <b>{money(total)}</b> at median eBay asking prices, shipping included"
+                  + (f"typically costs about <b>{money(setval)}</b> on eBay, shipping included; buying all {len(rows)} separately costs about {money(total)}"
+                     if setval else f"costs about <b>{money(total)}</b> at median eBay asking prices, shipping included")
                   + (f" ({len(priced)} of {len(rows)} items priced)" if len(priced) < len(rows) else "")
                   + f". The most valuable is <b>{esc(name_of(top[0]))}</b> at {money(top[1]['median'])}; "
                   f"the cheapest is {esc(name_of(low[0]))} at {money(low[1]['median'])}.")
@@ -275,7 +283,7 @@ def series_page(site, uid, s, members, today, parent=None):
         body.append(f"<p>{esc(s['description'])}</p>")
     body.append(f'<a class="cta" href="../../?s={esc(uid)}">Open the live tracker with charts →</a>')
     body.append('<div class="stats">'
-                f'<div><span class="big">{money(total) if priced else "–"}</span><small>Full set, median incl. shipping</small></div>'
+                f'<div><span class="big">{money(setval) if setval else money(total) if priced else "–"}</span><small>{stat_label}, median incl. shipping</small></div>'
                 f'<div><span class="big">{len(rows)}</span><small>{esc(kw)} in the series</small></div>'
                 f'<div><span class="big">{listings:,}</span><small>eBay listings checked</small></div>'
                 f'<div><span class="big">{esc(nice(asof) or "–")}</span><small>Last price update</small></div></div>')

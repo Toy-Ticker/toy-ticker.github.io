@@ -1676,7 +1676,7 @@ function mealValue(sid) {
 const insBars = (rows, fmt) => {
   const max = Math.max(...rows.map(r => r.v), 0) || 1;
   return `<div class="ins-bars">${rows.map(r => `<div class="ins-bar ${r.cur ? "cur" : ""}" style="--c:${r.c || "var(--accent)"}">
-    <span title="${esc(r.label)}">${esc(r.label)}</span><i><b style="width:${Math.max(2, r.v / max * 100)}%"></b></i><em>${fmt(r.v)}</em></div>`).join("")}</div>`;
+    <span title="${esc(r.label)}">${esc(r.label)}</span><i><b style="width:${Math.max(2, r.v / max * 100)}%"></b></i><em>${fmt(r.v, r)}</em></div>`).join("")}</div>`;
 };
 function insMeal() {
   const m = mealValue(SID), P = mealPrice();
@@ -1742,8 +1742,9 @@ function insSales() {
   return head + `<div class="big">${sold}<small>sold ${recent ? `since ${fmtDate(since)}` : `in the last ${win} days`}</small></div>
     <p><b>${Math.round(sold / Math.max(1, closed) * 100)}%</b> of listings that came down were sold (the rest were ended or removed)${days.length ? `, and a typical sale happened <b>${Math.round(avg(days))} days</b> after listing` : ""}.</p>
     ${aucLine}
-    <p class="ins-sub">Selling fastest</p>
-    ${insBars(items.slice(0, 6).map(x => ({ label: nm(x.key), v: x.v.sold, c: "#1a7f37" })), v => `${v} sold`)}
+    <p class="ins-sub">Most sold</p>
+    ${insBars(items.slice(0, 6).map(x => ({ label: nm(x.key), v: x.v.sold, d: x.v.days, c: "#1a7f37" })),
+      (v, r) => `${v} sold${r.d == null ? "" : r.d === 0 ? " · same day" : ` · ~${r.d} day${r.d > 1 ? "s" : ""}`}`)}
     <div class="foot">A listing counts as sold when eBay shows it sold out with sales. It's an estimate: sellers can also revise or relist. Collecting since ${fmtDate(since)}.</div></div>`;
 }
 

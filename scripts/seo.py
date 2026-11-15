@@ -144,6 +144,9 @@ a{color:var(--accent)}
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
 .brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:22px;color:var(--text);text-decoration:none}
 .brand img{width:34px;height:34px}.brand span{color:var(--accent)}
+.top-links{display:flex;gap:12px;align-items:center}
+.coffee-link{font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap;color:#1d1d1b;background:#ffd23f;border:1px solid #f2c200;padding:5px 12px;border-radius:999px}
+@media (max-width:520px){.coffee-link .long{display:none}}
 .crumbs{font-size:13px;color:var(--muted);margin:0 0 6px}.crumbs a{color:var(--muted)}
 h1{font-size:clamp(26px,5vw,36px);line-height:1.15;margin:0 0 10px;letter-spacing:-.01em}
 h2{font-size:22px;margin:34px 0 10px}
@@ -193,11 +196,11 @@ PAGE = """<!doctype html>
 </head><body>
 <div class="wrap">
 <div class="top"><a class="brand" href="../../"><img src="../../assets/logo.svg" alt="" width="34" height="34">Toy <span>Ticker</span></a>
-<a href="../../about.html">How prices work</a></div>
+<span class="top-links"><a class="coffee-link" href="https://ko-fi.com/toyticker" target="_blank" rel="noopener" title="Support Toy Ticker on Ko-fi" aria-label="Buy me a coffee on Ko-fi">☕<span class="long"> Buy me a coffee</span></a><a href="../../about.html">How prices work</a></span></div>
 {body}
 <footer>
 <p>Daily eBay US asking prices, shipping included. Not financial advice. <a href="../../about.html">How prices work</a></p>
-<p>Unofficial fan site, not affiliated with McDonald’s, eBay or any toy brand. Toy Ticker may earn a commission from eBay links. Free and ad-free: <a class="kofi" href="https://ko-fi.com/toyticker" target="_blank" rel="noopener">support it on Ko-fi ☕</a></p>
+<p>Unofficial fan site, not affiliated with McDonald’s, eBay or any toy brand. Toy Ticker may earn a commission from eBay links. Free and ad-free: <a class="kofi" href="https://ko-fi.com/toyticker" target="_blank" rel="noopener">support it on Ko-fi ☕</a> · Contact: <a href="mailto:toyticker@gmail.com">toyticker@gmail.com</a></p>
 </footer>
 </div>
 </body></html>

@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://nglungfai.github.io/toy-ticker/about.html">
 <!-- seo:faq -->
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Are these asking prices or sold prices?", "acceptedAnswer": {"@type": "Answer", "text": "Both. The headline prices are asking prices: eBay only shares completed-sale data with a small number of approved partners, while live listings are public and update daily. Sold prices come from following those listings: when one sells, Toy Ticker records what it sold for, shipping included. Charts show them as a green weekly sold median next to the red asking line. Sales are counted the day Toy Ticker spots them, which can be a day or two after the real sale, and items with no detected sales yet have no sold line."}}, {"@type": "Question", "name": "How do \"Buyers pay\" and \"Sells out in\" work?", "acceptedAnswer": {"@type": "Answer", "text": "Toy Ticker follows the listings it matches every day. A listing counts as sold when eBay shows it sold out with sales, or its sold count goes up; it's an estimate, since sellers can also revise or relist. Buyers pay is the typical price those sales went for, shipping included, shown once an item has 5 or more. Time to sell is the typical number of days from listing to sale. Sells out in is today's listings divided by sales per day recently: how long they'd last if nobody listed more, shown as 60+ beyond 60 days. Items with under 3 sales or 5 listings aren't rated, nor are items whose search only follows a small share of their listings, because the numbers would mislead."}}, {"@type": "Question", "name": "Do prices include shipping?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Every listing counts as item price plus its cheapest shipping option to the US, so a $3.99 card with $1.25 shipping counts as $5.24 and free-shipping listings count as just the item. When a seller charges by distance we use the cost to a central US ZIP code; if eBay doesn't give a cost at all, we use the typical shipping of the other listings for that item. Item details show the split."}}, {"@type": "Question", "name": "How often do prices update?", "acceptedAnswer": {"@type": "Answer", "text": "Once a day, early morning US time. Each update adds one point to every item's chart and returns."}}, {"@type": "Question", "name": "Why is my toy missing a price or a photo?", "acceptedAnswer": {"@type": "Answer", "text": "If nobody has listed a single, ungraded copy yet, there's nothing fair to measure. Photos come from eBay listings, so they appear once a good listing shows up."}}, {"@type": "Question", "name": "Where is \"My collection\" saved?", "acceptedAnswer": {"@type": "Answer", "text": "Only in your browser. There are no accounts and no tracking, and nothing about your collection is sent anywhere. Clearing your browser data clears it."}}, {"@type": "Question", "name": "Is this investment advice?", "acceptedAnswer": {"@type": "Answer", "text": "No. Happy Meal toys are made by the million and prices can swing on a single listing. Collect what you love; use Toy Ticker to avoid over- or under-paying."}}, {"@type": "Question", "name": "Does Toy Ticker earn money from eBay links?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Links to eBay go through the eBay Partner Network, so if you buy something after clicking one, eBay may pay Toy Ticker a small commission. It costs you nothing extra and never changes which listings or prices are shown. eBay uses the link to credit the click; Toy Ticker itself still collects nothing about you."}}, {"@type": "Question", "name": "How can I support Toy Ticker?", "acceptedAnswer": {"@type": "Answer", "text": "Toy Ticker is a free, ad-free side project, updated every day. If it helped you find a fair price or finish a set, you can leave a tip on Ko-fi ☕. It's entirely optional, and the site stays the same either way."}}, {"@type": "Question", "name": "Something looks wrong, or I want a photo removed", "acceptedAnswer": {"@type": "Answer", "text": "Open an issue on GitHub and it'll be fixed or removed."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Where do the prices come from?", "acceptedAnswer": {"@type": "Answer", "text": "Once a day, early morning US time, Toy Ticker collects every matching eBay US Buy It Now listing. Each counts as item price plus its cheapest shipping to the US (a central ZIP code when shipping varies by distance, or the item's typical shipping when eBay gives none). The headline prices are the median of those asking prices. Toy Ticker also follows the listings day to day: when one sells, it records what it sold for, shipping included. That's the green Sold line on charts and Buyers pay in the Items list. eBay doesn't share sold data with most apps, so this is an estimate, and a sale is counted the day it's spotted."}}, {"@type": "Question", "name": "How do \"Buyers pay\" and \"Sells out in\" work?", "acceptedAnswer": {"@type": "Answer", "text": "A listing counts as sold when eBay shows it sold out with sales, or its sold count goes up. Buyers pay is the typical price those sales went for, shown once an item has 5 or more. Time to sell is the typical number of days from listing to sale. Sells out in is today's listings divided by recent sales per day: how long they'd last if nobody listed more, shown as 60+ beyond 60 days. Items with under 3 sales or 5 listings aren't rated, nor are items whose search only follows a small share of their listings, because the numbers would mislead."}}, {"@type": "Question", "name": "Why is a price or photo missing?", "acceptedAnswer": {"@type": "Answer", "text": "If nobody has listed a single, ungraded one yet, there's nothing fair to measure. Most photos are official product photos from McDonald's Happy Meal site (happymeal.com); the rest come from eBay listings and link to them. Each photo is credited on the item's page."}}, {"@type": "Question", "name": "Is my collection private?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. What you mark in My Happy Meals is saved only in your browser. There are no accounts and no tracking, and nothing about your collection is sent anywhere. Clearing your browser data clears it."}}, {"@type": "Question", "name": "Does Toy Ticker make money? Is this advice?", "acceptedAnswer": {"@type": "Answer", "text": "Links to eBay go through the eBay Partner Network, so if you buy after clicking one, eBay may pay Toy Ticker a small commission. It costs you nothing extra and never changes which listings or prices are shown. Toy Ticker is free and ad-free; if it helped you, you can leave a tip on Ko-fi ☕. It isn't investment advice: Happy Meal toys are made by the million and prices can swing on a single listing. Collect what you love; use Toy Ticker to avoid over- or under-paying."}}, {"@type": "Question", "name": "Something looks wrong, or I want a photo removed", "acceptedAnswer": {"@type": "Answer", "text": "Email toyticker@gmail.com and it'll be fixed or removed."}}]}</script>
 <!-- /seo:faq -->
 <style>
   :root {
@@ -49,6 +49,12 @@
   .back { font-size: 14px; font-weight: 600; text-decoration: none; border: 1px solid var(--line);
           background: var(--panel); color: var(--text); padding: 7px 14px; border-radius: 999px; }
   .back:hover { border-color: var(--accent); color: var(--accent); }
+  .top-links { display: flex; gap: 8px; align-items: center; }
+  .coffee-link { font-size: 14px; font-weight: 600; text-decoration: none; white-space: nowrap; color: #1d1d1b;
+                 background: #ffd23f; border: 1px solid #f2c200; padding: 6px 14px; border-radius: 999px; }
+  .coffee-link:hover { filter: brightness(1.05); }
+  .back { white-space: nowrap; } .back .short { display: none; }
+  @media (max-width: 520px) { .coffee-link .long, .back .long { display: none; } .back .short { display: inline; } .coffee-link { padding: 6px 12px; } }
 
   /* Hero */
   .hero { position: relative; overflow: hidden; background: var(--panel); border: 1px solid var(--line);
@@ -86,6 +92,7 @@
   .step p { margin: 0; color: var(--muted); font-size: 15px; }
 
   /* Glossary */
+  h2 + .terms { margin-top: 18px; }
   .terms { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
   .term { border-left: 4px solid var(--gold); background: var(--panel); border-radius: 0; padding: 14px 16px; }
   .term b { display: block; font-family: "Bricolage Grotesque", -apple-system, sans-serif; font-size: 17px; font-weight: 600; margin-bottom: 2px; }
@@ -118,7 +125,10 @@
 <div class="wrap">
   <div class="top">
     <a class="brand" href="./"><img src="assets/logo.svg" alt="">Toy <span>Ticker</span></a>
-    <a class="back" href="./">← Today's prices</a>
+    <div class="top-links">
+      <a class="coffee-link" href="https://ko-fi.com/toyticker" target="_blank" rel="noopener" title="Support Toy Ticker on Ko-fi" aria-label="Buy me a coffee on Ko-fi">☕<span class="long"> Buy me a coffee</span></a>
+      <a class="back" href="./">← <span class="long">Today's p</span><span class="short">P</span>rices</a>
+    </div>
   </div>
 
   <!-- Value prop: swap these three lines to try the other options. -->
@@ -141,23 +151,24 @@
     <div class="steps">
       <div class="step"><h3>Scan eBay</h3><p>We search eBay US for every toy and card in each Happy Meal series and collect every Buy It Now listing.</p></div>
       <div class="step"><h3>Throw out the noise</h3><p>Lots, full sets, graded slabs, fakes and listings for other years are filtered out, leaving single, ungraded items.</p></div>
-      <div class="step"><h3>One fair price</h3><p>We add each listing's shipping, take the median of what's left (so one silly $500 listing can't move the number), and save it to build a daily price history.</p></div>
+      <div class="step"><h3>One fair price</h3><p>We add each listing's shipping, take the median of what's left (so one silly $500 listing can't move the number), and follow listings day to day to spot what actually sells.</p></div>
     </div>
   </section>
 
   <section>
     <h2>What the numbers mean</h2>
-    <p class="lead">Toy Ticker borrows ideas from stock sites. Here's the cheat sheet.</p>
     <div class="terms">
-      <div class="term"><b>Median price</b><span>The middle price of today's matching listings, <b>including shipping</b> to the US. Half cost more, half cost less.</span></div>
+      <div class="term"><b>Asking price</b><span>The median of today's matching listings, including shipping to the US: half ask more, half ask less.</span></div>
       <div class="term"><b>Lowest price</b><span>The cheapest listing today, shipping included: roughly what you'd pay to buy one right now.</span></div>
-      <div class="term"><b>Listings ("volume")</b><span>How many are for sale. More listings usually means prices are about to soften.</span></div>
-      <div class="term"><b>Returns</b><span>How much the price moved over 1 day, 1 week, 1 month and so on. "–" means not enough history yet.</span></div>
-      <div class="term"><b>Full set</b><span>The total of every item in a series at today's median price incl. shipping: what a complete collection is worth.</span></div>
+      <div class="term"><b>Buyers pay</b><span>What it actually sold for, shipping included, once Toy Ticker has spotted 5 or more sales. Usually below the asking price.</span></div>
+      <div class="term"><b>Listings</b><span>Existing listings: everything still for sale on eBay today.</span></div>
+      <div class="term"><b>Sells out in</b><span>How long today's listings would last at the recent pace of sales. Short means buyers snap them up; long means plenty to choose from.</span></div>
+      <div class="term"><b>Complete set</b><span>What a whole set listed on eBay typically costs, shipping included, next to buying every item separately.</span></div>
+      <div class="term"><b>Returns</b><span>How much a price moved over 1 day, 1 week, 1 month and so on, shown once there's enough history.</span></div>
+      <div class="term"><b>Estimated value</b><span>What your haul in My Happy Meals is worth: what each item sells for once it has 5+ sales, its asking price otherwise.</span></div>
       <div class="term"><b>Confidence</b><span>How much to trust a price. High means lots of listings that mostly agree; Low means only a few, so one listing can move it.</span></div>
-      <div class="term"><b>Complete set</b><span>What full sets sell for on eBay (shipping included), next to the cost of buying every item separately, so you can see which is cheaper.</span></div>
     </div>
-    <p class="callout"><b>Heads up:</b> the median and lowest prices are <b>asking</b> prices, not completed sales. Sellers often ask more than buyers end up paying, so before you price something, compare with the green <b>sold median</b> on the item's chart when there is one.</p>
+    <p class="callout"><b>Heads up:</b> sellers usually ask more than buyers end up paying. Before you price something, check <b>Buyers pay</b> in the Items list or the green <b>Sold</b> line on the item's chart.</p>
   </section>
 
   <section>
@@ -168,31 +179,23 @@
 
   <section>
     <h2>Questions</h2>
-    <details><summary>Are these asking prices or sold prices?</summary>
-      <p>Both. The headline prices are <b>asking</b> prices: eBay only shares completed-sale data with a small number of approved partners, while live listings are public and update daily. Sold prices come from following those listings: when one sells, Toy Ticker records what it sold for, shipping included. Charts show them as a green weekly <b>sold median</b> next to the red asking line. Sales are counted the day Toy Ticker spots them, which can be a day or two after the real sale, and items with no detected sales yet have no sold line.</p></details>
+    <details><summary>Where do the prices come from?</summary>
+      <p>Once a day, early morning US time, Toy Ticker collects every matching eBay US Buy It Now listing. Each counts as item price plus its cheapest shipping to the US (a central ZIP code when shipping varies by distance, or the item's typical shipping when eBay gives none). The headline prices are the median of those <b>asking</b> prices. Toy Ticker also follows the listings day to day: when one sells, it records what it sold for, shipping included. That's the green <b>Sold</b> line on charts and <b>Buyers pay</b> in the Items list. eBay doesn't share sold data with most apps, so this is an estimate, and a sale is counted the day it's spotted.</p></details>
     <details id="supply"><summary>How do "Buyers pay" and "Sells out in" work?</summary>
-      <p>Toy Ticker follows the listings it matches every day. A listing counts as sold when eBay shows it sold out with sales, or its sold count goes up; it's an estimate, since sellers can also revise or relist. <b>Buyers pay</b> is the typical price those sales went for, shipping included, shown once an item has 5 or more. <b>Time to sell</b> is the typical number of days from listing to sale. <b>Sells out in</b> is today's listings divided by sales per day recently: how long they'd last if nobody listed more, shown as 60+ beyond 60 days. Items with under 3 sales or 5 listings aren't rated, nor are items whose search only follows a small share of their listings, because the numbers would mislead.</p></details>
-    <details><summary>Do prices include shipping?</summary>
-      <p>Yes. Every listing counts as item price plus its cheapest shipping option to the US, so a $3.99 card with $1.25 shipping counts as $5.24 and free-shipping listings count as just the item. When a seller charges by distance we use the cost to a central US ZIP code; if eBay doesn't give a cost at all, we use the typical shipping of the other listings for that item. Item details show the split.</p></details>
-    <details><summary>How often do prices update?</summary>
-      <p>Once a day, early morning US time. Each update adds one point to every item's chart and returns.</p></details>
-    <details><summary>Why is my toy missing a price or a photo?</summary>
-      <p>If nobody has listed a single, ungraded copy yet, there's nothing fair to measure. Photos come from eBay listings, so they appear once a good listing shows up.</p></details>
-    <details><summary>Where is "My collection" saved?</summary>
-      <p>Only in your browser. There are no accounts and no tracking, and nothing about your collection is sent anywhere. Clearing your browser data clears it.</p></details>
-    <details><summary>Is this investment advice?</summary>
-      <p>No. Happy Meal toys are made by the million and prices can swing on a single listing. Collect what you love; use Toy Ticker to avoid over- or under-paying.</p></details>
-    <details><summary>Does Toy Ticker earn money from eBay links?</summary>
-      <p>Yes. Links to eBay go through the eBay Partner Network, so if you buy something after clicking one, eBay may pay Toy Ticker a small commission. It costs you nothing extra and never changes which listings or prices are shown. eBay uses the link to credit the click; Toy Ticker itself still collects nothing about you.</p></details>
-    <details><summary>How can I support Toy Ticker?</summary>
-      <p>Toy Ticker is a free, ad-free side project, updated every day. If it helped you find a fair price or finish a set, you can leave a tip on <a class="kofi" href="https://ko-fi.com/toyticker" target="_blank" rel="noopener">Ko-fi ☕</a>. It's entirely optional, and the site stays the same either way.</p></details>
+      <p>A listing counts as sold when eBay shows it sold out with sales, or its sold count goes up. <b>Buyers pay</b> is the typical price those sales went for, shown once an item has 5 or more. <b>Time to sell</b> is the typical number of days from listing to sale. <b>Sells out in</b> is today's listings divided by recent sales per day: how long they'd last if nobody listed more, shown as 60+ beyond 60 days. Items with under 3 sales or 5 listings aren't rated, nor are items whose search only follows a small share of their listings, because the numbers would mislead.</p></details>
+    <details><summary>Why is a price or photo missing?</summary>
+      <p>If nobody has listed a single, ungraded one yet, there's nothing fair to measure. Most photos are official product photos from McDonald's Happy Meal site (happymeal.com); the rest come from eBay listings and link to them. Each photo is credited on the item's page.</p></details>
+    <details><summary>Is my collection private?</summary>
+      <p>Yes. What you mark in My Happy Meals is saved only in your browser. There are no accounts and no tracking, and nothing about your collection is sent anywhere. Clearing your browser data clears it.</p></details>
+    <details><summary>Does Toy Ticker make money? Is this advice?</summary>
+      <p>Links to eBay go through the eBay Partner Network, so if you buy after clicking one, eBay may pay Toy Ticker a small commission. It costs you nothing extra and never changes which listings or prices are shown. Toy Ticker is free and ad-free; if it helped you, you can leave a tip on <a class="kofi" href="https://ko-fi.com/toyticker" target="_blank" rel="noopener">Ko-fi ☕</a>. It isn't investment advice: Happy Meal toys are made by the million and prices can swing on a single listing. Collect what you love; use Toy Ticker to avoid over- or under-paying.</p></details>
     <details><summary>Something looks wrong, or I want a photo removed</summary>
-      <p>Open an issue on <a href="https://github.com/nglungfai/toy-ticker/issues" target="_blank" rel="noopener">GitHub</a> and it'll be fixed or removed.</p></details>
+      <p>Email <a href="mailto:toyticker@gmail.com">toyticker@gmail.com</a> and it'll be fixed or removed.</p></details>
   </section>
 
   <footer>
     <p>Unofficial fan site, not affiliated with or endorsed by McDonald’s, The Pokémon Company, Disney, Nickelodeon, Toei Animation, Shueisha or eBay; trademarks belong to their owners. Toy Ticker may earn a commission from eBay links. Not financial advice.</p>
-    <p>Free and ad-free: <a class="kofi" href="https://ko-fi.com/toyticker" target="_blank" rel="noopener">support it on Ko-fi ☕</a></p>
+    <p>Free and ad-free: <a class="kofi" href="https://ko-fi.com/toyticker" target="_blank" rel="noopener">support it on Ko-fi ☕</a> · Contact: <a href="mailto:toyticker@gmail.com">toyticker@gmail.com</a></p>
   </footer>
 </div>
 

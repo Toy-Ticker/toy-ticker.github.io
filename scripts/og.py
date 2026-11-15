@@ -73,15 +73,21 @@ def dots(img, ink):
 
 
 def logo(d, x, y, s=1.0):
-    """The site's logo (assets/logo.svg: smiling box on a yellow tile), drawn with shapes
-    because Pillow can't render SVG. Coordinates are in the SVG's 64x64 space."""
+    """The site's logo (assets/logo.svg: an outlined price tag with a rising sparkline on a white tile),
+    drawn with shapes because Pillow can't render SVG. Coordinates are in the SVG's 64x64 space."""
     k = lambda v: v * s  # noqa: E731
-    d.rounded_rectangle([x + k(4), y + k(4), x + k(60), y + k(60)], radius=k(16), fill="#f2b705")
-    d.arc([x + k(25), y + k(14), x + k(39), y + k(30)], 180, 360, fill="#d62300", width=max(1, int(k(4))))
-    d.polygon([(x + k(15), y + k(24)), (x + k(49), y + k(24)), (x + k(46), y + k(50.6)), (x + k(18), y + k(50.6))], fill="#d62300")
-    for cx in (26, 38):
-        d.ellipse([x + k(cx - 2.6), y + k(31.4), x + k(cx + 2.6), y + k(36.6)], fill="#ffffff")
-    d.arc([x + k(24), y + k(35), x + k(40), y + k(45)], 20, 160, fill="#f2b705", width=max(1, int(k(3.5))))
+    P = lambda pts: [(x + k(a), y + k(b)) for a, b in pts]  # noqa: E731
+    d.rounded_rectangle([x + k(2.75), y + k(2.75), x + k(61.25), y + k(61.25)], radius=k(13.25), fill="#ffffff",
+                        outline="#e6e5df", width=max(1, int(k(1.5))))
+    tag = [(12, 18), (13.5, 14.5), (17, 13), (32, 13), (51, 32), (52.2, 34.85), (51, 37.7), (37.7, 51),
+           (34.85, 52.2), (32, 51), (13, 32), (12, 18)]
+    d.line(P(tag), fill="#1d1d1b", width=max(1, int(k(3.5))), joint="curve")
+    d.ellipse([x + k(18), y + k(19), x + k(24), y + k(25)], fill="#1d1d1b")
+    d.line(P([(20, 38), (26, 33), (31, 36), (40, 27)]), fill="#d62300", width=max(1, int(k(4))), joint="curve")
+    for cx, cy in ((20, 38), (40, 27)):  # round caps
+        r = k(2)
+        d.ellipse([x + k(cx) - r, y + k(cy) - r, x + k(cx) + r, y + k(cy) + r], fill="#d62300")
+    d.ellipse([x + k(37), y + k(24), x + k(43), y + k(30)], fill="#f2b705")
 
 
 def pill(d, x, y, text, font, ink):

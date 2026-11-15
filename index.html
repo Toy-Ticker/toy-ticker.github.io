@@ -12,13 +12,13 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="Toy Ticker · Happy Meal toy prices">
 <meta property="og:description" content="Daily eBay prices for McDonald's Happy Meal toys and Pokémon cards.">
-<meta property="og:image" content="https://nglungfai.github.io/toy-ticker/og/site.png">
+<meta property="og:image" content="https://toy-ticker.github.io/og/site.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="https://nglungfai.github.io/toy-ticker/">
+<link rel="canonical" href="https://toy-ticker.github.io/">
 <meta name="google-site-verification" content="0ewsM1T_0wZQlVtud_HYFpsv-NVRLv0k2T4-skyVH6c">
 <!-- seo:jsonld -->
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Toy Ticker", "url": "https://nglungfai.github.io/toy-ticker/", "description": "Daily eBay prices for McDonald's Happy Meal toys and cards."}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Toy Ticker: daily eBay prices for McDonald's Happy Meal toys and cards", "description": "Daily median, 25th-percentile and lowest eBay US Buy It Now asking prices (shipping included) and listing counts for every toy and card in recent McDonald's Happy Meal series, 91 items across 7 series.", "url": "https://nglungfai.github.io/toy-ticker/", "isAccessibleForFree": true, "dateModified": "2026-11-15", "temporalCoverage": "2026-06-09/..", "keywords": ["Happy Meal toys", "McDonald's toys", "toy prices", "eBay prices", "collectibles"], "creator": {"@type": "Organization", "name": "Toy Ticker", "url": "https://nglungfai.github.io/toy-ticker/"}, "distribution": [{"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://nglungfai.github.io/toy-ticker/data/index.json"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Toy Ticker", "url": "https://toy-ticker.github.io/", "description": "Daily eBay prices for McDonald's Happy Meal toys and cards."}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Toy Ticker: daily eBay prices for McDonald's Happy Meal toys and cards", "description": "Daily median, 25th-percentile and lowest eBay US Buy It Now asking prices (shipping included) and listing counts for every toy and card in recent McDonald's Happy Meal series, 91 items across 7 series.", "url": "https://toy-ticker.github.io/", "isAccessibleForFree": true, "dateModified": "2026-11-15", "temporalCoverage": "2026-06-09/..", "keywords": ["Happy Meal toys", "McDonald's toys", "toy prices", "eBay prices", "collectibles"], "creator": {"@type": "Organization", "name": "Toy Ticker", "url": "https://toy-ticker.github.io/"}, "distribution": [{"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://toy-ticker.github.io/data/index.json"}]}</script>
 <!-- /seo:jsonld -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
@@ -1228,7 +1228,7 @@ function go(sid) {
   $("cal").querySelectorAll(".cal-row[data-s]").forEach(r => r.classList.toggle("cur", r.dataset.s === SID));
   document.title = `${s.name} · Toy Ticker`;
   // Search engines that run JS: the static series page is the one to index.
-  document.querySelector('link[rel="canonical"]').href = `https://nglungfai.github.io/toy-ticker/s/${SID}/`;
+  document.querySelector('link[rel="canonical"]').href = `https://toy-ticker.github.io/s/${SID}/`;
   document.body.classList.toggle("toys", s.kind === "toys");
   const T = THEMES[SID] || DEFAULT_THEME;
   const hero = $("hero").style;
@@ -1370,7 +1370,7 @@ function wrapText(ctx, text, maxW) {
   return lines;
 }
 // ---- Profit-card share image (in the style of stock apps' "share your gains" cards) ----
-const SITE = "https://nglungfai.github.io/toy-ticker/";
+const SITE = "https://toy-ticker.github.io/";
 // Headline percentage with thousands separators: +1,163.5%
 const bigPct = (v) => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v * 100).toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "%";
 // Short ticker-style symbol for an item: first word's letters, up to 4 (Pikachu -> $PIKA, Mr. Krabs -> $MRKR).
@@ -1484,7 +1484,7 @@ async function drawQuoteCard(o) {
   // Footer: call to action + QR code.
   const fy = H - footH + 20, qs = 150;
   x.fillStyle = INK; x.font = F(700, 38); x.fillText(o.footer || "What's your Happy Meal worth?", M, fy + 60);
-  x.fillStyle = MUTED; x.font = F(600, 26); x.fillText("Scan or visit nglungfai.github.io/toy-ticker", M, fy + 104);
+  x.fillStyle = MUTED; x.font = F(600, 26); x.fillText("Scan or visit toy-ticker.github.io", M, fy + 104);
   x.font = F(500, 21); x.fillText(o.note || "eBay asking prices incl. shipping. Just for fun, not financial advice.", M, fy + 146);
   const qr = await loadQR();
   if (qr) {

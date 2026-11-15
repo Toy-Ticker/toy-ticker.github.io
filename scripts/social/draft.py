@@ -51,7 +51,7 @@ def sample_post(f):
 
 
 def pr_body(post, f, problems, folder, branch):
-    repo = os.environ.get("GITHUB_REPOSITORY", "nglungfai/toy-ticker")
+    repo = os.environ.get("GITHUB_REPOSITORY", "Toy-Ticker/toy-ticker.github.io")
     raw = f"https://raw.githubusercontent.com/{repo}/refs/heads/{branch}/{folder.relative_to(ROOT).as_posix()}"
     fx = {x["id"]: x for x in f["facts"]}
     names = {i["id"]: i["name"] for i in f["items"]}

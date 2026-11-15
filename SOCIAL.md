@@ -40,7 +40,7 @@ Setup checklist (one sitting, ~1 hour):
 - [ ] Sign up with toyticker@gmail.com; turn on 2FA with an authenticator app on every account; keep recovery codes out of the repo.
 - [ ] Avatar: the price-tag-with-sparkline logo (`assets/logo.svg`) on a solid background. No McDonald's, Pokémon or Happy Meal logos in the avatar, banner or name.
 - [ ] Name: **Toy Ticker** · Bio: `Daily eBay prices for McDonald's Happy Meal toys & cards. Not affiliated with McDonald's. No ads, no accounts.`
-- [ ] Link: `https://nglungfai.github.io/toy-ticker/` (later a short domain if one is bought).
+- [x] Link: `https://toy-ticker.github.io/` (repo moved to the Toy-Ticker organization on Nov 15 so the address has no personal name; a short domain can be added later).
 - [ ] Banner: `og/site.png`.
 - [ ] Pinned post: "What Toy Ticker is" (template A below).
 - [ ] Add the social links to the site footer and About page.

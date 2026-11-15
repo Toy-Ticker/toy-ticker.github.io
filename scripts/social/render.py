@@ -223,7 +223,7 @@ class Slides:
         y = text_block(d, (M, 600), s["headline"], self.F, W - 2 * M, 92, 700, self.ink, 3, 52, 1.04)
         d.rounded_rectangle([M + 140, y + 50, W - M - 140, y + 150], radius=50, fill="#ffffff")
         d.text((W // 2, y + 100), "Link in bio", font=self.F(48, 700), fill=INK, anchor="mm")
-        d.text((W // 2, y + 210), "nglungfai.github.io/toy-ticker", font=self.F(34, 600), fill=self.ink, anchor="mm")
+        d.text((W // 2, y + 210), "toy-ticker.github.io", font=self.F(34, 600), fill=self.ink, anchor="mm")
         d.text((W // 2, y + 260), "Free · no ads · no accounts", font=self.F(30, 500), fill=self.ink, anchor="mm")
         self.footer(d, "Not affiliated with McDonald's. Prices from eBay US listings; not advice.")
         return img

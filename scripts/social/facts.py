@@ -103,7 +103,8 @@ def build(root, today=None, social_dir="social"):
                 continue
             name = f"{c['name']} {word}" if group else c["name"]
             fid = {"ask": F.add(iid, "typical eBay asking price today, shipping included", latest["median"], money(latest["median"])),
-                   "listings": F.add(iid, "listings priced today", latest["count"], f"{latest['count']} listings")}
+                   "listings": F.add(iid, "listings priced today", latest["count"],
+                                         f"{latest['count']} listing{'s' if latest['count'] != 1 else ''}")}
             singles += latest["median"]
             ch = change(series_data["history"].get(iid, []), today)
             if ch:

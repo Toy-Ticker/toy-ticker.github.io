@@ -59,6 +59,8 @@ One Instagram carousel a day, drafted at 7pm Pacific by the local scheduled task
 | Fri | SET OR SINGLES | Complete set vs singles, per series |
 | Sat | GUESS THE PRICE | Quiz: cover hides the price, slide 2 reveals what buyers paid |
 
+Each draft also comes with `story.jpg` (the cover on a 9:16 Story, with space for a link sticker to toy-ticker.github.io) and `reel.mp4` (a silent ~19 s slideshow of the slides; add trending audio in the app). Post the carousel, share it or story.jpg to your Story with a link sticker, and post the Reel for reach beyond followers.
+
 After Dec 14: Thursday becomes AFTER THE PROMO and Friday THEN VS NOW (needs facts for finished series; not built yet). The schedule lives in `SCHEDULE` in `scripts/social/draft.py`; series rules are in `scripts/social/prompt.md`.
 
 ## Content pillars

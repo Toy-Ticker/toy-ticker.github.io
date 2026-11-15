@@ -28,8 +28,9 @@ You are the writer. Code picks the facts, checks your work and draws the slides.
    .venv/bin/python scripts/social/draft.py --post <folder>/post.json
    ```
    If it prints problems, fix `post.json` and run it again, up to 3 attempts. If problems remain, leave them; the owner will see them in `post.json` under `problems`.
+   The same command also writes `<folder>/story.jpg` (1080x1920 Story with room for the link sticker) and `<folder>/reel.mp4` (silent slideshow Reel). Rerun it after any fix so they match the slides.
 
-5. **Look at every slide** in `<folder>/slides/`. Fix anything cut off, overlapping or hard to read by shortening text in post.json and rerunning step 4.
+5. **Look at every slide** in `<folder>/slides/` and at `story.jpg`. Fix anything cut off, overlapping or hard to read by shortening text in post.json and rerunning step 4.
 
 ## Don't
 
@@ -39,4 +40,4 @@ You are the writer. Code picks the facts, checks your work and draws the slides.
 
 ## Report
 
-End with: the series, the folder, the cover headline, the caption, and whether the check passed. Keep it short so it reads well as a notification.
+End with: the series, the folder, the cover headline, the caption, whether the check passed, and whether story.jpg and reel.mp4 were made. Keep it short so it reads well as a notification.

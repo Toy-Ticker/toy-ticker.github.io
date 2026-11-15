@@ -128,6 +128,15 @@ def main():
         render(post, f, folder, ROOT)
     except Exception as e:  # noqa: BLE001 - a broken post still gets a PR, marked for editing
         problems.append(f"Slides could not be drawn: {e!r}")
+    else:
+        # Story image and Reel video from the same slides (Reel only where ffmpeg is available).
+        import extras
+        try:
+            extras.story(folder, f, ROOT)
+            if not extras.reel(folder, f, ROOT):
+                print("(no ffmpeg: skipped reel.mp4)")
+        except Exception as e:  # noqa: BLE001 - extras never block the post
+            print(f"! story/reel: {e!r}")
     (folder / "post.json").write_text(json.dumps({**post, "problems": problems}, indent=1, ensure_ascii=False))
     (folder / "caption.txt").write_text(caption_text(post))
     (folder / "pr.md").write_text(pr_body(post, f, problems, folder, args.branch))

@@ -110,9 +110,10 @@ class Slides:
 
     def footer(self, d, text=None, fids=()):
         """Source line; says "asking and sold prices" when the slide shows a sold price."""
-        kind = "asking and sold prices" if any(self.kind_of.get(f) == "sold" for f in fids) else "asking prices"
-        d.text((W // 2, H - 48), text or f"eBay US {kind}, shipping included · {self.day}",
-               font=self.F(24, 500), fill=self.ink, anchor="mm")
+        kind = "asking + sold prices" if any(self.kind_of.get(f) == "sold" for f in fids) else "asking prices"
+        line = text or f"toy-ticker.github.io  ·  eBay US {kind}, shipping incl.  ·  {self.day.rsplit(',', 1)[0]}"
+        d.text((W // 2, H - 48), line, font=fit_font(d, line, self.F, W - 2 * M, 24, 500, 18),
+               fill=self.ink, anchor="mm")
 
     def pill(self, d, x, y, text, dot=None):
         f = self.F(26, 700)
@@ -282,11 +283,13 @@ class Slides:
         img, d = self.canvas()
         d.text((W - M, 81), f"{n} / {total}", font=self.F(28, 600), fill=self.ink, anchor="rm")
         logo(d, W // 2 - 110, 300, 3.4)
-        y = text_block(d, (M, 600), s["headline"], self.F, W - 2 * M, 92, 700, self.ink, 3, 52, 1.04)
-        d.rounded_rectangle([M + 140, y + 50, W - M - 140, y + 150], radius=50, fill="#ffffff")
-        d.text((W // 2, y + 100), "Link in bio", font=self.F(48, 700), fill=INK, anchor="mm")
-        d.text((W // 2, y + 210), "toy-ticker.github.io", font=self.F(34, 600), fill=self.ink, anchor="mm")
-        d.text((W // 2, y + 260), "Free · no ads · no accounts", font=self.F(30, 500), fill=self.ink, anchor="mm")
+        y = text_block(d, (M, 580), s["headline"], self.F, W - 2 * M, 92, 700, self.ink, 3, 52, 1.04)
+        if s.get("subhead"):   # what they'll find on the site: the reason to tap
+            y = text_block(d, (M, y + 12), s["subhead"], self.F, W - 2 * M, 36, 500, self.ink, 2, 26)
+        d.rounded_rectangle([M + 140, y + 40, W - M - 140, y + 140], radius=50, fill="#ffffff")
+        d.text((W // 2, y + 90), "Tap the link in bio", font=self.F(46, 700), fill=INK, anchor="mm")
+        d.text((W // 2, y + 196), "toy-ticker.github.io", font=self.F(38, 700), fill=self.ink, anchor="mm")
+        d.text((W // 2, y + 246), "Free · no ads · no accounts", font=self.F(28, 500), fill=self.ink, anchor="mm")
         for dy, line in ((132, "Not affiliated with McDonald's or The Pokémon Company."),
                          (90, "Images: happymeal.com, pokemon.com")):
             d.text((W // 2, H - dy), line, font=self.F(24, 500), fill=self.ink, anchor="mm")

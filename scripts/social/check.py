@@ -13,7 +13,7 @@ BANNED = [
     "invest", "guaranteed", "sure thing", "before prices", "buy now", "act fast", "before it's too late",
     "price prediction", "predict", "skyrocket", "to the moon", "goldmine", "gold mine",
 ]
-LIMITS = {"cover": (40, 70), "ranked_list": (36, 0), "item": (36, 0), "highlight": (40, 0), "cta": (40, 0)}
+LIMITS = {"cover": (40, 70), "ranked_list": (36, 0), "item": (36, 0), "highlight": (40, 0), "cta": (40, 60)}
 NUMBER = re.compile(r"\$?\d[\d,]*(?:\.\d+)?%?")
 
 
@@ -110,7 +110,13 @@ def check(post, facts):
                 for fid in s.get("fact_ids", []):
                     fact_ok(where, fid, iid)
 
+    if slides and slides[-1].get("layout") == "cta":
+        sub = slides[-1].get("subhead", "")
+        if not sub:
+            errs.append("The cta slide needs a subhead saying what people will find on the site.")
     cap = post.get("caption", "")
+    if cap.lower().count("link in bio") < 2:
+        errs.append("The caption needs a call to action in the middle and at the end, each saying 'link in bio'.")
     if not 300 <= len(cap) <= 2200:
         errs.append(f"Caption is {len(cap)} characters; keep it between 300 and 900.")
     if "#" in cap:

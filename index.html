@@ -2006,13 +2006,21 @@ function renderDeals(all) {
     $("dealGrid").innerHTML = `<p class="note" style="margin:0">Deals appear once prices are collected.</p>`; return;
   }
   const label = (r) => `${r.name}${isGroup() ? (kindOf(r) === "cards" ? " card" : " toy") : ""}`;
-  const withDeals = [...new Map(every.map(x => [x.r.id, x.r])).values()].sort((a, b) => String(a.number).localeCompare(String(b.number), undefined, { numeric: true }));
-  if (DEAL_ITEM && !withDeals.some(r => r.id === DEAL_ITEM)) DEAL_ITEM = "";
+  // Same items as the Items tab: every item in view, by number, grouped Toys / Cards in a group.
+  // Items with no deal today stay listed but can't be picked, so the list never looks short.
+  const hasDeal = new Set(every.map(x => x.r.id));
+  const byNo = (a, b) => String(a.number).localeCompare(String(b.number), undefined, { numeric: true });
+  const opt = (r) => `<option value="${r.id}" ${r.id === DEAL_ITEM ? "selected" : ""}${hasDeal.has(r.id) ? "" : " disabled"}>#${esc(r.number)} ${esc(r.name)}${hasDeal.has(r.id) ? "" : " · no deals"}</option>`;
+  const kinds = [...new Set(all.map(kindOf))];
+  const itemOpts = isGroup() && kinds.length > 1
+    ? members(SID).map(id => DATA.sets[id].kind).filter(k => kinds.includes(k)).map(k =>
+        `<optgroup label="${k === "cards" ? "Cards" : "Toys"}">${all.filter(r => kindOf(r) === k).sort(byNo).map(opt).join("")}</optgroup>`).join("")
+    : all.slice().sort(byNo).map(opt).join("");
+  if (DEAL_ITEM && !hasDeal.has(DEAL_ITEM)) DEAL_ITEM = "";
   $("dealCtrls").innerHTML = `<span class="seg2" role="group" aria-label="Sort deals">${Object.entries(DEAL_SORTS).map(([k, v]) =>
       `<button type="button" data-sort="${k}" aria-pressed="${DEAL_SORT === k}">${v.label}</button>`).join("")}</span>
     <label><input type="checkbox" id="dealProfit" ${DEAL_PROFIT ? "checked" : ""}> Profitable flips only</label>
-    <select id="dealItem" aria-label="Show deals for one item"><option value="">All items</option>${withDeals.map(r =>
-      `<option value="${r.id}" ${r.id === DEAL_ITEM ? "selected" : ""}>#${esc(r.number)} ${esc(label(r))}</option>`).join("")}</select>`;
+    <select id="dealItem" aria-label="Show deals for one item"><option value="">All items</option>${itemOpts}</select>`;
   $("dealCtrls").querySelectorAll("[data-sort]").forEach(b => b.onclick = () => { DEAL_SORT = b.dataset.sort; DEAL_PAGE = 1; renderDeals(all); });
   $("dealProfit").onchange = (e) => { DEAL_PROFIT = e.target.checked; DEAL_PAGE = 1; renderDeals(all); };
   $("dealItem").onchange = (e) => { DEAL_ITEM = e.target.value; DEAL_PAGE = 1; renderDeals(all); };
@@ -2024,7 +2032,7 @@ function renderDeals(all) {
   DEAL_PAGE = Math.min(DEAL_PAGE, pages);
   const flips = every.filter(x => x.p > 0).length;
   $("dealsNote").textContent = every.length
-    ? `${every.length} listing${every.length > 1 ? "s" : ""} for ${withDeals.length} item${withDeals.length > 1 ? "s" : ""} asking 20%+ under today's median${flips ? ` · ${flips} would flip for a profit` : ""} · prices change fast, check before you buy`
+    ? `${every.length} listing${every.length > 1 ? "s" : ""} for ${hasDeal.size} item${hasDeal.size > 1 ? "s" : ""} asking 20%+ under today's median${flips ? ` · ${flips} would flip for a profit` : ""} · prices change fast, check before you buy`
     : "nothing 20%+ under today's median right now";
   const extraRow = ({ d, p }) => `<a href="${esc(aff(d.url, "deal-more"))}" target="_blank" rel="sponsored noopener" title="${esc(d.title)}">
       <b>${usd(d.price)}</b><span class="muted">${Math.round(d.below * 100)}% under</span><span class="t">${esc(d.title)}</span>

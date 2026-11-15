@@ -42,7 +42,7 @@
   [hidden] { display: none !important; }
 
   /* Display font + logo */
-  h1, h2, .hero h2, .hero-value b, .stat b, .tile-price, .since b, .mine .big, .tile-name {
+  h1, h2, .hero h2, .hero-value b, .stat b, .tile-price, .mine .big, .tile-name {
     font-family: var(--display); }
   header h1 { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 30px; }
   .tile-name { font-weight: 600; }
@@ -82,7 +82,6 @@
   nav.series a[aria-current="page"] { background: var(--text); border-color: var(--text); color: var(--panel); }
   nav.series a[aria-current="page"] .live { background: #3ddc84; }
   nav.series .all-btn { color: var(--muted); padding-left: 14px; }
-  nav.series .all-btn[aria-expanded="true"] { color: var(--text); border-color: var(--text); }
   .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; display: none; place-items: center;
                width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); background: var(--panel);
                color: var(--text); cursor: pointer; font-size: 16px; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
@@ -90,29 +89,6 @@
   .nav-wrap.can-l .nav-arrow.l, .nav-wrap.can-r .nav-arrow.r { display: grid; }
   @media (hover: none) { .nav-wrap .nav-arrow { display: none !important; } }
 
-  /* Series browser */
-  .browser { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin: 8px 0 16px; }
-  .browser-head { display: flex; flex-wrap: wrap; gap: 10px 16px; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-  .browser-head h3 { margin: 0; font-family: var(--display); font-size: 19px; }
-  .browser-head small { color: var(--muted); font-size: 13px; font-weight: 400; font-family: inherit; }
-  .browser-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .chips { display: inline-flex; gap: 4px; background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
-  .chips button { font: inherit; font-size: 13px; border: 0; background: none; color: var(--muted); padding: 4px 12px; border-radius: 999px; cursor: pointer; }
-  .chips button[aria-pressed="true"] { background: var(--text); color: var(--panel); }
-  #bFilter { font: inherit; font-size: 14px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line);
-             background: var(--bg); color: var(--text); width: 170px; }
-  .b-close { font: inherit; border: 0; background: none; color: var(--muted); font-size: 16px; cursor: pointer; padding: 4px 8px; }
-  .b-year { font-family: var(--display); font-weight: 600; font-size: 15px; color: var(--muted); margin: 14px 0 8px; }
-  .b-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
-  .b-card { display: block; text-align: left; font: inherit; color: var(--text); cursor: pointer; background: var(--bg);
-            border: 1px solid var(--line); border-left: 6px solid var(--bc, var(--line)); border-radius: 0 12px 12px 0; padding: 12px 14px; }
-  .b-card:hover, .b-card:focus-visible { background: var(--panel); box-shadow: 0 6px 18px rgba(0,0,0,.08); outline: none; }
-  .b-card.cur { box-shadow: 0 0 0 2px var(--text); }
-  .b-card b { display: block; font-family: var(--display); font-size: 16px; font-weight: 600; }
-  .b-card small { display: block; color: var(--muted); font-size: 12px; }
-  .b-val { display: flex; justify-content: space-between; align-items: baseline; margin-top: 6px; }
-  .b-val span:first-child { font-family: var(--display); font-weight: 600; font-size: 18px; font-variant-numeric: tabular-nums; }
-  .b-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
   .series-head { margin: 16px 0 16px; }
   .series-head h2 { margin: 0; font-size: 20px; }
   .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
@@ -306,6 +282,11 @@
   .resell h4 small { font-family: var(--body); font-weight: 500; font-size: 12px; color: #8a4b00; background: #fdf0d8; border-radius: 999px; padding: 1px 8px; }
   .resell ul { margin: 0; padding-left: 18px; display: grid; gap: 3px; }
   .resell .foot { margin-top: 8px; font-size: 12px; color: var(--muted); }
+  .resell details { margin-top: 8px; font-size: 12px; color: var(--muted); }
+  .resell summary { cursor: pointer; }
+  .resell summary b { color: var(--accent); font-weight: 600; }
+  .resell details .flipbar { margin: 8px 0 0; }
+  .item-deals .see-all { margin-top: 10px; font: inherit; font-size: 14px; font-weight: 600; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; }
   .deal .scarce { font-size: 12px; font-weight: 700; color: #8a4b00; background: #fdf0d8; border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
   .deal .off { font-size: 12px; font-weight: 700; color: #17663b; background: #e3f1ea; border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
   .deal small { display: block; color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -415,7 +396,7 @@
     .setbox .sb-save { grid-column: 1 / -1; justify-self: start; }
   }
 
-  /* Status pills (calendar, series browser) */
+  /* Status pills (calendar) */
   .chip { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
           border-radius: 999px; padding: 2px 8px; background: var(--bg); color: var(--muted); border: 1px solid var(--line); white-space: nowrap; }
   .chip.now { background: #e3f1ea; color: #17663b; border-color: transparent; }
@@ -435,6 +416,9 @@
   .cal-count p span { display: block; color: var(--muted); font-size: 13px; }
   .cal-row:last-child { border-bottom: 0; }
   a.cal-row:hover { background: var(--bg); }
+  .cal-row.cur .cal-name span { font-weight: 700; }
+  .calendar.flash .cal { animation: calflash 1.2s ease-out; }
+  @keyframes calflash { from { box-shadow: 0 0 0 3px var(--accent); } to { box-shadow: 0 0 0 3px transparent; } }
   .cal-when { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
   .cal-name { display: flex; align-items: center; gap: 9px; min-width: 0; font-weight: 600; }
   .cal-name i { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--cal, var(--line)); }
@@ -451,9 +435,14 @@
   }
   footer p { margin: 0 0 8px; }
   header { position: relative; }
-  .about-link { position: absolute; right: 0; top: 6px; font-size: 14px; font-weight: 600; text-decoration: none;
+  .head-links { position: absolute; right: 0; top: 6px; display: flex; gap: 8px; }
+  .about-link, .coffee-link { font-size: 14px; font-weight: 600; text-decoration: none; white-space: nowrap;
                 color: var(--text); border: 1px solid var(--line); background: var(--panel); padding: 6px 14px; border-radius: 999px; }
   .about-link:hover { border-color: var(--accent); color: var(--accent); }
+  .coffee-link { background: #ffd23f; border-color: #f2c200; color: #1d1d1b; }
+  .coffee-link:hover { filter: brightness(1.08); }
+  /* Phones: the title leaves room for an icon-only coffee button next to About. */
+  @media (max-width: 520px) { .coffee-link .long { display: none; } .about-link, .coffee-link { padding: 6px 12px; } }
   footer .disclaimer { padding-top: 8px; border-top: 1px solid var(--line); }
 
   /* Hero banner: light card; the series colour lives in the top band, status pill and price.
@@ -483,8 +472,6 @@
               color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; margin-right: 5px; vertical-align: 1px; }
   .setbox .sb + .sb { border-top: 1px solid var(--line); padding-top: 10px; }
   .hero-desc { margin: 8px 0 0; font-size: 14px; line-height: 1.5; max-width: 600px; color: var(--text); opacity: .85; }
-  .b-card .b-desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-                    font-size: 12px; line-height: 1.4; color: var(--muted); margin-top: 6px; }
   .hero-value { text-align: right; }
   .hero-value b { display: block; font-size: 40px; line-height: 1.1; font-weight: 600; color: var(--hacc); font-variant-numeric: tabular-nums; }
   .hero-value small { color: var(--muted); font-size: 13px; }
@@ -621,19 +608,14 @@
   .legend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 8px; font-size: 12px; color: var(--muted); }
   .legend i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
   .ins-sub { font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin: 14px 0 0; }
-  .since { display: grid; grid-template-columns: 1fr; gap: 20px; align-items: center;
-           background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin-bottom: 20px; }
-  .since small { color: var(--muted); font-size: 13px; }
-  .since b { display: block; font-size: 30px; font-variant-numeric: tabular-nums; line-height: 1.2; }
-  .since-sub { font-size: 13px; color: var(--muted); }
-  .since-movers { font-size: 13px; margin-top: 8px; display: grid; gap: 2px; }
+  .hero-chart { margin-top: 14px; }
+  .hero-chart > summary { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--accent); }
   .set-chart { margin-top: 18px; }
   .set-chart h3 { margin: 0 0 2px; font-size: 17px; }
   .set-chart .sub { color: var(--muted); font-size: 13px; }
   .set-chart .chart-box { position: relative; height: 300px; margin-top: 10px; }
   .set-chart .note { font-size: 13px; color: var(--muted); margin-top: 8px; }
   @media (max-width: 640px) {
-    .since { grid-template-columns: 1fr; }
     .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
     .tile { padding: 8px; }
     .tile-price { font-size: 18px; }
@@ -679,7 +661,10 @@
 <body>
 <div class="wrap">
   <header>
-    <a class="about-link" href="about.html">About</a>
+    <div class="head-links">
+      <a class="coffee-link" href="https://ko-fi.com/toyticker" target="_blank" rel="noopener" title="Support Toy Ticker on Ko-fi" aria-label="Buy me a coffee on Ko-fi">☕<span class="long"> Buy me a coffee</span></a>
+      <a class="about-link" href="about.html">About</a>
+    </div>
     <h1><a class="home" href="./" aria-label="Toy Ticker home"><img class="logo" src="assets/logo.svg" alt="" width="44" height="44">Toy <span>Ticker</span></a></h1>
     <div class="meta" id="meta">Loading…</div>
     <div class="search" role="search">
@@ -695,21 +680,6 @@
     <button class="nav-arrow r" type="button" aria-label="Scroll series right">›</button>
   </div>
 
-  <section class="browser" id="browser" hidden aria-label="All Happy Meal series">
-    <div class="browser-head">
-      <h3>All Happy Meal series <small id="bCount"></small></h3>
-      <div class="browser-tools">
-        <div class="chips" role="group" aria-label="Filter by type">
-          <button data-kind="all" aria-pressed="true">All</button>
-          <button data-kind="toys" aria-pressed="false">Toys</button>
-          <button data-kind="cards" aria-pressed="false">Cards</button>
-        </div>
-        <input id="bFilter" type="search" placeholder="Filter series…" aria-label="Filter series">
-        <button class="b-close" id="bClose" aria-label="Close series list">✕</button>
-      </div>
-    </div>
-    <div id="bList"></div>
-  </section>
 
   <section class="hero" id="hero">
     <div class="hero-top">
@@ -729,6 +699,7 @@
     </div>
     <div class="hero-returns" id="sReturns"></div>
     <div class="setbox" id="sSet" hidden></div>
+    <details class="hero-chart" id="sChart" hidden><summary>Complete-set price chart</summary><div id="setCharts"></div></details>
     <div class="hero-foot">
       <span id="sFacts"></span>
       <button class="share-btn" id="shareBtn" type="button">↗ Share</button>
@@ -742,21 +713,8 @@
   <nav class="sections" role="tablist" aria-label="Series sections">
     <button role="tab" data-sec="items" aria-selected="true">Items</button>
     <button role="tab" data-sec="deals" aria-selected="false">Deals <span class="count" id="cDeals"></span></button>
-    <button role="tab" data-sec="market" aria-selected="false">Market</button>
     <button role="tab" data-sec="mine" aria-selected="false">🎁 My Happy Meals <span class="count" id="cMine"></span></button>
   </nav>
-
-  <div class="sec" data-sec="market" hidden>
-    <div id="setCharts"></div>
-    <section class="since" id="since" hidden>
-      <div class="since-text">
-        <small id="sinceLabel">Biggest movers</small>
-        <div class="since-movers" id="sinceMovers"></div>
-      </div>
-    </section>
-    <p class="note" id="trendsEmpty" hidden>Movers appear once there are at least two days of prices.</p>
-    <div class="ins-grid" id="insights"></div>
-  </div>
 
   <div class="sec" data-sec="deals" hidden>
     <section class="deals-card" id="deals">
@@ -800,6 +758,8 @@
         <option value="price:1">Price: low to high</option>
         <option value="d1:-1">Biggest 1-day rise</option>
         <option value="d1:1">Biggest 1-day drop</option>
+        <option value="since:-1">Biggest rise since tracking began</option>
+        <option value="since:1">Biggest drop since tracking began</option>
         <option value="number:1">Number</option>
         <option value="name:1">Name</option>
       </select>
@@ -844,8 +804,8 @@
     </div>
   </section>
 
-  <section class="calendar">
-    <div class="ret-head"><h3>Happy Meal calendar<small>2026 US promotions, newest first</small></h3></div>
+  <section class="calendar" id="calendar" aria-label="All Happy Meal series">
+    <div class="ret-head"><h3>Happy Meal calendar<small>2026 US promotions, newest first · complete-set price on eBay</small></h3></div>
     <div class="cal-count" id="calCount" hidden></div>
     <div class="cal" id="cal"></div>
   </section>
@@ -981,7 +941,7 @@ const confBadge = (r, withCount) => {
 };
 
 // Series histories are loaded on demand (data/series/<id>.json); until then rows use the
-// index's "latest" summary, which is enough for search, the series browser and the calendar.
+// index's "latest" summary, which is enough for search and the calendar.
 const LOADED = new Set(), LOADING = {};
 function loadSeries(sid) {
   if (isGroup(sid)) return Promise.all(members(sid).map(loadSeries));
@@ -1027,7 +987,7 @@ function rowsFor(sid) {
     });
 }
 
-// Tabs show the newest few series (plus the one you're on); everything else lives in the series browser.
+// Tabs show the newest few series (plus the one you're on); "All" jumps to the calendar, which lists every series.
 const NAV_TABS = 6;
 const seriesColor = (id) => THEMES[id]?.chart ||
   ["#d85a30", "#1d9e75", "#378add", "#d4537e", "#7f77dd", "#ba7517", "#639922"][[...id].reduce((h, ch) => h + ch.charCodeAt(0), 0) % 7];
@@ -1039,11 +999,14 @@ function renderNav() {
   $("nav").innerHTML = tabs.map(([id, s]) =>
     `<a href="?s=${id}" data-s="${id}" ${id === SID ? 'aria-current="page"' : ""} title="${esc(s.name)}${s.current ? " · in restaurants now" : ""}" style="--dot:${seriesColor(id)}">` +
     `<span class="dot"></span>${esc(THEMES[id]?.tab || s.tab || s.name)}${s.current ? '<span class="live" aria-label="in restaurants now"></span>' : ""}</a>`).join("") +
-    `<button class="all-btn" id="allBtn" aria-expanded="${!$("browser").hidden}" aria-controls="browser">All ${list.length} ▾</button>`;
+    `<button class="all-btn" id="allBtn" type="button" title="Jump to the Happy Meal calendar">All ${list.length} ↓</button>`;
   $("nav").querySelectorAll("a").forEach(a => a.onclick = (e) => {
     e.preventDefault(); history.pushState(null, "", a.getAttribute("href")); switchTo(a.dataset.s);
   });
-  $("allBtn").onclick = () => toggleBrowser();
+  $("allBtn").onclick = () => {
+    const cal = $("calendar"); cal.scrollIntoView({ block: "start", behavior: "smooth" });
+    cal.classList.remove("flash"); void cal.offsetWidth; cal.classList.add("flash");
+  };
   const nav = $("nav"), cur = nav.querySelector('[aria-current="page"]');
   if (cur) {
     const N = nav.getBoundingClientRect(), C = cur.getBoundingClientRect();
@@ -1117,17 +1080,22 @@ function showSection(sec, scroll = true) {
   }
   document.querySelectorAll(".sec[data-sec]").forEach(d => d.hidden = d.dataset.sec !== sec);
   if (sec !== "items") $("detail").hidden = true;
-  if (sec === "market") { SET_CHARTS.forEach(c => c.resize()); renderInsights(); }
   if (sec === "mine") renderMineTab();
   if (scroll) document.querySelector(".sections").scrollIntoView({ block: "nearest", behavior: "smooth" });
 }
 
-// Series browser: every series grouped by year, filterable by type and name.
-let B_KIND = "all";
-function toggleBrowser(open = $("browser").hidden) {
-  $("browser").hidden = !open;
-  $("allBtn")?.setAttribute("aria-expanded", String(open));
-  if (open) { renderBrowser(); $("bFilter").focus({ preventScroll: true }); }
+
+// A series' headline value: its complete set(s) on eBay when every part has one (as in the header), else the sum of item medians.
+function seriesValue(sid) {
+  const parts = members(sid).map(id => DATA.sets[id].fullSet?.history || []);
+  if (parts.every(h => h.length)) {
+    const by = parts.map(h => new Map(h.map(x => [x.date, x.median])));
+    const days = [...by[0].keys()].filter(d => by.every(b => b.get(d) != null)).sort();
+    const sum = (d) => by.reduce((t, b) => t + b.get(d), 0);
+    if (days.length) return { total: sum(days.at(-1)), d1: days.length > 1 ? sum(days.at(-1)) / sum(days.at(-2)) - 1 : null };
+  }
+  const m = seriesSummary(sid);
+  return m.priced ? { total: m.total, d1: m.d1 } : null;
 }
 function seriesSummary(sid) {
   const rows = rowsFor(sid), priced = rows.filter(r => r.price != null);
@@ -1135,43 +1103,6 @@ function seriesSummary(sid) {
   const prev = priced.reduce((t, r) => t + (r.d1 != null ? r.price / (1 + r.d1) : r.price), 0);
   const moved = priced.some(r => r.d1 != null);  // weekly series have no 1-day change
   return { n: rows.length, priced: priced.length, total, d1: moved && prev ? total / prev - 1 : null };
-}
-function renderBrowser() {
-  const q = fold($("bFilter").value.trim());
-  const today = new Date().toISOString().slice(0, 10);
-  const list = shownSets()
-    .filter(([, s]) => B_KIND === "all" || s.kind === "mixed" || (s.kind === "cards") === (B_KIND === "cards"))
-    .filter(([, s]) => !q || fold(`${s.name} ${s.franchise || ""} ${s.description || ""} ${(s.start || "").slice(0, 4)}`).includes(q))
-    .sort((a, b) => (b[1].start || "").localeCompare(a[1].start || ""));
-  $("bCount").textContent = `${shownSets().length} tracked`;
-  const years = [...new Set(list.map(([, s]) => (s.start || "Undated").slice(0, 4)))];
-  $("bList").innerHTML = years.map(y => `<div class="b-year">${y}</div><div class="b-grid">` +
-    list.filter(([, s]) => (s.start || "Undated").slice(0, 4) === y).map(([id, s]) => {
-      const m = seriesSummary(id);
-      const live = s.current || (s.start <= today && (!s.end || s.end >= today));
-      return `<button class="b-card ${id === SID ? "cur" : ""}" data-s="${id}" style="--bc:${seriesColor(id)}">
-        <b>${esc(s.name)}</b>
-        <small>${fmtDate(s.start)}${s.end ? " – " + fmtDate(s.end) : ""} · ${m.n} ${kindWord(s)}</small>
-        ${s.description ? `<span class="b-desc">${esc(s.description)}</span>` : ""}
-        <div class="b-val"><span>${m.priced ? usd(m.total) : "—"}</span>${m.d1 != null ? `<span class="${cls(m.d1)}">${pct(m.d1)} 1d</span>` : ""}</div>
-        <div class="b-tags">${live ? '<span class="chip now">Now</span>' : '<span class="chip">Ended</span>'}${s.refresh === "weekly" ? '<span class="chip" title="Older series are re-priced once a week">Weekly prices</span>' : ""}</div>
-      </button>`;
-    }).join("") + `</div>`).join("") || `<p class="note">No series match.</p>`;
-  $("bList").querySelectorAll(".b-card").forEach(b => b.onclick = () => {
-    toggleBrowser(false);
-    if (b.dataset.s !== SID) history.pushState(null, "", `?s=${b.dataset.s}`);
-    switchTo(b.dataset.s);
-  });
-}
-function wireBrowser() {
-  $("bFilter").oninput = renderBrowser;
-  $("bClose").onclick = () => toggleBrowser(false);
-  document.querySelectorAll(".chips [data-kind]").forEach(b => b.onclick = () => {
-    B_KIND = b.dataset.kind;
-    document.querySelectorAll(".chips [data-kind]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
-    renderBrowser();
-  });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("browser").hidden) toggleBrowser(false); });
 }
 
 // Animated switch between series: slide in the direction of the tab, count numbers up.
@@ -1218,6 +1149,7 @@ function go(sid) {
   if (!isGroup()) KIND = "all";
   selected = null; $("detail").hidden = true;
   const s = series();
+  $("cal").querySelectorAll(".cal-row[data-s]").forEach(r => r.classList.toggle("cur", r.dataset.s === SID));
   document.title = `${s.name} · Toy Ticker`;
   // Search engines that run JS: the static series page is the one to index.
   document.querySelector('link[rel="canonical"]').href = `https://nglungfai.github.io/toy-ticker/s/${SID}/`;
@@ -1252,6 +1184,9 @@ function render() {
   const priced = all.filter(r => r.price != null);
   const total = priced.reduce((s, r) => s + r.price, 0);
   priced.slice().sort((a, b) => b.price - a.price).forEach((r, i) => { r.rank = i + 1; r.share = total ? r.price / total : 0; });
+  // Change since the first day of tracking, for the "since tracking began" sorts.
+  const first = [...new Set(full.flatMap(r => r.h.map(p => p.date)))].sort()[0];
+  for (const r of all) { const a = r.h.find(p => p.date === first)?.median; r.since = a && r.price != null && r.h.length > 1 ? r.price / a - 1 : null; }
 
   const onlyMine = $("ownedOnly").checked;
   const rows = all.filter(r => !onlyMine || owns(r.id)).sort((a, b) => {
@@ -1284,9 +1219,8 @@ function render() {
     days ? "" : "Price tracking starts with the next daily update",
     series().refresh === "weekly" ? "updated weekly" : ""].filter(Boolean).join(" · ");
   $("empty").hidden = m.priced > 0;
-  renderSince(all);
+  renderSetCharts();
   renderDeals(all);
-  if (SECTION === "market") renderInsights();
   if (selected && !$("detail").hidden) renderResell(selected);
   const owned = full.filter(r => owns(r.id)).length;
   $("cMine").textContent = owned ? `${owned}/${full.length}` : "";
@@ -1307,7 +1241,8 @@ function render() {
     </tr>`).join("");
 
   $("gallery").innerHTML = rows.map(r => {
-    const ch = r.d1 ?? r.d30, label = r.d1 != null ? "1d" : r.d30 != null ? "30d" : "";
+    const bySince = sortKey === "since";
+    const ch = bySince ? r.since : r.d1 ?? r.d30, label = bySince ? `since ${fmtDate(first).replace(/,? \d{4}$/, "")}` : r.d1 != null ? "1d" : r.d30 != null ? "30d" : "";
     const rank = r.rank ? `<span class="rank${r.rank <= 3 ? " r" + r.rank : ""}">${r.rank === 1 ? "★ Most valuable" : "#" + r.rank + (KIND === "all" && isGroup() ? " overall" : " in set")}</span>` : "";
     return `
     <div class="tile ${r.id === selected ? "sel" : ""} ${owns(r.id) ? "owned" : ""}" data-id="${r.id}" role="button" tabindex="0">
@@ -1664,19 +1599,6 @@ function renderAuction(r) {
     <p>Real sales: eBay auctions for this item that ended with bids, final bid plus shipping.${f.n < 3 ? " Few sales so far, so treat it as a rough guide." : ""}</p>`;
 }
 // Series-wide: how much more sealed toys or PSA 10 cards ask, as the median of each item's ratio.
-function variantPremium(sid) {
-  const out = {};
-  for (const id of members(sid)) {
-    const rows = rowsFor(id), ratios = [];
-    for (const r of rows) {
-      const f = variantFacts(r);
-      if (f?.type === "cond") ratios.push(f.prem);
-      else if (f?.type === "graded" && f.g.psa10?.count >= MIN_VARIANT && r.price) ratios.push(f.g.psa10.median / r.price);
-    }
-    if (ratios.length >= 2) out[DATA.sets[id].kind] = { x: ratios.sort((a, b) => a - b)[Math.floor(ratios.length / 2)], n: ratios.length };
-  }
-  return out;
-}
 // ---------- Reseller math: what you'd take home after eBay fees and postage ----------
 // Defaults are rough: eBay's fee for this kind of item is about 13% of the total (item + shipping the buyer pays)
 // plus a small per-order charge, and fees vary by category and seller. Everything is editable and saved in this browser.
@@ -1764,31 +1686,6 @@ function insMeal() {
     ${insBars(rank.map(r => ({ label: THEMES[r.id]?.short || r.s.name, v: r.m.ev, cur: r.id === SID, c: seriesColor(r.id) })), usd)}
     <div class="foot">Assumes every item is equally likely and uses today's median asking prices incl. shipping. A seller pockets less after eBay fees and postage. Change the meal price above.</div></div>`;
 }
-function insChase() {
-  const blocks = members(SID).map(id => {
-    const rows = rowsFor(id).filter(r => r.price != null).sort((a, b) => b.price - a.price);
-    if (rows.length < 3) return "";
-    const a = avg(rows.map(r => r.price)), total = rows.reduce((t, r) => t + r.price, 0), top = rows[0];
-    const top3 = rows.slice(0, 3).reduce((t, r) => t + r.price, 0) / total;
-    const holo = rows.filter(r => r.rarity === "Holo"), plain = rows.filter(r => r.rarity !== "Holo");
-    const prem = holo.length && plain.length ? avg(holo.map(r => r.price)) / avg(plain.map(r => r.price)) : null;
-    const word = DATA.sets[id].kind === "cards" ? "card" : "toy";
-    return `${isGroup() ? `<p class="ins-sub">${word === "card" ? "Cards" : "Toys"}</p>` : ""}
-      <button type="button" class="chase-top" data-open="${top.id}" title="Open ${esc(top.name)}">
-        ${thumb(top, "sm", false)}<span><small>Most valuable ${word}</small><b>#${esc(top.number)} ${esc(top.name)}</b><em>${usd(top.price)} · open prices →</em></span></button>
-      <p>The most valuable ${word} is worth <b>${(top.price / a).toFixed(1)}×</b> the average ${word} (${usd(a)}). The top 3 make up <b>${Math.round(top3 * 100)}%</b> of the set's value.
-      ${prem ? ` Holo cards average <b>${usd(avg(holo.map(r => r.price)))}</b> vs ${usd(avg(plain.map(r => r.price)))} for the rest: a <b>${prem.toFixed(1)}×</b> holo premium.` : ""}</p>`;
-  }).join("");
-  const prem = variantPremium(SID);
-  const t = prem.toys, sealedNote = !t ? "" : t.x >= 1.1
-    ? `<p>Toys still <b>sealed in their package</b> ask <b>${t.x.toFixed(1)}×</b> the other listings (median across ${t.n} toys): keep them sealed if you might sell.</p>`
-    : t.x <= 0.9 ? `<p>Sealed toys ask <b>less</b> than the other listings here (${t.x.toFixed(1)}×, across ${t.n} toys), so opening them costs nothing.</p>`
-    : `<p>Sealed and opened toys ask <b>about the same</b> here (across ${t.n} toys), so opening them costs nothing.</p>`;
-  const extra = sealedNote +
-    (prem.cards ? `<p>A <b>PSA 10</b> graded card asks <b>${prem.cards.x.toFixed(1)}×</b> a raw copy (median across ${prem.cards.n} cards).</p>` : "");
-  return `<div class="ins"><h4>The chase</h4><p class="q">Did you get a good one?</p>${blocks || `<p class="wait">Needs at least 3 priced items.</p>`}${extra}
-    <div class="foot">Based on today's median asking prices.</div></div>`;
-}
 function insSellers() {
   const parts = members(SID).map(id => ({ id, x: DATA.sets[id].insights?.sellers })).filter(p => p.x);
   if (!parts.length) return `<div class="ins"><h4>Who's selling</h4><p class="q">Collectors, or a few big resellers?</p>
@@ -1843,11 +1740,6 @@ function insSales() {
     ${insBars(items.slice(0, 6).map(x => ({ label: nm(x.key), v: x.v.sold, c: "#1a7f37" })), v => `${v} sold`)}
     <div class="foot">A listing counts as sold when eBay shows it sold out with sales. It's an estimate: sellers can also revise or relist. Collecting since ${fmtDate(since)}.</div></div>`;
 }
-function renderInsights() {
-  if (!DATA || !SID) return;
-  $("insights").innerHTML = insChase() + insSellers() + insDemand() + insSales();
-  $("insights").querySelectorAll("[data-open]").forEach(b => b.onclick = () => { KIND = "all"; showSection("items"); showDetail(b.dataset.open); });
-}
 
 // Chart event markers: a coloured line per event with a readable label pill at the top, e.g. "Promo ended".
 // Labels sit in headroom above the data (charts set y.grace) and stack into rows when they'd overlap.
@@ -1897,16 +1789,12 @@ const headroom = (k) => ({ afterDataLimits(sc) {
   // Room under the lowest line too, so it never sits on the axis and reads as zero.
   sc.min = Math.max(0, sc.min - (sc.max - sc.min) * .15);
   sc.max += (sc.max - sc.min || sc.max || 1) * k * (sc.chart.width < 500 ? 1.8 : 1); } });
-// Nov 14: listings with no shipping in search were filled at the median of paid shipping instead of $0.
-const DATA_FIXES = [{ date: "2026-11-14", label: "Shipping fix" }];
 function chartEvents(sid) {
   const s = DATA.sets[sid], own = (THEMES[sid] || DEFAULT_THEME).chart, ev = [];
   if (s.start) ev.push({ date: s.start, label: "In restaurants", color: own });
   if (s.end && !s.current) ev.push({ date: s.end, label: "Promo ended", color: "#5f5e5a" });
   for (const [id, o] of shownSets())
     if (id !== shownId(sid) && o.start) ev.push({ date: o.start, label: `${shortName(id)} launched`, color: (THEMES[id] || DEFAULT_THEME).chart });
-  // Site-wide data changes that moved every price, so a step on these days isn't read as the market.
-  for (const m of DATA_FIXES) ev.push({ ...m, color: css("--muted") });
   return ev.sort((a, b) => a.date.localeCompare(b.date));
 }
 
@@ -1963,7 +1851,7 @@ function dealTakeaways(all, every) {
   }).filter(Boolean);
   const best = every.slice().sort((a, b) => b.d.below - a.d.below)[0];
   const covered = new Set(every.map(x => x.r.id)).size;
-  lines.push(["Collectors", setLine.length ? setLine.join(" ")
+  lines.push(["", setLine.length ? setLine.join(" ")
     : best ? `The deepest discount is <b>${name(best.r)} at ${usd(best.d.price)}</b>, ${Math.round(best.d.below * 100)}% under its usual ${usd(best.r.price)}. ${covered} of ${all.length} have a listing 20%+ under.`
     : `Nothing is listed well under the going price today. Check back after the next update.`]);
   // Resellers: does any single deal pay after fees and postage? Sets vs singles has its own card below.
@@ -1982,13 +1870,13 @@ function dealTakeaways(all, every) {
   }
   if (sets.some(id => DATA.sets[id].fullSet?.history?.length && rowsFor(id).every(r => r.price != null)))
     resell += ` For splitting or building complete sets, see <a href="#dealsFlip" data-jump="dealsFlip">Reseller math</a> below.`;
-  lines.push(["Resellers", resell]);
-  return lines.map(([who, t]) => `<p><b class="who">${who}:</b> ${t}</p>`).join("");
+  lines.push(["If you resell", resell]);
+  return lines.map(([who, t]) => `<p>${who ? `<b class="who">${who}:</b> ` : ""}${t}</p>`).join("");
 }
 function resetDeals() { DEAL_PAGE = 1; DEAL_ITEM = ""; DEAL_OPEN.clear(); }
 function renderDeals(all) {
   flipBar("flipBarDeals", true);
-  $("dealsFlip").innerHTML = insFlip();
+  $("dealsFlip").innerHTML = insFlip() + insSales() + insSellers() + insDemand();
   const priced = all.some(r => r.price != null);
   const every = all.flatMap(r => (r.deals || []).map(d => ({ d, r, p: dealProfit(d, r) })));
   SCARCE = scarcity(SID);
@@ -2090,40 +1978,17 @@ function renderComplete(all) {
   </div>`;
 }
 
-// Ended series: how the full-set value moved since the promo left restaurants.
-function renderSince(all) {
-  const s = series();
-  const today = new Date().toISOString().slice(0, 10);
-  const ended = !s.current && s.end && s.end < today;
-  const dates = [...new Set(all.flatMap(r => r.h.map(p => p.date)))].sort();
-  $("since").hidden = dates.length < 2;
-  $("trendsEmpty").hidden = !$("since").hidden;
-  if ($("since").hidden) return renderSetCharts();
-  // Only count items priced on every day, so the total isn't skewed by items appearing/disappearing.
-  const full = all.filter(r => dates.every(d => r.h.some(p => p.date === d && p.median != null)));
-  const totals = dates.map(d => full.reduce((sum, r) => sum + r.h.find(p => p.date === d).median, 0));
-  const startIdx = Math.max(0, dates.findIndex(d => d > s.end));
-  const from = totals[startIdx], to = totals[totals.length - 1], ch = from ? to / from - 1 : null;
-  $("sinceLabel").textContent = dates[startIdx] > s.end
-    ? `Biggest movers since it left restaurants (${fmtDate(s.end)})` : `Biggest movers since tracking began (${fmtDate(dates[startIdx])})`;
-  const moves = full.map(r => {
-    const a = r.h.find(p => p.date === dates[startIdx]).median, b = r.last.median;
-    return { r, ch: b / a - 1 };
-  }).sort((a, b) => b.ch - a.ch);
-  const best = moves[0], worst = moves[moves.length - 1];
-  $("sinceMovers").innerHTML = best ? `
-    <span>Best: <b class="${cls(best.ch)}" style="display:inline;font-size:inherit">${pct(best.ch)}</b> ${esc(best.r.name)}</span>
-    <span>Worst: <b class="${cls(worst.ch)}" style="display:inline;font-size:inherit">${pct(worst.ch)}</b> ${esc(worst.r.name)}</span>` : "";
-  renderSetCharts();
-}
 
 // Trends: each complete set on the same chart as an item: what whole sets sold for (green), what
 // complete-set listings ask (red line and band), and how many are listed (bars).
-let SET_CHARTS = [];
+let SET_CHARTS = [], CHART_OPEN = false;
 function renderSetCharts() {
   SET_CHARTS.forEach(c => c.destroy());
   SET_CHARTS = [];
   const sets = members(SID).map(sid => [sid, DATA.sets[sid]]).filter(([, s]) => s?.fullSet?.history?.length);
+  $("sChart").hidden = !sets.length;
+  $("sChart").ontoggle = () => { CHART_OPEN = $("sChart").open; SET_CHARTS.forEach(c => c.resize()); };
+  $("sChart").open = CHART_OPEN;
   $("setCharts").innerHTML = sets.map(([sid, s]) => `<section class="set-chart">
       <h3>Complete ${esc(s.name)} set</h3>
       <div class="sub">All ${s.fullSet.size} in one listing, shipping included · today ${usd(s.fullSet.history.at(-1).median)} median asking, ${s.fullSet.history.at(-1).count} listed</div>
@@ -2317,11 +2182,11 @@ function renderCalendar() {
       : e.id ? `<span class="chip">Ended</span>` : `<span class="chip">Not tracked</span>`;
     const when = `${short(e.start)}${e.end ? " – " + short(e.end) : ""}`;
     let val = "—";
-    if (e.id) { const m = seriesSummary(e.id); if (m.priced) val = `${usd(m.total)}${m.d1 != null ? `<small class="${cls(m.d1)}">${pct(m.d1)}</small>` : ""}`; }
+    if (e.id) { const v = seriesValue(e.id); if (v) val = `${usd(v.total)}${v.d1 != null ? `<small class="${cls(v.d1)}">${pct(v.d1)}</small>` : ""}`; }
     const body = `<span class="cal-when">${when}</span>
       <span class="cal-name"><i></i><span>${esc(e.name)}</span></span>${chip}
       <span class="cal-val">${val}</span><span class="cal-go">${e.id ? "→" : ""}</span>`;
-    return e.id ? `<a class="cal-row" href="?s=${e.id}" data-s="${e.id}" style="--cal:${e.color}" title="View ${esc(e.name)} prices">${body}</a>`
+    return e.id ? `<a class="cal-row${e.id === SID ? " cur" : ""}" href="?s=${e.id}" data-s="${e.id}" style="--cal:${e.color}" title="View ${esc(e.name)} prices">${body}</a>`
       : `<div class="cal-row" style="--cal:var(--line)">${body}</div>`;
   }).join("");
   renderCountdown(all.filter(e => e.id && (e.current || (e.start <= today && e.end >= today)) && e.end), short);
@@ -2504,8 +2369,6 @@ function showDetail(id) {
   ({ chart, weeks } = priceChart($("dChart"), r.h, sold, soldTo, chartEvents(SID)));
   renderItemReturns(id);
   renderResell(id);
-  $("dDeals").innerHTML = (r.deals || []).length
-    ? `<h4>Deals today</h4><div class="deal-grid">${r.deals.map(d => dealCard(d, r)).join("")}</div>` : "";
   $("dNote").textContent = (sold.length
     ? `The green steps are what people actually paid, shipping included: weekly median sold prices, each drawn across the days it covers (${fmtDate(weeks[0].date)} to ${fmtDate(weeks[weeks.length - 1].end)}). ` +
       (weeks.some(w => w.src === "terapeak") ? `Weeks up to ${fmtDate(soldTo)} come from eBay's Terapeak; after that, from sales Toy Ticker detects on the listings it follows. ` : `They come from sales Toy Ticker detects on the listings it follows. `) +
@@ -2516,22 +2379,18 @@ function showDetail(id) {
   $("detail").scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
-// "For resellers": facts from this item's own numbers, each shown only when there's enough data behind it.
+// "Market read": facts from this item's own numbers, each shown only when there's enough data behind it.
 // No buy/hold advice: the break-even price and the evidence, and the reader decides.
 const takeHome = (sale) => sale * (1 - FLIP.fee / 100) - FLIP.order - FLIP.post;
 function renderResell(id) {
   const r = rowsFor(SID).find(x => x.id === id), box = $("dResell");
-  if (!r || r.price == null) { box.hidden = true; return; }
+  if (!r || r.price == null) { box.hidden = true; if (r) renderItemDeals(r); return; }
   const own = DATA.sets[r.set], lines = [];
   // What it sells for: the last 4 weeks of sold medians, weighted by sales.
   const weeks = (DATA.sold[id] || []).slice(-4), nSold = weeks.reduce((t, w) => t + (w.count || 0), 0);
   const sold = nSold ? weeks.reduce((t, w) => t + w.median * (w.count || 0), 0) / nSold : null;
   const sale = sold ?? r.price * FLIP.at / 100, early = nSold < 5;
   const be = takeHome(sale);
-  lines.push(be > 0
-    ? `<b>Pays to resell if you buy at ${usd(be)} or less</b>, shipping included. That's selling at ${sold ? `the ${usd(sold)} it has been selling for` : `${FLIP.at}% of the ${usd(r.price)} asking median`}, after ~${FLIP.fee}% fees, ${usd(FLIP.order)} per order and ${usd(FLIP.post)} postage.` +
-      (r.low != null ? ` The cheapest listing today is ${usd(r.low)}${r.low <= be ? ", under that" : `, ${usd(r.low - be)} over`}.` : "")
-    : `<b>Doesn't pay to resell on its own:</b> at about ${usd(sale)} a sale, fees and ${usd(FLIP.post)} postage take it all. Sell it in a lot or a set.`);
   if (sold) lines.push(`Sells for about <b>${usd(sold)}</b> (${nSold} sale${nSold > 1 ? "s" : ""}), ${Math.abs(Math.round((1 - sold / r.price) * 100))}% ${sold < r.price ? "under" : "over"} what sellers ask (${usd(r.price)}).`);
   // Rank within its set (same kind), against the average of the others.
   const peers = rowsFor(r.set).filter(x => x.price != null && kindOf(x) === kindOf(r));
@@ -2545,7 +2404,6 @@ function renderResell(id) {
   // How fast it sells: listings Toy Ticker followed until they closed.
   const st = own.insights?.sales?.items?.[id];
   if (st?.closed >= 3) lines.push(`${st.sold} of ${st.closed} followed listings sold${st.days ? `, in about ${st.days} day${st.days > 1 ? "s" : ""}` : ""}: ${st.rate >= .7 ? "sells fast" : st.rate >= .4 ? "sells steadily" : "slow to sell"}.`);
-  else if (st?.closed) lines.push(`${st.sold} of ${st.closed} followed listing${st.closed > 1 ? "s" : ""} sold so far. Too few to say how fast it sells.`);
   // Sealed premium, once there are enough sealed listings to trust it.
   const c = r.last.cond;
   if (c?.sealed?.count >= 5 && c.other?.median) {
@@ -2557,11 +2415,38 @@ function renderResell(id) {
   if (all.length >= 3) {
     const a = all[all.length - 3].median, b = all[all.length - 1].median, t = b / a - 1;
     lines.push(`Sold prices over the last 3 weeks: ${Math.abs(t) < .05 ? "steady" : `${t > 0 ? "up" : "down"} ${Math.abs(Math.round(t * 100))}%`} (${usd(a)} → ${usd(b)}).`);
-  } else lines.push(`Too early to tell which way prices are heading: that takes about 3 weeks of sales.`);
+  }
+  // If you resell: the break-even buy price, after the market facts.
+  lines.push(be > 0
+    ? `<b>Pays to resell if you buy at ${usd(be)} or less</b>, shipping included. That's selling at ${sold ? `the ${usd(sold)} it has been selling for` : `${FLIP.at}% of the ${usd(r.price)} asking median`}, after ~${FLIP.fee}% fees, ${usd(FLIP.order)} per order and ${usd(FLIP.post)} postage.` +
+      (r.low != null ? ` The cheapest listing today is ${usd(r.low)}${r.low <= be ? ", under that" : `, ${usd(r.low - be)} over`}.` : "")
+    : `<b>Doesn't pay to resell on its own:</b> at about ${usd(sale)} a sale, fees and ${usd(FLIP.post)} postage take it all. Sell it in a lot or a set.`);
   box.hidden = false;
-  box.innerHTML = `<h4>For resellers${early ? `<small>Early read: ${nSold ? `${nSold} sale${nSold > 1 ? "s" : ""}` : "no sales yet"}</small>` : ""}</h4>
+  box.innerHTML = `<h4>Market read${early ? `<small>Early read: ${nSold ? `${nSold} sale${nSold > 1 ? "s" : ""}` : "no sales yet"}</small>` : ""}</h4>
     <ul>${lines.map(l => `<li>${l}</li>`).join("")}</ul>
-    <div class="foot">Uses the resale settings on the Deals tab. Estimates from eBay data, not financial advice.</div>`;
+    <details ${FLIP_OPEN ? "open" : ""}><summary>Resale settings: sell at ${FLIP.at}% of median, ${FLIP.fee}% fees + ${usd(FLIP.order)}, ${usd(FLIP.post)} postage · <b>Edit</b></summary>
+      <div class="flipbar" id="flipBarItem"></div></details>
+    <div class="foot">The same settings as the Deals tab. Estimates from eBay data, not financial advice.</div>`;
+  flipBar("flipBarItem");
+  box.querySelector("details").ontoggle = (e) => { FLIP_OPEN = e.target.open; };
+  renderItemDeals(r);
+}
+// Settings panel in "Market read" stays open while you edit (each change re-renders the box).
+let FLIP_OPEN = false;
+// The item's best deals today (as on the Deals tab), with a link to all of them there.
+const ITEM_DEALS = 2;
+function renderItemDeals(r) {
+  const ds = (r.deals || []).map(d => ({ d, p: dealProfit(d, r) })).sort((a, b) => DEAL_SORTS[DEAL_SORT].key({ ...a, r }) - DEAL_SORTS[DEAL_SORT].key({ ...b, r }));
+  $("dDeals").innerHTML = ds.length
+    ? `<h4>Deals today</h4><div class="deal-grid">${ds.slice(0, ITEM_DEALS).map(x => dealCard(x.d, r)).join("")}</div>` +
+      `<button type="button" class="see-all" id="dSeeAll">${ds.length > ITEM_DEALS ? `All ${ds.length} deals for ${esc(r.name)}` : "Compare with other deals"} on the Deals tab →</button>`
+    : "";
+  if (!ds.length) return;
+  $("dSeeAll").onclick = () => {
+    DEAL_ITEM = ds.length > ITEM_DEALS ? r.id : ""; DEAL_PAGE = 1;
+    showSection("deals"); render();
+    $("deals").scrollIntoView({ block: "start", behavior: "smooth" });
+  };
 }
 
 const defaultSeries = () => shownSets().sort((a, b) => a[1].order - b[1].order)[0][0];
@@ -2588,7 +2473,6 @@ fetch("data/index.json", { cache: "no-store" })
     $("ownedOnly").onchange = render;
     document.querySelectorAll(".sections [data-sec]").forEach(b => b.onclick = () => showSection(b.dataset.sec));
     wireSearch();
-    wireBrowser();
     wireNav();
     wireMine();
     wireShareModal();

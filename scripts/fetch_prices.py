@@ -190,9 +190,10 @@ def main():
         except Exception as e:  # noqa: BLE001
             print(f"! {s['id']} listing ledger: {e}", file=sys.stderr)
 
-    # Official toy photos (series with "official_images") take priority over eBay listing photos.
+    # Official toy photos (series with "official_images") and official card scans (assets/cards/)
+    # take priority over eBay listing photos.
     for s in config["series"]:
-        for iid, m in official_images.collect(s).items():
+        for iid, m in {**official_images.collect(s), **official_images.cards(s)}.items():
             if iid in data["cards"]:
                 data["cards"][iid].update(m)
 

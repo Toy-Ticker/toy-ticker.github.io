@@ -225,7 +225,10 @@ class Slides:
         d.text((W // 2, y + 100), "Link in bio", font=self.F(48, 700), fill=INK, anchor="mm")
         d.text((W // 2, y + 210), "toy-ticker.github.io", font=self.F(34, 600), fill=self.ink, anchor="mm")
         d.text((W // 2, y + 260), "Free · no ads · no accounts", font=self.F(30, 500), fill=self.ink, anchor="mm")
-        self.footer(d, "Not affiliated with McDonald's. Prices from eBay US listings; not advice.")
+        for dy, line in ((132, "Not affiliated with McDonald's or The Pokémon Company."),
+                         (90, "Images: happymeal.com, pokemon.com")):
+            d.text((W // 2, H - dy), line, font=self.F(24, 500), fill=self.ink, anchor="mm")
+        self.footer(d, "Prices from eBay US listings; not advice.")
         return img
 
 

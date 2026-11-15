@@ -139,6 +139,25 @@ def pick(item, cands):
     return ranked[0][0]
 
 
+CARD_DIR = ROOT / "assets" / "cards"
+CARD_CREDIT = "Official card image: pokemon.com"
+
+
+def cards(series):
+    """{item id: image metadata} for official card scans saved by hand in assets/cards/<item id>.png
+    (e.g. from the card gallery in Pokémon's announcement). The series may set "card_images" to the page they
+    came from; the credit links there."""
+    link = series.get("card_images", "https://www.pokemon.com/")
+    out = {}
+    for it in series["items"]:
+        iid = f"{series['id']}-{it['number']}"
+        f = CARD_DIR / f"{iid}.png"
+        if f.exists():
+            out[iid] = {"image": f.relative_to(ROOT).as_posix(), "imageLink": link, "imageCredit": CARD_CREDIT,
+                        "imageSource": "official"}
+    return out
+
+
 def saved(iid):
     for ext in EXTS:
         f = TOY_DIR / f"{iid}{ext}"

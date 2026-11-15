@@ -120,11 +120,13 @@ def build(root, today=None, social_dir="social"):
                 fid["sold_count"] = F.add(iid, "listings sold in the last 30 days", sl["sold"], f"{sl['sold']} sold")
                 fid["days_to_sell"] = F.add(iid, "typical days to sell", sl["days"],
                                             f"{sl['days']} day{'s' if sl['days'] != 1 else ''}")
-            local = ix.get("image", "")
+            # A local photo only (official toy photo or official card scan), never a seller's eBay photo.
+            local = next((p for p in (ix.get("image", ""), f"assets/cards/{iid}.png")
+                          if p and not p.startswith("http") and (root / p).exists()), None)
             items.append({
                 "id": iid, "name": name, "series": sid, "kind": kind, "number": c["number"],
                 "rarity": ix.get("rarity") or ("Holo" if c.get("holo") else None),
-                "image": local if local and not local.startswith("http") and (root / local).exists() else None,
+                "image": local,
                 "listings": latest["count"], "ask": latest["median"],
                 "change": ch[0] if ch else None, "sold_count": (sl or {}).get("sold"),
                 "facts": fid,

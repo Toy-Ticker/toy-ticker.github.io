@@ -1257,9 +1257,9 @@
      "image": "https://i.ebayimg.com/images/g/aYoAAeSwrtdq-hUl/s-l225.jpg"
     }
    ],
-   "image": "https://i.ebayimg.com/images/g/S4YAAeSwt15q82Xi/s-l500.jpg",
-   "imageLink": "https://www.ebay.com/itm/147674889423?_skw=Decidueye+mcdonalds+2026&hash=item22621bfccf:g:S4YAAeSwt15q82Xi",
-   "imageCredit": "eBay listing photo",
+   "image": "assets/cards/pokemon-2026-001.png",
+   "imageLink": "https://www.pokemon.com/us/news/pokemon-happy-meals-return-to-mcdonalds-in-the-us",
+   "imageCredit": "Official card image: pokemon.com",
    "imageV": 2,
    "latest": {
     "date": "2026-11-15",
@@ -1272,7 +1272,8 @@
     "supply": 93,
     "d1": -0.017,
     "d30": -0.0198
-   }
+   },
+   "imageSource": "official"
   },
   "pokemon-2026-002": {
    "name": "Chandelure",
@@ -1326,9 +1327,9 @@
      "image": "https://i.ebayimg.com/images/g/S48AAeSw5X1q-Apo/s-l225.jpg"
     }
    ],
-   "image": "https://i.ebayimg.com/images/g/D4wAAeSw8ZNq9E~7/s-l500.jpg",
-   "imageLink": "https://www.ebay.com/itm/860134008783?_skw=Chandelure+mcdonalds+2026&hash=itemc843fb67cf:g:D4wAAeSw8ZNq9E~7",
-   "imageCredit": "eBay listing photo",
+   "image": "assets/cards/pokemon-2026-002.png",
+   "imageLink": "https://www.pokemon.com/us/news/pokemon-happy-meals-return-to-mcdonalds-in-the-us",
+   "imageCredit": "Official card image: pokemon.com",
    "imageV": 2,
    "latest": {
     "date": "2026-11-15",
@@ -1341,7 +1342,8 @@
     "supply": 164,
     "d1": 0.0,
     "d30": -0.1049
-   }
+   },
+   "imageSource": "official"
   },
   "pokemon-2026-003": {
    "name": "Palafin",
@@ -1395,9 +1397,9 @@
      "image": "https://i.ebayimg.com/images/g/jLMAAeSwsIhq9miH/s-l225.jpg"
     }
    ],
-   "image": "https://i.ebayimg.com/images/g/wqAAAeSwYKZq8ylo/s-l500.jpg",
-   "imageLink": "https://www.ebay.com/itm/377635114298?_skw=Palafin+mcdonalds+2026&hash=item57ecce8d3a:g:wqAAAeSwYKZq8ylo",
-   "imageCredit": "eBay listing photo",
+   "image": "assets/cards/pokemon-2026-003.png",
+   "imageLink": "https://www.pokemon.com/us/news/pokemon-happy-meals-return-to-mcdonalds-in-the-us",
+   "imageCredit": "Official card image: pokemon.com",
    "imageV": 2,
    "latest": {
     "date": "2026-11-15",
@@ -1410,7 +1412,8 @@
     "supply": 184,
     "d1": 0.0116,
     "d30": -0.0114
-   }
+   },
+   "imageSource": "official"
   },
   "pokemon-2026-004": {
    "name": "Pikachu",
@@ -1464,9 +1467,9 @@
      "image": "https://i.ebayimg.com/images/g/w9oAAeSwXAdq88VY/s-l225.jpg"
     }
    ],
-   "image": "https://i.ebayimg.com/images/g/qukAAeSw5Btq9NWH/s-l500.jpg",
-   "imageLink": "https://www.ebay.com/itm/820344116157?_skw=Pikachu+mcdonalds+2026&hash=itembf0051d3bd:g:qukAAeSw5Btq9NWH",
-   "imageCredit": "eBay listing photo",
+   "image": "assets/cards/pokemon-2026-004.png",
+   "imageLink": "https://www.pokemon.com/us/news/pokemon-happy-meals-return-to-mcdonalds-in-the-us",
+   "imageCredit": "Official card image: pokemon.com",
    "imageV": 2,
    "latest": {
     "date": "2026-11-15",
@@ -1479,7 +1482,8 @@
     "supply": 709,
     "d1": 0.0204,
     "d30": -0.1295
-   }
+   },
+   "imageSource": "official"
   },
   "pokemon-2026-005": {
    "name": "Mimikyu",
@@ -1533,9 +1537,9 @@
      "image": "https://i.ebayimg.com/images/g/lwgAAeSwpT9q-NUF/s-l225.jpg"
     }
    ],
-   "image": "https://i.ebayimg.com/images/g/9hMAAeSwOPNq9KLg/s-l500.jpg",
-   "imageLink": "https://www.ebay.com/itm/377637931504?_skw=Mimikyu+mcdonalds+2026&hash=item57ecf989f0:g:9hMAAeSwOPNq9KLg",
-   "imageCredit": "eBay listing photo",
+   "image": "assets/cards/pokemon-2026-005.png",
+   "imageLink": "https://www.pokemon.com/us/news/pokemon-happy-meals-return-to-mcdonalds-in-the-us",
+   "imageCredit": "Official card image: pokemon.com",
    "imageV": 2,
    "latest": {
     "date": "2026-11-15",
@@ -1548,7 +1552,8 @@
     "supply": 207,
     "d1": -0.0099,
     "d30": -0.033
-   }
+   },
+   "imageSource": "official"
   },
   "pokemon-2026-006": {
    "name": "Lucario",
@@ -1602,9 +1607,9 @@
      "image": "https://i.ebayimg.com/images/g/Q2UAAeSwOXJq7-0D/s-l225.jpg"
     }
    ],
-   "image": "https://i.ebayimg.com/images/g/zJgAAeSwIEpq9OnA/s-l500.jpg",
-   "imageLink": "https://www.ebay.com/itm/407356493439?_skw=Lucario+mcdonalds+2026&hash=item5ed856ce7f:g:zJgAAeSwIEpq9OnA",
-   "imageCredit": "eBay listing photo",
+   "image": "assets/cards/pokemon-2026-006.png",
+   "imageLink": "https://www.pokemon.com/us/news/pokemon-happy-meals-return-to-mcdonalds-in-the-us",
+   "imageCredit": "Official card image: pokemon.com",
    "imageV": 2,
    "latest": {
     "date": "2026-11-15",
@@ -1617,7 +1622,8 @@
     "supply": 208,
     "d1": -0.0057,
     "d30": -0.1302
-   }
+   },
+   "imageSource": "official"
   },
   "pokemon-2026-007": {
    "name": "Hawlucha",
@@ -1671,9 +1677,9 @@
      "image": "https://i.ebayimg.com/images/g/bScAAeSwIEpq-QBx/s-l225.jpg"
     }
    ],
-   "image": "https://i.ebayimg.com/images/g/gUsAAeSw-Udq87QI/s-l500.jpg",
-   "imageLink": "https://www.ebay.com/itm/327451593983?_skw=Hawlucha+mcdonalds+2026&hash=item4c3da2ccff:g:gUsAAeSw-Udq87QI",
-   "imageCredit": "eBay listing photo",
+   "image": "assets/cards/pokemon-2026-007.png",
+   "imageLink": "https://www.pokemon.com/us/news/pokemon-happy-meals-return-to-mcdonalds-in-the-us",
+   "imageCredit": "Official card image: pokemon.com",
    "imageV": 2,
    "latest": {
     "date": "2026-11-15",
@@ -1686,7 +1692,8 @@
     "supply": 89,
     "d1": -0.131,
     "d30": -0.1131
-   }
+   },
+   "imageSource": "official"
   },
   "pokemon-2026-008": {
    "name": "Tyranitar",
@@ -1740,9 +1747,9 @@
      "image": "https://i.ebayimg.com/images/g/edAAAeSwywpq95Pa/s-l225.jpg"
     }
    ],
-   "image": "https://i.ebayimg.com/images/g/HXAAAeSwCJJq8~2g/s-l500.jpg",
-   "imageLink": "https://www.ebay.com/itm/920129195163?_skw=Tyranitar+mcdonalds+2026&hash=itemd63bf94c9b:g:HXAAAeSwCJJq8~2g",
-   "imageCredit": "eBay listing photo",
+   "image": "assets/cards/pokemon-2026-008.png",
+   "imageLink": "https://www.pokemon.com/us/news/pokemon-happy-meals-return-to-mcdonalds-in-the-us",
+   "imageCredit": "Official card image: pokemon.com",
    "imageV": 2,
    "latest": {
     "date": "2026-11-15",
@@ -1755,7 +1762,8 @@
     "supply": 179,
     "d1": -0.0371,
     "d30": -0.0512
-   }
+   },
+   "imageSource": "official"
   },
   "pokemon-2026-009": {
    "name": "Absol",
@@ -1809,9 +1817,9 @@
      "image": "https://i.ebayimg.com/images/g/ccYAAeSw5Nlq9PtD/s-l225.jpg"
     }
    ],
-   "image": "https://i.ebayimg.com/images/g/ZIYAAeSwclZq88tJ/s-l500.jpg",
-   "imageLink": "https://www.ebay.com/itm/940082356118?_skw=Absol+mcdonalds+2026&hash=itemdae1465f96:g:ZIYAAeSwclZq88tJ",
-   "imageCredit": "eBay listing photo",
+   "image": "assets/cards/pokemon-2026-009.png",
+   "imageLink": "https://www.pokemon.com/us/news/pokemon-happy-meals-return-to-mcdonalds-in-the-us",
+   "imageCredit": "Official card image: pokemon.com",
    "imageV": 2,
    "latest": {
     "date": "2026-11-15",
@@ -1824,7 +1832,8 @@
     "supply": 81,
     "d1": 0.0874,
     "d30": 0.3176
-   }
+   },
+   "imageSource": "official"
   },
   "pokemon-2026-010": {
    "name": "Zoroark",
@@ -1878,9 +1887,9 @@
      "image": "https://i.ebayimg.com/images/g/4JAAAeSwzepq-Qe2/s-l225.jpg"
     }
    ],
-   "image": "https://i.ebayimg.com/images/g/WQoAAeSw6l9q8ynL/s-l500.jpg",
-   "imageLink": "https://www.ebay.com/itm/377635115907?_skw=Zoroark+mcdonalds+2026&hash=item57ecce9383:g:WQoAAeSw6l9q8ynL",
-   "imageCredit": "eBay listing photo",
+   "image": "assets/cards/pokemon-2026-010.png",
+   "imageLink": "https://www.pokemon.com/us/news/pokemon-happy-meals-return-to-mcdonalds-in-the-us",
+   "imageCredit": "Official card image: pokemon.com",
    "imageV": 2,
    "latest": {
     "date": "2026-11-15",
@@ -1893,7 +1902,8 @@
     "supply": 97,
     "d1": 0.003,
     "d30": -0.0211
-   }
+   },
+   "imageSource": "official"
   },
   "pokemon-2026-011": {
    "name": "Metagross",
@@ -1947,9 +1957,9 @@
      "image": "https://i.ebayimg.com/images/g/EUEAAeSw~TFq-O2a/s-l225.jpg"
     }
    ],
-   "image": "https://i.ebayimg.com/images/g/40AAAeSwJwdq9MOg/s-l500.jpg",
-   "imageLink": "https://www.ebay.com/itm/267840974934?_skw=Metagross+mcdonalds+2026&hash=item3e5c90f056:g:40AAAeSwJwdq9MOg",
-   "imageCredit": "eBay listing photo",
+   "image": "assets/cards/pokemon-2026-011.png",
+   "imageLink": "https://www.pokemon.com/us/news/pokemon-happy-meals-return-to-mcdonalds-in-the-us",
+   "imageCredit": "Official card image: pokemon.com",
    "imageV": 2,
    "latest": {
     "date": "2026-11-15",
@@ -1962,7 +1972,8 @@
     "supply": 107,
     "d1": -0.0358,
     "d30": 0.0802
-   }
+   },
+   "imageSource": "official"
   },
   "pokemon-2026-012": {
    "name": "Jirachi",
@@ -2016,9 +2027,9 @@
      "image": "https://i.ebayimg.com/images/g/hK4AAeSwUUNq-hMD/s-l225.jpg"
     }
    ],
-   "image": "https://i.ebayimg.com/images/g/4SgAAeSwNFdq9MMw/s-l500.jpg",
-   "imageLink": "https://www.ebay.com/itm/366802446720?_skw=Jirachi+mcdonalds+2026&hash=item5567212980:g:4SgAAeSwNFdq9MMw",
-   "imageCredit": "eBay listing photo",
+   "image": "assets/cards/pokemon-2026-012.png",
+   "imageLink": "https://www.pokemon.com/us/news/pokemon-happy-meals-return-to-mcdonalds-in-the-us",
+   "imageCredit": "Official card image: pokemon.com",
    "imageV": 2,
    "latest": {
     "date": "2026-11-15",
@@ -2031,7 +2042,8 @@
     "supply": 167,
     "d1": -0.051,
     "d30": -0.0964
-   }
+   },
+   "imageSource": "official"
   },
   "pokemon-2026-013": {
    "name": "Eevee",
@@ -2085,9 +2097,9 @@
      "image": "https://i.ebayimg.com/images/g/frQAAeSwqn9q865q/s-l225.jpg"
     }
    ],
-   "image": "https://i.ebayimg.com/images/g/LtMAAeSwEQFq9Ole/s-l500.jpg",
-   "imageLink": "https://www.ebay.com/itm/840119033737?_skw=Eevee+mcdonalds+2026&hash=itemc39aff1f89:g:LtMAAeSwEQFq9Ole",
-   "imageCredit": "eBay listing photo",
+   "image": "assets/cards/pokemon-2026-013.png",
+   "imageLink": "https://www.pokemon.com/us/news/pokemon-happy-meals-return-to-mcdonalds-in-the-us",
+   "imageCredit": "Official card image: pokemon.com",
    "imageV": 2,
    "latest": {
     "date": "2026-11-15",
@@ -2100,7 +2112,8 @@
     "supply": 88,
     "d1": -0.1446,
     "d30": -0.0598
-   }
+   },
+   "imageSource": "official"
   },
   "pokemon-2026-014": {
    "name": "Snorlax",
@@ -2154,9 +2167,9 @@
      "image": "https://i.ebayimg.com/images/g/AroAAeSwIVdq-AR0/s-l225.jpg"
     }
    ],
-   "image": "https://i.ebayimg.com/images/g/gScAAeSwJD9q9Mk4/s-l500.jpg",
-   "imageLink": "https://www.ebay.com/itm/840118744469?_skw=Snorlax+mcdonalds+2026&hash=itemc39afab595:g:gScAAeSwJD9q9Mk4",
-   "imageCredit": "eBay listing photo",
+   "image": "assets/cards/pokemon-2026-014.png",
+   "imageLink": "https://www.pokemon.com/us/news/pokemon-happy-meals-return-to-mcdonalds-in-the-us",
+   "imageCredit": "Official card image: pokemon.com",
    "imageV": 2,
    "latest": {
     "date": "2026-11-15",
@@ -2169,7 +2182,8 @@
     "supply": 72,
     "d1": 0.1435,
     "d30": 0.2491
-   }
+   },
+   "imageSource": "official"
   },
   "pokemon-2026-015": {
    "name": "Wooloo",
@@ -2223,9 +2237,9 @@
      "image": "https://i.ebayimg.com/images/g/LIUAAeSwIEhq9i07/s-l225.jpg"
     }
    ],
-   "image": "https://i.ebayimg.com/images/g/Op8AAeSw8CRq9OaU/s-l500.jpg",
-   "imageLink": "https://www.ebay.com/itm/800905285437?_skw=Wooloo+mcdonalds+2026&hash=itemba79accf3d:g:Op8AAeSw8CRq9OaU",
-   "imageCredit": "eBay listing photo",
+   "image": "assets/cards/pokemon-2026-015.png",
+   "imageLink": "https://www.pokemon.com/us/news/pokemon-happy-meals-return-to-mcdonalds-in-the-us",
+   "imageCredit": "Official card image: pokemon.com",
    "imageV": 2,
    "latest": {
     "date": "2026-11-15",
@@ -2238,7 +2252,8 @@
     "supply": 94,
     "d1": -0.0026,
     "d30": 0.1844
-   }
+   },
+   "imageSource": "official"
   },
   "boo-buckets-2026-01": {
    "name": "Jafar (red)",

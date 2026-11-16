@@ -58,6 +58,7 @@ LOOKS = {
     "deal_check":     ("#064e3b", "#34d399", "#ffffff", "#047857", "left"),
     "toy_spotlight":  ("#b45309", "#facc15", "#1d1d1b", "#b45309", "up"),
     "group_chat":     ("#312e81", "#818cf8", "#ffffff", "#4f46e5", "up"),
+    "checklist":      ("#164e63", "#22d3ee", "#ffffff", "#0e7490", "up"),
 }
 
 
@@ -523,6 +524,58 @@ class Reel:
                           e["kind"] == "name" and e["msg"] < show_names], max(shown, show_names), offset, scales, typing, tt)
             if rise > 0.05:
                 f.paste(area, (x0 + 20, y0 + head_h + 12 + oy), area)
+            return f
+        return dur, draw
+
+    def scene_checklist(self, s):
+        """The checklist: rows drop in one by one with an empty checkbox, then it holds so people can screenshot."""
+        rows = s.get("rows") or []
+        n = len(rows)
+        dur = 1.0 + 0.11 * n + 2.8
+
+        def draw(t):
+            f = self.bg.copy()
+            d = ImageDraw.Draw(f, "RGBA")
+            words, end = self.layout_words(s["headline"], M, TOP - 20, W - 2 * M, 80, 800, 2, 50)
+            self.pop_words(f, words, t, 0, stagger=0.05)
+            if s.get("subhead"):
+                self.fade_text(f, s["subhead"], M, end + 4, W - 2 * M, 38, 500, self.ink, t, 0.3, max_lines=1)
+                end += 56
+            top, bot, gap = end + 30, BOTTOM + 40, 12
+            per_col = -(-n // 2)
+            rh = (bot - top - (per_col - 1) * gap) / max(1, per_col)
+            cw = (W - 2 * (M - 30) - 18) / 2
+            sold_col = "#15803d" if self.p_fill in (WHITE, "#ffffff") else "#4ade80"
+            for k, r in enumerate(rows):
+                p = ease_out(prog(t, 0.5 + 0.11 * k, 0.3))
+                if p <= 0:
+                    continue
+                col, row = divmod(k, per_col)
+                x0 = M - 30 + col * (cw + 18) + (1 - p) * (200 if col else -200)
+                y0 = top + row * (rh + gap)
+                x1 = x0 + cw
+                self.panel(d, [x0, y0, x1, y0 + rh], radius=18)
+                b = rh * 0.3
+                d.rounded_rectangle([x0 + 14, y0 + (rh - b) / 2, x0 + 14 + b, y0 + (rh + b) / 2], radius=6,
+                                    outline="#9ca3af", width=3)
+                iid, fid = r["item_id"], r["fact_ids"][0]
+                ph = self.photo(iid, rh - 16)
+                if ph is not None:
+                    self.paste(f, ph, x0 + 24 + b + (rh - 16) / 2, y0 + rh / 2, 1, p)
+                it = self.items[iid]
+                name = it["name"].rsplit(" ", 1)[0] if it["name"].endswith((" toy", " card")) else it["name"]
+                sold = self.kind_of.get(fid) == "sold"
+                price = self.fx[fid]["display"]
+                pf = self.F(int(rh * 0.36), 800)
+                pw = d.textlength(price, font=pf)
+                d.text((x1 - 16, y0 + rh * 0.42), price, font=pf, fill=sold_col if sold else self.p_ink, anchor="rm")
+                d.text((x1 - 16, y0 + rh * 0.76), "sold" if sold else "asking", font=self.F(int(rh * 0.17), 500),
+                       fill=self.p_grey, anchor="rm")
+                nx = x0 + 34 + b + rh - 16
+                size = int(rh * 0.3)
+                while size > 16 and d.textlength(name, font=self.F(size, 700)) > x1 - 26 - pw - nx:
+                    size -= 2
+                d.text((nx, y0 + rh / 2), name, font=self.F(size, 700), fill=self.p_ink, anchor="lm")
             return f
         return dur, draw
 

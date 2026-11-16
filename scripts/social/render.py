@@ -19,9 +19,9 @@ INK, GREY, PANEL = "#1d1d1b", "#6b6b66", (255, 255, 255, 240)
 TOPIC_LABEL = {"weekly_board": "WEEKLY SUMMARY", "card_spotlight": "CARD SPOTLIGHT", "toy_spotlight": "TOY SPOTLIGHT",
                "fast_sellers": "FAST SELLERS", "scarce_finds": "THE RAREST BOX", "set_or_singles": "SET OR SINGLES",
                "guess_price": "GUESS THE PRICE", "after_promo": "AFTER THE PROMO", "doubles": "GOT IT TWICE?", "versus": "VERSUS", "worth_it": "WORTH IT?",
-               "countdown": "COUNTDOWN", "deal_check": "DEAL CHECK", "group_chat": "GROUP CHAT"}
+               "countdown": "COUNTDOWN", "deal_check": "DEAL CHECK", "group_chat": "GROUP CHAT", "checklist": "CHECKLIST"}
 TOPIC_DOT = {"weekly_board": "#1d1d1b", "card_spotlight": "#2563eb", "toy_spotlight": "#16a34a", "fast_sellers": "#dc2626",
-             "scarce_finds": "#7c3aed", "set_or_singles": "#0891b2", "guess_price": "#db2777", "after_promo": "#ca8a04", "doubles": "#0d9488", "versus": "#ea580c", "deal_check": "#059669", "group_chat": "#4f46e5"}
+             "scarce_finds": "#7c3aed", "set_or_singles": "#0891b2", "guess_price": "#db2777", "after_promo": "#ca8a04", "doubles": "#0d9488", "versus": "#ea580c", "deal_check": "#059669", "group_chat": "#4f46e5", "checklist": "#0891b2"}
 FACT_LABEL = {"ask": "typical asking price", "listings": "listed today", "change": "price change",
               "sold": "typical sold price", "days_to_sell": "typical time to sell",
               "sells_out": "to sell out at this pace", "sold_window": "of sales tracked",
@@ -395,6 +395,42 @@ class Slides:
         area = Image.new("RGBA", (x1 - x0 - 40, y1 - top - 24), (0, 0, 0, 0))
         c.draw(area, els, len(msgs), offset=max(0, total_h - area.height))
         img.paste(area, (x0 + 20, top), area)
+        return img
+
+    def checklist(self, s, n, total, topic):
+        """Every item in two columns with an empty checkbox, its photo, name and price (sold, else asking)."""
+        img, d = self.canvas()
+        self.header(d, n, total)
+        y = text_block(d, (M, 160), s["headline"], self.F, W - 2 * M, 70, 700, self.ink, 1, 44)
+        if s.get("subhead"):
+            y = text_block(d, (M, y + 4), s["subhead"], self.F, W - 2 * M, 32, 500, self.ink, 1, 24)
+        rows = s.get("rows") or []
+        per_col = -(-len(rows) // 2)
+        top, bot, gap = y + 24, H - 110, 12
+        rh = (bot - top - (per_col - 1) * gap) / per_col
+        cw = (W - 2 * M - 20) / 2
+        for k, r in enumerate(rows):
+            col, row = divmod(k, per_col)
+            x0, y0 = M + col * (cw + 20), top + row * (rh + gap)
+            d.rounded_rectangle([x0, y0, x0 + cw, y0 + rh], radius=18, fill=PANEL)
+            b = min(34, rh * 0.42)
+            d.rounded_rectangle([x0 + 16, y0 + (rh - b) / 2, x0 + 16 + b, y0 + (rh + b) / 2], radius=7,
+                                outline="#9ca3af", width=3)
+            it = self.items[r["item_id"]]
+            tsz = rh - 14
+            self.thumb(img, d, it, (int(x0 + 28 + b), int(y0 + 7), int(x0 + 28 + b + tsz), int(y0 + 7 + tsz)))
+            name = it["name"].rsplit(" ", 1)[0] if it["name"].endswith((" toy", " card")) else it["name"]
+            tx = x0 + 40 + b + tsz
+            fid = r["fact_ids"][0]
+            price, kind = self.display(fid), self.kind_of.get(fid)
+            pf = fit_font(d, price, self.F, 150, 38, 700)
+            pw = d.textlength(price, font=pf)
+            d.text((x0 + cw - 16, y0 + rh / 2 - 8), price, font=pf, fill=self.accent if kind == "sold" else INK, anchor="rm")
+            d.text((x0 + cw - 16, y0 + rh / 2 + 22), "sold" if kind == "sold" else "asking", font=self.F(20, 500),
+                   fill=GREY, anchor="rm")
+            d.text((tx, y0 + rh / 2), name, font=fit_font(d, name, self.F, cw - (tx - x0) - pw - 30, 32, 600),
+                   fill=INK, anchor="lm")
+        self.footer(d, fids=[r["fact_ids"][0] for r in rows])
         return img
 
     def tweet(self, s, n, total, topic):

@@ -5,15 +5,15 @@ so the writer can't invent, round or compute a price.
 """
 import re
 
-LAYOUTS = {"cover", "ranked_list", "item", "highlight", "hero", "versus", "tier_list", "cta", "screenshot", "chat", "tweet"}
+LAYOUTS = {"cover", "ranked_list", "item", "highlight", "hero", "versus", "tier_list", "cta", "screenshot", "chat", "tweet", "checklist"}
 TOPICS = ["weekly_board", "card_spotlight", "toy_spotlight", "fast_sellers", "scarce_finds", "set_or_singles",
-          "guess_price", "after_promo", "doubles", "versus", "worth_it", "countdown", "deal_check", "group_chat"]
+          "guess_price", "after_promo", "doubles", "versus", "worth_it", "countdown", "deal_check", "group_chat", "checklist"]
 BANNED = [
     "will go up", "will rise", "will increase", "going to go up", "will be worth", "will drop", "will fall",
     "invest", "guaranteed", "sure thing", "before prices", "buy now", "act fast", "before it's too late",
     "price prediction", "predict", "skyrocket", "to the moon", "goldmine", "gold mine",
 ]
-LIMITS = {"cover": (40, 70), "ranked_list": (36, 0), "item": (36, 0), "highlight": (40, 0), "hero": (40, 0), "versus": (40, 0), "tier_list": (40, 0), "cta": (40, 60), "screenshot": (40, 0), "chat": (32, 0), "tweet": (200, 0)}
+LIMITS = {"cover": (40, 70), "ranked_list": (36, 0), "item": (36, 0), "highlight": (40, 0), "hero": (40, 0), "versus": (40, 0), "tier_list": (40, 0), "cta": (40, 60), "screenshot": (40, 0), "chat": (32, 0), "tweet": (200, 0), "checklist": (40, 60)}
 NUMBER = re.compile(r"\$?\d[\d,]*(?:\.\d+)?%?")
 
 
@@ -118,6 +118,19 @@ def check(post, facts):
             for iid in ids:
                 if iid not in items or "ask" not in items[iid]["facts"]:
                     errs.append(f"{where}: {iid} isn't an item with an asking price.")
+        if lay == "checklist":
+            # A save-able checklist: one row per item with its sold price (or asking price when there's no sold one).
+            rows = s.get("rows") or []
+            if not 6 <= len(rows) <= 16:
+                errs.append(f"{where}: a checklist needs 6 to 16 rows.")
+            for r in rows:
+                iid, fids = r.get("item_id"), r.get("fact_ids") or []
+                if iid not in items or len(fids) != 1:
+                    errs.append(f"{where}: each checklist row needs an item_id and exactly 1 fact_id.")
+                    continue
+                kinds = {v: k for k, v in items[iid]["facts"].items()}
+                if kinds.get(fids[0]) not in ("sold", "ask"):
+                    errs.append(f"{where}: checklist row {iid} must use that item's sold or ask fact.")
         if lay == "chat":
             # The toys text each other: headline is the chat's name, messages are [{"from": item_id, "text": ...}].
             msgs = s.get("messages") or []

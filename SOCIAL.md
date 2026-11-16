@@ -71,9 +71,53 @@ After Dec 14: Thursday becomes AFTER THE PROMO and Friday THEN VS NOW (needs fac
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars --force-prefers-reduced-motion --window-size=500,2100 --force-device-scale-factor=2 --virtual-time-budget=10000 --screenshot=site.png "https://toy-ticker.github.io/?s=pokemon-happy-meal-2026"
 ```
 
-## Replies on popular posts (from Nov 15)
+## Replies on popular posts
 
-A scheduled task, "Toy Ticker reply drafts", runs at 9am, noon, 3pm, 6pm and 9pm Pacific. It finds popular #pokemonhappymeal / #mcdonaldspokemon posts from the last 48 hours, drafts casual one-fact replies to commenters from that day's prices, and asks for approval; nothing is posted without it. Limits: 3 replies per post, 10 a day. Steps and style rules: [scripts/social/REPLIES.md](scripts/social/REPLIES.md). Drafts and the posted log live in `social/replies/` (not committed).
+You find the posts, Claude drafts the replies, you post them from your phone. When you see a busy Pokémon Happy Meal post (or a new @officialhappymeal / @mcdonalds launch post), tap Share → Copy link and paste the link to Claude, or add it to `social/replies/links.txt`. Claude reads that post once and drafts up to 3 casual one-fact replies from the day's prices. Steps and style rules: [scripts/social/REPLIES.md](scripts/social/REPLIES.md). Drafts and the posted log live in `social/replies/` (not committed).
+
+## Account safety (from Nov 15)
+
+**What happened.** On Nov 15, the account's first day, Claude drove Instagram in desktop Chrome for about two hours: 4 posts, 5 comments (one on @mcdonalds), and many page loads between them. Instagram then locked @toy_ticker behind a "Confirm you're human" check. A brand-new account, a desktop browser being driven by software, and a burst of posting and commenting are the three things Instagram's spam systems watch most closely, and that day had all three.
+
+**The rule from now on: automation drafts, people act.**
+
+| Who | Does |
+| --- | --- |
+| Claude, on your Mac | Pulls prices, writes posts, checks every number, draws slides, Stories and Reels, imports approved music, drafts replies from links you share, reads Insights you paste or screenshot |
+| You, in the Instagram app | Every post, Reel, Story, comment, like, follow and DM; scrolling and finding posts to reply to; any verification check |
+| Meta's own tools (later) | Scheduling posts with Instagram's built-in scheduler or Meta Business Suite, the sanctioned way to queue posts in advance |
+
+Claude doesn't log in to, browse, post on, or comment on Instagram through Chrome. The one exception is the Hello Kitty × Godzilla comment and posts already made on Nov 15.
+
+**Warm-up: how much a new account can safely do.**
+
+| Period | Posts | Reels | Comments / replies | Follows | Other |
+| --- | --- | --- | --- | --- | --- |
+| Until the check is cleared, plus 3 days | none | none | none | none | just use the app normally: scroll, like a few posts you actually like |
+| Week 1 after that | 1 a day | 1 every other day | 3 a day, spaced an hour or more | 5 a day | Stories freely |
+| Weeks 2–4 | 1 a day | 1 a day | 5 a day | 10 a day | |
+| After a month without warnings | 1–2 a day | 1 a day | 10 a day | 20 a day | consider Meta Business Suite scheduling |
+
+At any stage: never post the same comment text twice, no links in comments, and leave at least a few minutes between actions. If you're unsure, do less; slow and steady is never what gets an account flagged.
+
+**Make the account look established** (each one is a trust signal):
+- Confirm both the email (toyticker@gmail.com) and a phone number on the account, and keep two-factor login on.
+- Switch to a **Creator** account (Settings → Account type and tools) and connect it to a Facebook Page in Accounts Center. That unlocks Insights and Meta's scheduler.
+- Fill out everything: name, bio, link, profile picture (done), plus Highlights.
+- Use one device and network for the account. Avoid VPNs and switching between many devices.
+
+**Check the account weekly.** In the app, Settings → **Account Status** shows any restrictions, content that was removed, or features you can't use. Look at it every Sunday with the weekly review.
+
+**If Instagram flags it again:**
+1. Stop everything for the account immediately, including paused tasks and replies you were about to post.
+2. Complete the check yourself on your phone (code, phone number, or selfie video).
+3. Wait at least 48 hours with normal light use only, then restart at the "Week 1" level above.
+4. If it says the account is disabled, use the "Disagree with decision" / appeal button in the app within the time it gives you; don't create a new account in the meantime.
+
+**What changed in the tools:**
+- `scripts/social/REPLIES.md`: replies are drafted from links you share, not by browsing hashtags. At most 3 a day for now, and you post them.
+- `scripts/social/LOCAL.md`: the 7pm draft scouts new music only on Sundays, so it isn't browsing Facebook every day.
+- Both scheduled tasks are paused. Turn the 7pm draft back on when the account is clear: it only writes files on your Mac. The reply task stays off; replies now start from links you share.
 
 ## Content pillars
 

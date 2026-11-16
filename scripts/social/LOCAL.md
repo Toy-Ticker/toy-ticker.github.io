@@ -32,7 +32,7 @@ You are the writer. Code picks the facts, checks your work and draws the slides.
 
 5. **Look at every slide** in `<folder>/slides/` and at `story.jpg`. Fix anything cut off, overlapping or hard to read by shortening text in post.json and rerunning step 4.
 
-6. **Scout new music** for the Reel. In Chrome, open https://www.facebook.com/sound (Meta Sound Collection: free and licensed for Instagram). Browse or search for tracks that suit today's post (start with keywords like chiptune, 8-bit, playful, upbeat pop, quirky, bouncy, happy ukulele, funky, retro arcade). Pick **2 or 3** that are instrumental, upbeat, start strong in the first second, and are at least 20 seconds long; skip anything already in `assets/music/` (compare names). Listen-check by reading the page's mood/genre/length details; don't download anything yet. Note each track's exact title, artist if shown, length, mood/genre and its page link.
+6. **Scout new music** for the Reel, **on Sundays only** (skip this step on other days: less automated browsing keeps the Meta accounts safe; see "Account safety" in SOCIAL.md). In Chrome, open https://www.facebook.com/sound (Meta Sound Collection: free and licensed for Instagram). Browse or search for tracks that suit today's post (start with keywords like chiptune, 8-bit, playful, upbeat pop, quirky, bouncy, happy ukulele, funky, retro arcade). Pick **2 or 3** that are instrumental, upbeat, start strong in the first second, and are at least 20 seconds long; skip anything already in `assets/music/` (compare names). Listen-check by reading the page's mood/genre/length details; don't download anything yet. Note each track's exact title, artist if shown, length, mood/genre and its page link.
 
 7. **Only if the owner approves a track in this session** (e.g. "use track 2"): download it from its Meta Sound Collection page in Chrome (it lands in ~/Downloads, usually as an .mp4 containing only audio), then add it and rebuild the Reel:
    ```bash
@@ -44,6 +44,7 @@ You are the writer. Code picks the facts, checks your work and draws the slides.
 ## Don't
 
 - Don't download music (or any file) before the owner approves that specific track in this session.
+- Don't open Instagram, and don't browse Facebook beyond the Sunday music search.
 - Don't change any file outside `<folder>/` and `assets/music/` (the latter only via add_music.py after approval).
 - Don't commit, push or post anywhere.
 - Don't invent, round or compute numbers, or add claims that aren't in facts.json.

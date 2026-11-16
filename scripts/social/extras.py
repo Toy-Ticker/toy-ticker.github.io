@@ -67,9 +67,25 @@ def story(folder, facts, root):
     return folder / "story.jpg"
 
 
-def reel(folder, facts, root, seconds=3.0, fade=0.35, fps=30):
-    """reel.mp4 from every slide; needs ffmpeg (Homebrew or imageio-ffmpeg). Returns the path, or None."""
+MUSIC_EXTS = (".mp3", ".m4a", ".aac", ".wav")
+
+
+def find_music(folder, root):
+    """The track for a Reel: music.* in the post's folder, else the signature track in assets/music/, else None.
+    Use only music licensed for Instagram (e.g. Meta Sound Collection); see SOCIAL.md."""
+    for d, stem in ((Path(folder), "music"), (Path(root) / "assets" / "music", None)):
+        if d.is_dir():
+            for p in sorted(d.iterdir()):
+                if p.suffix.lower() in MUSIC_EXTS and (stem is None or p.stem == stem):
+                    return p
+    return None
+
+
+def reel(folder, facts, root, seconds=3.0, fade=0.35, fps=30, music=None):
+    """reel.mp4 from every slide, with music if a track is found (find_music) or given; needs ffmpeg
+    (Homebrew or imageio-ffmpeg). Returns the path, or None."""
     folder = Path(folder)
+    music = Path(music) if music else find_music(folder, root)
     ffmpeg = shutil.which("ffmpeg")
     if not ffmpeg:
         try:
@@ -100,7 +116,16 @@ def reel(folder, facts, root, seconds=3.0, fade=0.35, fps=30):
             last = out
         graph = ";".join(chain) + f";{last}format=yuv420p,fps={fps}[out]" if chain else f"[0:v]format=yuv420p,fps={fps}[out]"
         out = folder / "reel.mp4"
-        cmd += ["-filter_complex", graph, "-map", "[out]", "-c:v", "libx264", "-preset", "medium", "-crf", "20",
-                "-movflags", "+faststart", str(out)]
+        total = sum(hold) + fade
+        maps = ["-map", "[out]"]
+        if music:
+            # Loop the track if it's short, cut it to the video, fade in and out.
+            cmd += ["-stream_loop", "-1", "-i", str(music)]
+            a = len(frames)
+            graph += (f";[{a}:a]atrim=0:{total:.2f},asetpts=PTS-STARTPTS,afade=t=in:d=0.6,"
+                      f"afade=t=out:st={max(0, total - 1.8):.2f}:d=1.8,volume=0.9[aout]")
+            maps += ["-map", "[aout]", "-c:a", "aac", "-b:a", "192k"]
+        cmd += ["-filter_complex", graph, *maps, "-c:v", "libx264", "-preset", "medium", "-crf", "20",
+                "-t", f"{total:.2f}", "-movflags", "+faststart", str(out)]
         subprocess.run(cmd, check=True)
     return out

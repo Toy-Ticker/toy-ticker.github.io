@@ -78,6 +78,16 @@ There is one series per day of the week. The cover gets the series label automat
 
 One entry per slide, in order, describing what the slide shows in plain words (up to 200 characters each). Numbers follow the same rule as the caption.
 
+## Threads
+
+Also write `threads`: 1 or 2 short Threads posts (text only, 60 to 500 characters each), plus `threads_topic`: one topic tag without # (usually "Pokemon Happy Meal", or the series name such as "Happy Meal Toys").
+
+- Threads is a conversation app: write like a person talking, not a caption. Lowercase is fine. At most 1 emoji per post.
+- One surprising fact from today's post (copied exactly from a fact's `display`), then a question people want to answer ("which one did you get twice?").
+- End with the tappable link in plain text, e.g. "every toy's price: toy-ticker.github.io". Never "link in bio", no hashtags, no "check out".
+- If you write 2, make them different angles (e.g. one fact + question, one quick comparison); they post on different days, so neither may depend on the other.
+- Same number and no-prediction rules as the caption.
+
 ## Rules
 
 - No predictions or investment talk: never say or imply prices will rise or fall, that something is an investment, a sure thing, or that people should buy before prices change. Describe what prices are and were.

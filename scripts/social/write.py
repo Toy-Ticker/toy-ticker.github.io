@@ -38,8 +38,10 @@ SCHEMA = {
         "caption": {"type": "string"},
         "hashtags": {"type": "array", "items": {"type": "string"}},
         "alt_text": {"type": "array", "items": {"type": "string"}},
+        "threads": {"type": "array", "items": {"type": "string"}},
+        "threads_topic": {"type": "string"},
     },
-    "required": ["topic", "slides", "caption", "hashtags", "alt_text"],
+    "required": ["topic", "slides", "caption", "hashtags", "alt_text", "threads", "threads_topic"],
     "additionalProperties": False,
 }
 

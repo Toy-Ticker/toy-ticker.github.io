@@ -87,6 +87,8 @@ You find the posts, Claude drafts the replies, you post them from your phone. Wh
 | You, in the Instagram app | Every post, Reel, Story, comment, like, follow and DM; scrolling and finding posts to reply to; any verification check |
 | Meta's own tools (later) | Scheduling posts with Instagram's built-in scheduler or Meta Business Suite, the sanctioned way to queue posts in advance |
 
+**Threads is the exception (owner's choice, Nov 15).** Claude may post the day's Threads post through Claude in Chrome, following `scripts/social/THREADS.md`: only when you ask in the session, at most 1 a day, it stops before Post for your yes, and it never likes, follows, replies or browses. Threads can share Instagram's Meta login, so if Threads ever shows a check or warning, stop Threads automation too.
+
 Claude doesn't log in to, browse, post on, or comment on Instagram through Chrome. The one exception is the Hello Kitty × Godzilla comment and posts already made on Nov 15.
 
 **Warm-up: how much a new account can safely do.**

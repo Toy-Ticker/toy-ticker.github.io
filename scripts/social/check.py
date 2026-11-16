@@ -149,13 +149,30 @@ def check(post, facts):
     tags = post.get("hashtags") or []
     if not 3 <= len(tags) <= 5 or not all(re.fullmatch(r"#\w+", t) for t in tags):
         errs.append("Give 3 to 5 hashtags, each like #HappyMeal (no spaces).")
+    threads = post.get("threads")
+    if not isinstance(threads, list) or not 1 <= len(threads) <= 2:
+        errs.append("Give 1 or 2 Threads posts in 'threads' (a list of strings).")
+        threads = []
+    for n, t in enumerate(threads, 1):
+        if not 60 <= len(t) <= 500:
+            errs.append(f"Threads post {n} is {len(t)} characters; keep it between 60 and 500.")
+        if "toy-ticker.github.io" not in t:
+            errs.append(f"Threads post {n} must include the link toy-ticker.github.io (links are tappable on Threads).")
+        if "link in bio" in t.lower():
+            errs.append(f"Threads post {n}: don't say 'link in bio'; the link is in the post.")
+        if "#" in t:
+            errs.append(f"Threads post {n}: no hashtags; put one topic in 'threads_topic'.")
+        nums_ok(f"Threads post {n}", t)
+    topic_tag = post.get("threads_topic", "")
+    if not (1 <= len(topic_tag) <= 50) or "#" in topic_tag:
+        errs.append("Give one 'threads_topic' (1 to 50 characters, no #), e.g. 'Pokemon Happy Meal'.")
     alts = post.get("alt_text") or []
     if len(alts) != len(slides):
         errs.append(f"Give one alt text per slide ({len(slides)}), got {len(alts)}.")
     for n, a in enumerate(alts, 1):
         nums_ok(f"Alt text {n}", a)
 
-    text = " ".join([cap, *alts, *(f"{s.get('headline', '')} {s.get('subhead', '')} {s.get('note', '')}" for s in slides)]).lower()
+    text = " ".join([cap, *alts, *threads, *(f"{s.get('headline', '')} {s.get('subhead', '')} {s.get('note', '')}" for s in slides)]).lower()
     for phrase in BANNED:
         if re.search(rf"\b{re.escape(phrase)}", text):
             errs.append(f"Remove the phrase {phrase!r}: no predictions, investment talk or urgency.")

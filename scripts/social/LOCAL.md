@@ -19,7 +19,8 @@ You are the writer. Code picks the facts, checks your work and draws the slides.
    ```json
    {"topic": "...", "slides": [{"layout": "cover|ranked_list|item|highlight|cta", "headline": "", "subhead": "", "item_ids": [],
      "rows": [{"item_id": "", "fact_ids": []}], "item_id": "", "fact_ids": [], "note": ""}],
-    "caption": "...", "hashtags": ["#HappyMeal"], "alt_text": ["one per slide"]}
+    "caption": "...", "hashtags": ["#HappyMeal"], "alt_text": ["one per slide"],
+    "threads": ["1 or 2 short Threads posts, each ending with toy-ticker.github.io"], "threads_topic": "Pokemon Happy Meal"}
    ```
    `topic` must be today's series. Every slide has all eight fields; unused ones are `""` or `[]`. Every number must be copied exactly from a fact's `display` text.
 
@@ -28,7 +29,7 @@ You are the writer. Code picks the facts, checks your work and draws the slides.
    .venv/bin/python scripts/social/draft.py --post <folder>/post.json
    ```
    If it prints problems, fix `post.json` and run it again, up to 3 attempts. If problems remain, leave them; the owner will see them in `post.json` under `problems`.
-   The same command also writes `<folder>/story.jpg` (1080x1920 Story with room for the link sticker) and `<folder>/reel.mp4` (slideshow Reel with music from the library in `assets/music/`). Rerun it after any fix so they match the slides.
+   The same command also writes `<folder>/story.jpg` (1080x1920 Story with room for the link sticker) and `<folder>/reel.mp4` (slideshow Reel with music from the library in `assets/music/`) and `<folder>/threads.txt` (the Threads posts and topic). Rerun it after any fix so they match the slides.
 
 5. **Look at every slide** in `<folder>/slides/` and at `story.jpg`. Fix anything cut off, overlapping or hard to read by shortening text in post.json and rerunning step 4.
 
@@ -41,14 +42,16 @@ You are the writer. Code picks the facts, checks your work and draws the slides.
    ```
    That saves the track to the library for future Reels and makes this post's Reel use it.
 
+8. **Threads, only if the owner asks in this session** (e.g. "post the threads"): follow `scripts/social/THREADS.md` exactly. It posts through Chrome, at most 1 Threads post a day, and stops before Post for the owner's yes.
+
 ## Don't
 
 - Don't download music (or any file) before the owner approves that specific track in this session.
-- Don't open Instagram, and don't browse Facebook beyond the Sunday music search.
+- Don't open Instagram, and don't browse Facebook beyond the Sunday music search. Open Threads only for step 8.
 - Don't change any file outside `<folder>/` and `assets/music/` (the latter only via add_music.py after approval).
-- Don't commit, push or post anywhere.
+- Don't commit or push, and don't post anywhere except Threads via step 8 after the owner's yes.
 - Don't invent, round or compute numbers, or add claims that aren't in facts.json.
 
 ## Report
 
-End with: the series, the folder, the cover headline, the caption, whether the check passed, whether story.jpg and reel.mp4 were made (and which library track the Reel uses), then the numbered new-music suggestions (title, length, mood, link) and ask whether to use one for this Reel. Keep it short so it reads well as a notification.
+End with: the series, the folder, the cover headline, the caption, whether the check passed, whether story.jpg and reel.mp4 were made (and which library track the Reel uses), the Threads post(s) from threads.txt with "Say 'post the threads' to post #1 to Threads", then the numbered new-music suggestions (title, length, mood, link) and ask whether to use one for this Reel. Keep it short so it reads well as a notification.

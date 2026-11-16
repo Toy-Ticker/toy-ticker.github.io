@@ -49,7 +49,9 @@ def sample_post(f):
     return {"topic": "weekly_board", "slides": slides,
             "caption": "SAMPLE POST (no AI). " + "This is a fixed test post used to check the slide renderer and the pull request. " * 4,
             "hashtags": ["#HappyMeal", "#PokemonTCG", "#McDonaldsToys"],
-            "alt_text": [f"Slide {n}" for n in range(1, len(slides) + 1)]}
+            "alt_text": [f"Slide {n}" for n in range(1, len(slides) + 1)],
+            "threads": ["SAMPLE POST (no AI). A fixed test Threads post. See every toy's price: toy-ticker.github.io"],
+            "threads_topic": "Pokemon Happy Meal"}
 
 
 def pr_body(post, f, problems, folder, branch):
@@ -81,6 +83,14 @@ def pr_body(post, f, problems, folder, branch):
 
 def caption_text(post):
     return f"{post['caption'].rstrip()}\n\n{' '.join(post.get('hashtags', []))}"
+
+
+def threads_text(post):
+    """Threads posts for copy-paste or Chrome posting (see scripts/social/THREADS.md)."""
+    parts = [f"Topic: {post.get('threads_topic', '')}"]
+    for n, t in enumerate(post.get("threads", []), 1):
+        parts.append(f"--- Threads post {n} ---\n{t.strip()}")
+    return "\n\n".join(parts) + "\n"
 
 
 def main():
@@ -140,6 +150,8 @@ def main():
             print(f"! story/reel: {e!r}")
     (folder / "post.json").write_text(json.dumps({**post, "problems": problems}, indent=1, ensure_ascii=False))
     (folder / "caption.txt").write_text(caption_text(post))
+    if post.get("threads"):
+        (folder / "threads.txt").write_text(threads_text(post))
     (folder / "pr.md").write_text(pr_body(post, f, problems, folder, args.branch))
     print(folder.relative_to(ROOT))
     print("problems:" if problems else "check: OK", *problems, sep="\n- " if problems else "")

@@ -22,12 +22,13 @@ Goal: people reading a popular post see a genuinely useful price fact from @toy_
 4. **Draft replies:** at most 3 per post (1 on official @mcdonalds / @officialhappymeal posts), only to comments the data genuinely answers (what something sells for, extras/duplicates, complete sets, which ones are scarce or sell fast, "is it worth it"). The style the owner approved:
    - lowercase, short (one sentence or two), casual ("rn", "lol", "like"), at most one emoji
    - react to the person first, then **one** fact
-   - say "ebay" (US prices); no links, no "Toy Ticker", no "check out", no hashtags
+   - say "ebay" (US prices); no links, no "check out", no hashtags
+   - **soft site mention, at most 1 in 3 replies** (owner's choice, Nov 15): when the comment asks what something is worth, or a running joke fits (the daily Weedle count), you may end with a short, honest pointer like "we track all of them daily, it's in our bio" or "we post the weedle count every day". Say "we" (the account), never pretend to be a random collector. Never the same pointer wording twice; no "Toy Ticker" brand name or URL in comments on other people's posts
    - never pretend to be a collector or claim experiences ("i got two weedles too"); sympathy like "same 😭" is fine
    - no predictions or investment talk ("will go up", "invest", "grab them before…")
    - never reuse a reply's wording; vary openings
    - a question back ("which ones are you still missing?") is fine instead of a fact
-   Approved examples: "same 😭 there's like 97 weedles on ebay rn so they're basically trade bait lol" · "all 15 cards is impressive 👀 full sets go for like $64 on ebay rn" · "good pick 🖤 umbreon's been flying off ebay"
+   Approved examples (with a soft mention: "97 weedles on ebay rn 💀 we post the weedle count every day if you wanna follow the chaos"): "same 😭 there's like 97 weedles on ebay rn so they're basically trade bait lol" · "all 15 cards is impressive 👀 full sets go for like $64 on ebay rn" · "good pick 🖤 umbreon's been flying off ebay"
 
 5. **Save and hand over.** Write the drafts to `social/replies/<date>-<HHMM>.md`: for each, the post link, the commenter's username and comment, your reply, and the fact ID it uses. Show the owner a short numbered list. When they say which ones they posted, append those to `social/replies/log.jsonl` (`date`, `post_url`, `comment_user`, `text`).
 

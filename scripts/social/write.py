@@ -40,6 +40,7 @@ SCHEMA = {
         "alt_text": {"type": "array", "items": {"type": "string"}},
         "threads": {"type": "array", "items": {"type": "string"}},
         "threads_topic": {"type": "string"},
+        "threads_poll": {"type": "array", "items": {"type": "string"}},
     },
     "required": ["topic", "slides", "caption", "hashtags", "alt_text", "threads", "threads_topic"],
     "additionalProperties": False,

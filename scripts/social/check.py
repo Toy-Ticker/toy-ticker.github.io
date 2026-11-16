@@ -163,6 +163,11 @@ def check(post, facts):
         if "#" in t:
             errs.append(f"Threads post {n}: no hashtags; put one topic in 'threads_topic'.")
         nums_ok(f"Threads post {n}", t)
+    poll = post.get("threads_poll") or []
+    if poll and not (2 <= len(poll) <= 4 and all(1 <= len(o) <= 25 for o in poll)):
+        errs.append("A Threads poll needs 2 to 4 options of up to 25 characters each.")
+    for o in poll:
+        nums_ok("Threads poll", o)
     topic_tag = post.get("threads_topic", "")
     if not (1 <= len(topic_tag) <= 50) or "#" in topic_tag:
         errs.append("Give one 'threads_topic' (1 to 50 characters, no #), e.g. 'Pokemon Happy Meal'.")

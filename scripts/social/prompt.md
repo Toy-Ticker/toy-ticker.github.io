@@ -87,6 +87,7 @@ Also write `threads`: 1 or 2 short Threads posts (text only, 60 to 500 character
 - End with the tappable link in plain text, e.g. "every toy's price: toy-ticker.github.io". Never "link in bio", no hashtags, no "check out".
 - If you write 2, make them different angles (e.g. one fact + question, one quick comparison); they post on different days, so neither may depend on the other.
 - Same number and no-prediction rules as the caption.
+- Optional `threads_poll`: 2 to 4 short answer options (up to 25 characters each) that turn Threads post 1 into a poll, e.g. ["none 🙏", "1", "2", "3+ 😭"]. Polls are easy to answer, so they spread; use one when post 1 asks a question with a few clear answers.
 
 ## Rules
 

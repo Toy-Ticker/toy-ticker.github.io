@@ -90,6 +90,8 @@ def threads_text(post):
     parts = [f"Topic: {post.get('threads_topic', '')}"]
     for n, t in enumerate(post.get("threads", []), 1):
         parts.append(f"--- Threads post {n} ---\n{t.strip()}")
+        if n == 1 and post.get("threads_poll"):
+            parts[-1] += "\n\nPoll options: " + " / ".join(post["threads_poll"])
     return "\n\n".join(parts) + "\n"
 
 

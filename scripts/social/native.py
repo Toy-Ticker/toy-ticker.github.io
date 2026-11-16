@@ -225,6 +225,43 @@ class Native:
             return f
         return 3.2, draw
 
+    def scene_screenshot(self, s):
+        """The site itself, as if screen-recorded: the focus region in a rounded frame, scrolling if it's tall,
+        under a caption label, on the item's blurred wash."""
+        from pathlib import Path
+        iid = s["image"][len("site-"):-len(".png")]
+        shot = Image.open(Path(self.R.folder) / s["image"]).convert("RGB")
+        fw = 920
+        sc = shot.resize((fw, int(shot.height * fw / shot.width)), Image.LANCZOS)
+        f0, f1 = (int(v * sc.height) for v in s["focus"])
+        dur = 3.4
+        top, bottom = 560, 1380
+        fh = bottom - top
+        mask_cache = {}
+
+        def draw(t):
+            f = self.backdrop([iid] if iid in self.R.items else [])
+            self.caption(f, s["headline"], 400, t, 0, size=62)
+            span = f1 - f0
+            if span > fh:
+                p = prog(t, 0.5, dur - 1.2)
+                y0, view = f0 + p * p * (3 - 2 * p) * (span - fh), fh
+            else:
+                y0, view = f0, span
+            crop = sc.crop((0, int(y0), fw, int(y0 + view)))
+            if crop.size not in mask_cache:
+                m = Image.new("L", crop.size, 0)
+                ImageDraw.Draw(m).rounded_rectangle([0, 0, crop.width - 1, crop.height - 1], radius=34, fill=255)
+                mask_cache[crop.size] = m
+            rise = ease_out(prog(t, 0.1, 0.4))
+            if rise > 0.05:
+                yy = int(top + (fh - crop.height) / 2 + (1 - rise) * 120)
+                f.paste(crop, ((W - fw) // 2, yy), mask_cache[crop.size])
+            if s.get("note"):
+                self.caption(f, s["note"], 1470, t, dur - 1.1, size=48, dark=True)
+            return f
+        return dur, draw
+
     def scene_cta(self, s):
         ids = [i for sl in self.R.post["slides"] for i in (sl.get("item_ids") or [sl.get("item_id")]) if i][:1]
 

@@ -178,6 +178,8 @@ def check(post, facts):
         nums_ok(f"Alt text {n}", a)
 
     for n, sl in enumerate(slides, 1):
+        if len(sl.get("note", "")) > 50:
+            errs.append(f"Slide {n}: note is {len(sl['note'])} characters; keep it to 50 (Reels show each slide for about 3 seconds).")
         if any(ord(c) > 0x2FFF for k in ("headline", "subhead", "note") for c in sl.get(k, "")):
             errs.append(f"Slide {n}: no emoji on slides (the slide font can't draw them); keep emoji for the caption.")
     text = " ".join([cap, *alts, *threads, *(f"{s.get('headline', '')} {s.get('subhead', '')} {s.get('note', '')}" for s in slides)]).lower()

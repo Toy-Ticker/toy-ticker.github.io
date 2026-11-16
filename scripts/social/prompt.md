@@ -26,6 +26,7 @@ The numbers are true but numbers alone are boring. A good post starts from somet
   - "Same Pokémon, card vs toy" / "Piplup vs Torchic: which did you get?"
   - "The box nobody can find" / "1 listing. On all of eBay."
   - "Which tier is your toy?"
+- **Readable in 3 seconds.** The Reel shows each slide for about 3 seconds, so a slide is a short headline, one big number and at most a 50-character note (about 12 words in all). If it needs explaining, cut it.
 - **One number per slide, as the punchline.** Let photos do the work: prefer `hero`, `versus` and `tier_list` slides over lists of figures.
 - **Warm, playful, plain voice.** Short headlines that sound like a friend who knows prices, not a report ("Weedle: the toy everyone got twice", not "Fast sellers"). Light humour is good; hype isn't.
 - **Be funny, not just friendly** (the owner asked for more jokes). Every post needs at least 2 slides that would make someone smile, and a joke on the cover. Formats that work:

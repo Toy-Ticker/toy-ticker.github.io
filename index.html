@@ -364,6 +364,8 @@
   .hero-foot { display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: space-between; align-items: center;
                margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
   .hero-foot .share-btn { margin-top: 0; }
+  .hero-acts { display: flex; flex-wrap: wrap; gap: 8px; }
+  a.share-btn { text-decoration: none; display: inline-block; }
   .hero-value .save { color: #17663b; font-weight: 700; }
   .hero-value .hero-links { display: block; margin-top: 2px; }
   .hero-value .hero-links[hidden] { display: none; }
@@ -762,7 +764,10 @@
     <details class="hero-chart" id="sChart" hidden><summary>Complete-set price chart</summary><div id="setCharts"></div></details>
     <div class="hero-foot">
       <span id="sFacts"></span>
-      <button class="share-btn" id="shareBtn" type="button">↗ Share</button>
+      <span class="hero-acts">
+        <a class="share-btn follow" href="https://www.instagram.com/toy_ticker/" target="_blank" rel="noopener">Follow @toy_ticker</a>
+        <button class="share-btn" id="shareBtn" type="button">↗ Share</button>
+      </span>
     </div>
   </section>
 
@@ -885,6 +890,7 @@
 
   <footer>
     <p>Daily eBay US asking prices, shipping included. Photos from happymeal.com, pokemon.com and eBay listings. Not financial advice. <a href="about.html">How prices work</a></p>
+    <p class="follow-line">Daily price highlights and deal checks: follow <a href="https://www.instagram.com/toy_ticker/" target="_blank" rel="noopener">@toy_ticker on Instagram</a> and <a href="https://www.threads.com/@toy_ticker" target="_blank" rel="noopener">Threads</a>.</p>
     <p class="disclaimer">Unofficial fan site, not affiliated with McDonald’s or any toy brand. Toy Ticker may earn a commission from eBay links. Free and ad-free: <a class="kofi" href="https://ko-fi.com/toyticker" target="_blank" rel="noopener">support it on Ko-fi ☕</a> · Contact: <a href="mailto:toyticker@gmail.com">toyticker@gmail.com</a></p>
     <!-- seo:links -->
 <p class="disclaimer">Price lists: <a href="s/pokemon-happy-meal-2026/">Pokémon toys &amp; cards (2026)</a> · <a href="s/boo-buckets-2026/">Disney Villains Boo Buckets (2026)</a> · <a href="s/spongebob-onepiece-2026/">SpongeBob × One Piece (2026)</a> · <a href="s/hello-kitty-godzilla-2026/">Hello Kitty × Godzilla (2026)</a> · <a href="s/bt21-2026/">BT21 (2026)</a> · <a href="s/world-cup-squishmallows-2026/">FIFA World Cup Squishmallows (2026)</a></p>

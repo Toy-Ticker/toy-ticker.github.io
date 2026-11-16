@@ -64,6 +64,8 @@ There is one series per day of the week. The cover gets the series label automat
 - Headlines and notes may contain numbers only if the exact text appears in a fact's `display` (e.g. "$12.99", "29 days", "Dec 14"). Prefer words in headlines and let the facts carry the numbers.
 - Fact IDs in a row or item slide must be about that item (`about` equals the item ID).
 
+No emoji in slide headlines, subheads or notes: the slide font can't draw them. Emoji go in the caption and Threads posts.
+
 ## Caption
 
 - 300 to 900 characters. First line is a hook that works on its own before "more".

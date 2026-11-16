@@ -177,6 +177,9 @@ def check(post, facts):
     for n, a in enumerate(alts, 1):
         nums_ok(f"Alt text {n}", a)
 
+    for n, sl in enumerate(slides, 1):
+        if any(ord(c) > 0x2FFF for k in ("headline", "subhead", "note") for c in sl.get(k, "")):
+            errs.append(f"Slide {n}: no emoji on slides (the slide font can't draw them); keep emoji for the caption.")
     text = " ".join([cap, *alts, *threads, *(f"{s.get('headline', '')} {s.get('subhead', '')} {s.get('note', '')}" for s in slides)]).lower()
     for phrase in BANNED:
         if re.search(rf"\b{re.escape(phrase)}", text):

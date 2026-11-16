@@ -16,7 +16,7 @@ Only when the owner asks in the session ("post the threads", "post threads post 
 ## Steps
 
 1. Read `<folder>/threads.txt` and the log. Pick the post the owner named (default: post 1). Show the owner the exact text and topic once more.
-2. In Chrome (Claude in Chrome extension), open https://www.threads.com/ in a new tab. Confirm the signed-in profile is **whatsmytoyworth** (or the old name **toy_ticker** if the rename hasn't reached Threads yet), by the profile icon or the composer's name. If it's anyone else, stop.
+2. In Chrome (Claude in Chrome extension), open https://www.threads.com/ in a new tab. Confirm the signed-in profile is **toy_ticker** (profile icon or the composer's name). If it's anyone else, stop.
 3. Open the composer ("What's new?" / the + button). Type the post text exactly as in threads.txt. Add the topic with the composer's topic option ("Add a topic") using `Topic:` from threads.txt; if there's no such option, skip it (don't type a #). If threads.txt lists "Poll options" under this post, add a poll with the composer's poll button and enter the options in order.
 4. Check the link preview appeared for toy-ticker.github.io. Take a screenshot and **stop before Post**. Ask the owner: "Post this to Threads?" Click **Post** only after a clear yes for this post.
 5. After it's live, open nothing else. Append a line to `social/threads/log.jsonl`: `{"date": "YYYY-MM-DD", "folder": "...", "post": 1, "text": "..."}`. Close the tab and report "Posted to Threads".

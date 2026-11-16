@@ -2,7 +2,7 @@
 
 The owner finds popular Instagram posts about the current Happy Meal promo and shares their links. You draft a few short replies to commenters using Toy Ticker's price data. **The owner posts them from the Instagram app.** You never post, like, follow or DM, and you don't browse Instagram looking for posts (see "Account safety" in SOCIAL.md: on Nov 15 automated browsing and posting got @toy_ticker sent to a "Confirm you're human" check).
 
-Goal: people reading a popular post see a genuinely useful price fact from @whatsmytoyworth (renamed from @toy_ticker on Nov 15), tap the profile, and follow the bio link to https://toy-ticker.github.io/.
+Goal: people reading a popular post see a genuinely useful price fact from @toy_ticker, tap the profile, and follow the bio link to https://toy-ticker.github.io/.
 
 ## Steps
 

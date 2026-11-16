@@ -55,6 +55,11 @@
   .coffee-link:hover { filter: brightness(1.05); }
   .back { white-space: nowrap; } .back .short { display: none; }
   @media (max-width: 520px) { .coffee-link .long, .back .long { display: none; } .back .short { display: inline; } .coffee-link { padding: 6px 12px; } }
+  /* Small phones: a slightly smaller brand and buttons so the top row fits without sideways scrolling. */
+  @media (max-width: 400px) {
+    .top { gap: 8px; } .brand { font-size: 21px; gap: 8px; } .brand img { width: 32px; height: 32px; }
+    .top-links { gap: 6px; } .back, .coffee-link { padding: 5px 10px; font-size: 13px; }
+  }
 
   /* Hero */
   .hero { position: relative; overflow: hidden; background: var(--panel); border: 1px solid var(--line);

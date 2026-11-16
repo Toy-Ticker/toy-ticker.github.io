@@ -316,7 +316,7 @@
   .flipbar label { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
   .flipbar input { width: 4.6em; font: inherit; color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 2px 6px; text-align: right; }
   .flipbar b { color: var(--text); }
-  .flip-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 10px; font-variant-numeric: tabular-nums; }
+  .flip-table { width: 100%; min-width: 0; border-collapse: collapse; font-size: 14px; margin-top: 10px; font-variant-numeric: tabular-nums; }
   .flip-table th { text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); padding: 6px 8px 6px 0; border-bottom: 1px solid var(--line); }
   .flip-table td { padding: 8px 8px 8px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
   .flip-table td small { display: block; color: var(--muted); font-size: 12px; }
@@ -459,6 +459,16 @@
   .coffee-link:hover { filter: brightness(1.08); }
   /* Phones: the title leaves room for an icon-only coffee button next to About. */
   @media (max-width: 520px) { .coffee-link .long { display: none; } .about-link, .coffee-link { padding: 6px 12px; } }
+  /* Small phones (iPhone SE, small Androids): the corner buttons sit over the title row, so keep the title clear
+     of them and shrink both a little. */
+  @media (max-width: 400px) {
+    header h1 { padding-right: 112px; font-size: 24px; gap: 8px; }
+    header h1 .logo { width: 36px; height: 36px; }
+    .head-links { gap: 6px; top: 4px; }
+    .about-link, .coffee-link { padding: 5px 10px; font-size: 13px; }
+  }
+  /* The narrowest phones: only About fits beside the title; Ko-fi stays linked in the footer. */
+  @media (max-width: 330px) { .head-links .coffee-link { display: none; } header h1 { padding-right: 76px; } }
   footer .disclaimer { padding-top: 8px; border-top: 1px solid var(--line); }
 
   /* Hero banner: light card; the series colour lives in the top band, status pill and price.

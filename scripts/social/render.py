@@ -397,6 +397,14 @@ class Slides:
         img.paste(area, (x0 + 20, top), area)
         return img
 
+    def tweet(self, s, n, total, topic):
+        """A tweet-style text card from @toy_ticker on a plain light background, like a screenshot people share."""
+        from tweet import Tweet
+        img = Image.new("RGB", (W, H), "#f2f2f2")
+        card = Tweet(self.root, self.items, self.F).card(s, W - 2 * M)
+        img.paste(card, ((W - card.width) // 2, (H - card.height) // 2), card)
+        return img
+
     def screenshot(self, s, n, total, topic):
         """A crop of the site's own item page (focus = [top, bottom] fractions of the image) in a rounded frame."""
         img, d = self.canvas()

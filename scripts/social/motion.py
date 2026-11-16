@@ -32,12 +32,16 @@ PUSH = 0.24                  # seconds for the transition between scenes
 # draw pixels on this Mac; they aren't shipped in the repo.
 STYLES = {
     "clean": {},
+    # Looks like a Reel made in the Instagram app: toy photo on a blurred wash, captions on white labels.
+    "native": {"native": True, "font": "/System/Library/Fonts/SFNS.ttf", "bg": ("#2b2b2b", "#0f0f0f"),
+               "ink": "#ffffff", "accent": "#facc15"},
     "sticker": {"font": "/System/Library/Fonts/SFNSRounded.ttf", "bg": ("#fff4e0", "#ffd6e8"), "dots": "#f3c6d9",
                 "ink": "#1e1b4b", "accent": "#e11d74", "stroke": 9, "stroke_fill": "#ffffff", "shadow": "#1e1b4b",
-                "panel": "#ffffff", "border": "#1e1b4b", "p_ink": "#1e1b4b", "p_grey": "#6b7280", "photo": "sticker"},
+                "panel": "#ffffff", "border": "#1e1b4b", "p_ink": "#1e1b4b", "p_grey": "#6b7280", "photo": "sticker",
+                "rotate": False},
     "meme": {"font": "/System/Library/Fonts/Supplemental/Impact.ttf", "upper": True, "bg": ("#0a0a0a", "#2a2a2a"),
              "ink": "#ffffff", "accent": "#facc15", "stroke": 7, "stroke_fill": "#000000",
-             "panel": "#141414", "border": "#ffffff", "p_ink": "#ffffff", "p_grey": "#d4d4d4"},
+             "panel": "#141414", "border": "#ffffff", "p_ink": "#ffffff", "p_grey": "#d4d4d4", "rotate": False},
 }
 
 # Each series has its own Reel look (gradient start, end, text colour, number colour, transition), so followers
@@ -522,6 +526,19 @@ class Reel:
             return f
         return dur, draw
 
+    def scene_tweet(self, s):
+        """A tweet-style text card from @toy_ticker (no likes or reposts: those would be made-up numbers)."""
+        from tweet import Tweet
+        tw = Tweet(self.root, self.items, self.F0)
+        card = tw.card(s, 940)
+
+        def draw(t):
+            f = self.bg.copy()
+            p = ease_out(prog(t, 0.0, 0.35))
+            self.paste(f, card, W // 2, (TOP + BOTTOM) / 2 + (1 - p) * 140, 0.94 + 0.06 * p, p)
+            return f
+        return max(3.0, 1.6 + 0.035 * len(s["headline"])), draw
+
     def scene_screenshot(self, s):
         """The site itself: a phone-style frame scrolling through the focus region of the screenshot."""
         shot = Image.open(Path(self.folder) / s["image"]).convert("RGB")
@@ -583,12 +600,17 @@ class Reel:
     def scenes(self, folder):
         self.folder = Path(folder)
         out = []
+        nat = None
+        if self.st.get("native"):
+            from native import Native
+            nat = Native(self)
+        pick = lambda name: getattr(nat, name, None) or getattr(self, name, None)  # noqa: E731
         hook = self.post.get("reel_hook") or {}
         if hook.get("text"):
-            out.append(self.scene_hook(hook))
+            out.append(pick("scene_hook")(hook))
         slides = sorted((Path(folder) / "slides").glob("*.jpg"))
         for k, s in enumerate(self.post["slides"]):
-            fn = getattr(self, f"scene_{s['layout']}", None)
+            fn = pick(f"scene_{s['layout']}")
             if fn:
                 out.append(fn(s))
             elif k < len(slides):
@@ -649,7 +671,7 @@ def pick_style(folder, post):
         if rec.parent != folder and name in STYLES:
             key = (rec.parent.name[:10], rec.stat().st_mtime)
             last[name] = max(last.get(name, ("", 0)), key)
-    names = list(STYLES)
+    names = [n for n in STYLES if STYLES[n].get("rotate", True)]   # sticker and meme only when asked for
     seed = int(hashlib.md5(folder.name.encode()).hexdigest(), 16)
     pick = min(names, key=lambda n: (last.get(n, ("", 0)), (seed + names.index(n)) % len(names)))
     mine.write_text(pick + "\n")

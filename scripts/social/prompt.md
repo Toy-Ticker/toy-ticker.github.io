@@ -97,7 +97,9 @@ No emoji in slide headlines, subheads or notes: the slide font can't draw them. 
 
 One entry per slide, in order, describing what the slide shows in plain words (up to 200 characters each). Numbers follow the same rule as the caption.
 
-Optional `reel_style`: "clean", "sticker" or "meme". Leave it out and the Reel takes the style other posts used least recently; set it only when a post clearly suits one (meme for roast-y jokes, sticker for cute or collector-friendly posts).
+Optional `reel_style`: "clean" (designed cards) or "native" (looks made in the Instagram app: the toy's photo big on a blurred wash, captions on white text labels). Leave it out and Reels alternate between the two. "sticker" and "meme" exist but only when the owner asks.
+
+A `tweet` slide is a tweet-style text card from @toy_ticker: {"layout": "tweet", "headline": "<the tweet, up to 200 characters; \n for line breaks>", "item_ids": [optional 1 or 2 toys shown as the attached photo]}. Use one or two per post for the joke or the opinion, written like a person ("squirtle on ebay: $25.54\nsquirtle in real life: $15.82\n\nhe's popular, not priceless."): lowercase is fine, no emoji, numbers copied exactly from facts. It never shows likes or reposts (those would be made up).
 
 ## Site screenshots
 

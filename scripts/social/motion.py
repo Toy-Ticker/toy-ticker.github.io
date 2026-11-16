@@ -5,6 +5,7 @@ Same rule as the slides: every number shown is a fact's display text from facts.
 towards that exact value). Instagram covers the top ~250 px and bottom ~340 px of a Reel with its own buttons,
 so content stays between those.
 """
+import hashlib
 import math
 import re
 import shutil
@@ -25,6 +26,19 @@ M = 72                       # side margin
 TOP, BOTTOM = 290, 1560      # safe area for content
 INK, GREY, WHITE = "#1d1d1b", "#6b6b66", (255, 255, 255, 245)
 PUSH = 0.24                  # seconds for the transition between scenes
+
+# Visual styles, rotated from post to post (like the music) so Reels don't all look alike. "clean" is the
+# series colours below; the others bring their own type, colours and treatment. System fonts are only used to
+# draw pixels on this Mac; they aren't shipped in the repo.
+STYLES = {
+    "clean": {},
+    "sticker": {"font": "/System/Library/Fonts/SFNSRounded.ttf", "bg": ("#fff4e0", "#ffd6e8"), "dots": "#f3c6d9",
+                "ink": "#1e1b4b", "accent": "#e11d74", "stroke": 9, "stroke_fill": "#ffffff", "shadow": "#1e1b4b",
+                "panel": "#ffffff", "border": "#1e1b4b", "p_ink": "#1e1b4b", "p_grey": "#6b7280", "photo": "sticker"},
+    "meme": {"font": "/System/Library/Fonts/Supplemental/Impact.ttf", "upper": True, "bg": ("#0a0a0a", "#2a2a2a"),
+             "ink": "#ffffff", "accent": "#facc15", "stroke": 7, "stroke_fill": "#000000",
+             "panel": "#141414", "border": "#ffffff", "p_ink": "#ffffff", "p_grey": "#d4d4d4"},
+}
 
 # Each series has its own Reel look (gradient start, end, text colour, number colour, transition), so followers
 # can tell Monday from Thursday at a glance and back-to-back Reels don't look the same. Slides keep the
@@ -84,8 +98,22 @@ class Reel:
         accent, self.transition = ("#d62300" if c1 in ("#ffcb05", "#ffb703") else c1), "up"
         if post.get("topic") in LOOKS:
             c1, c2, ink, accent, self.transition = LOOKS[post["topic"]]
+        self.style_name = post.get("reel_style") if post.get("reel_style") in STYLES else "clean"
+        st = self.st = STYLES[self.style_name]
+        self.F0 = self.F                       # the site's font, kept for the chat UI
+        if st.get("font") and Path(st["font"]).exists():
+            self.F = Fonts(Path(st["font"]))
+        if st.get("bg"):
+            c1, c2 = st["bg"]
+            ink, accent = st["ink"], st["accent"]
         self.ink, self.accent = ink, accent
+        self.p_fill, self.p_ink, self.p_grey = st.get("panel", WHITE), st.get("p_ink", INK), st.get("p_grey", GREY)
         self.bg = backdrop(c1, c2)
+        if st.get("dots"):                     # scrapbook paper: a soft dot grid
+            dd = ImageDraw.Draw(self.bg)
+            for yy in range(20, H, 46):
+                for xx in range(20 + (yy // 46 % 2) * 23, W, 46):
+                    dd.ellipse([xx - 4, yy - 4, xx + 4, yy + 4], fill=st["dots"])
         self.fx = {f["id"]: f for f in facts["facts"]}
         self.items = {i["id"]: i for i in facts["items"]}
         self.kind_of = {fid: k for i in facts["items"] for k, fid in i["facts"].items()}
@@ -107,18 +135,45 @@ class Reel:
                 if base is None:
                     base = self._photo[(iid, "raw")] = trim(Image.open(self.root / it["image"]).convert("RGBA"))
                 r = size / max(base.size)
-                self._photo[key] = base.resize((max(1, int(base.width * r)), max(1, int(base.height * r))), Image.LANCZOS)
+                im = base.resize((max(1, int(base.width * r)), max(1, int(base.height * r))), Image.LANCZOS)
+                if self.st.get("photo") == "sticker":
+                    im = self.stickerize(im, iid)
+                self._photo[key] = im
         return self._photo[key]
 
+    def stickerize(self, im, iid):
+        """Die-cut sticker: thick white outline, hard drop shadow, a small tilt that's the same for each item."""
+        from PIL import ImageFilter
+        o = max(4, im.width // 22)
+        pad = o * 3
+        a = Image.new("L", (im.width + 2 * pad, im.height + 2 * pad), 0)
+        a.paste(im.getchannel("A"), (pad, pad))
+        edge = a.filter(ImageFilter.MaxFilter(2 * (o // 2) + 1)).filter(ImageFilter.MaxFilter(2 * (o // 2) + 1))
+        out = Image.new("RGBA", a.size, (0, 0, 0, 0))
+        out.paste(self.st.get("shadow", "#000000"), (o // 2 + 4, o // 2 + 6), edge)
+        out.paste("#ffffff", (0, 0), edge)
+        out.paste(im, (pad, pad), im)
+        tilt = (int(hashlib.md5(iid.encode()).hexdigest(), 16) % 13) - 6
+        return out.rotate(tilt, resample=Image.BICUBIC, expand=True)
+
     def text_img(self, text, size, weight, fill):
+        if self.st.get("upper"):
+            text = text.upper()
         key = (text, size, weight, fill)
         if key not in self._txt:
             f = self.F(size, weight)
             # Same box height for every word at a size (ascender to descender), so words share a baseline.
             ascent, descent = f.getmetrics()
-            l, _, r, _ = self.scratch.textbbox((0, 0), text, font=f)
-            im = Image.new("RGBA", (r - l + 8, ascent + descent + 8), (0, 0, 0, 0))
-            ImageDraw.Draw(im).text((4 - l, 4), text, font=f, fill=fill)
+            # Text on the background gets the style's outline (and sticker shadow); text on panels doesn't.
+            sw = int(self.st.get("stroke", 0) * size / 100) if fill == self.ink and self.st.get("stroke") and size >= 64 else 0
+            sh = max(3, size // 16) if sw and self.st.get("shadow") else 0
+            l, _, r, _ = self.scratch.textbbox((0, 0), text, font=f, stroke_width=sw)
+            im = Image.new("RGBA", (r - l + 8 + sh, ascent + descent + 8 + 2 * sw + sh), (0, 0, 0, 0))
+            dr = ImageDraw.Draw(im)
+            if sh:
+                dr.text((4 - l + sh, 4 + sw + sh), text, font=f, fill=self.st["shadow"], stroke_width=sw,
+                        stroke_fill=self.st["shadow"])
+            dr.text((4 - l, 4 + sw), text, font=f, fill=fill, stroke_width=sw, stroke_fill=self.st.get("stroke_fill"))
             self._txt[key] = im
         return self._txt[key]
 
@@ -141,6 +196,8 @@ class Reel:
 
     def layout_words(self, text, x, y, max_w, size, weight, max_lines, min_size=48, leading=1.04, center=False):
         """Wrap text (shrinking to fit max_lines); returns [(word, cx, cy, size)] and the y below the block."""
+        if self.st.get("upper"):
+            text = text.upper()
         while True:
             f = self.F(size, weight)
             lines = wrap(self.scratch, text, f, max_w)
@@ -175,7 +232,14 @@ class Reel:
             self.paste(frame, self.text_img(w_, sz, weight, fill), cx, cy, 1.0, p)
 
     def panel(self, d, box, radius=34):
-        d.rounded_rectangle(box, radius=radius, fill=WHITE)
+        """A card: plain white for clean; outlined with a hard offset shadow for sticker and meme."""
+        if self.st.get("border"):
+            x0, y0, x1, y1 = box
+            if self.st.get("shadow"):
+                d.rounded_rectangle([x0 + 10, y0 + 12, x1 + 10, y1 + 12], radius=radius, fill=self.st["shadow"])
+            d.rounded_rectangle(box, radius=radius, fill=self.p_fill, outline=self.st["border"], width=6)
+        else:
+            d.rounded_rectangle(box, radius=radius, fill=WHITE)
 
     def big_number(self, frame, fid, cx, y, size, t, start, fill=None, max_w=None, prefix=""):
         p = prog(t, start, 0.7)
@@ -261,7 +325,7 @@ class Reel:
                 self.panel(d, [M, top, W - M, top + 250])
                 self.big_number(f, fids[0], W // 2, top + 20, 140, t, 0.6, max_w=W - 2 * M - 60)
                 lp = ease_out(prog(t, 1.0, 0.3))
-                self.paste(f, self.text_img(self.label(fids[0]), 38, 500, GREY), W // 2, top + 205, 1, lp)
+                self.paste(f, self.text_img(self.label(fids[0]), 38, 500, self.p_grey), W // 2, top + 205, 1, lp)
                 end = top + 250
             if s.get("note"):
                 self.fade_text(f, s["note"], M, end + 34, W - 2 * M, 50, 700, self.ink, t, 1.5)
@@ -287,14 +351,14 @@ class Reel:
                 off = (1 - p) * (W * 0.7) * (-1 if i == 0 else 1)
                 x0 = 56 + i * (cw + gap) + off
                 x1 = x0 + cw
-                dl.rounded_rectangle([x0, top, x1, bot], radius=32, fill=WHITE)
+                self.panel(dl, [x0, top, x1, bot], radius=32)
                 it = self.items[iid]
                 self.paste(layer, self.photo(iid, cw - 80), (x0 + x1) / 2, top + 40 + (cw - 80) / 2)
-                name = self.text_img(it["name"], 40, 700, INK)
+                name = self.text_img(it["name"], 40, 700, self.p_ink)
                 self.paste(layer, name, (x0 + x1) / 2, bot - 230, min(1, (cw - 30) / name.width))
                 if i < len(fids):
                     self.big_number(layer, fids[i], (x0 + x1) / 2, bot - 190, 84, t, 0.85 + 0.1 * i, max_w=cw - 40)
-                    lab = self.text_img(self.label(fids[i]), 28, 500, GREY)
+                    lab = self.text_img(self.label(fids[i]), 28, 500, self.p_grey)
                     self.paste(layer, lab, (x0 + x1) / 2, bot - 50, min(1, (cw - 30) / lab.width),
                                ease_out(prog(t, 1.2, 0.3)))
             f.paste(layer, (0, 0), layer)
@@ -316,13 +380,13 @@ class Reel:
             self.panel(d, [M, top, W - M, top + 760])
             if fids:
                 self.big_number(f, fids[0], W // 2, top + 50, 190, t, 0.4, max_w=W - 2 * M - 60)
-                self.paste(f, self.text_img(self.label(fids[0]), 40, 500, GREY), W // 2, top + 290, 1,
+                self.paste(f, self.text_img(self.label(fids[0]), 40, 500, self.p_grey), W // 2, top + 290, 1,
                            ease_out(prog(t, 0.9, 0.3)))
             if len(fids) > 1:
                 p = ease_out(prog(t, 1.1, 0.35))
                 txt = "vs " + self.fx[fids[1]]["display"]
-                self.paste(f, self.text_img(txt, 92, 800, INK), W // 2 + (1 - p) * 500, top + 400, 1, p)
-                self.paste(f, self.text_img(self.label(fids[1]), 36, 500, GREY), W // 2 + (1 - p) * 500, top + 480, 1, p)
+                self.paste(f, self.text_img(txt, 92, 800, self.p_ink), W // 2 + (1 - p) * 500, top + 400, 1, p)
+                self.paste(f, self.text_img(self.label(fids[1]), 36, 500, self.p_grey), W // 2 + (1 - p) * 500, top + 480, 1, p)
             for k, iid in enumerate(ids):
                 col = (W - 2 * M - 120) / max(1, len(ids))
                 self.paste(f, self.photo(iid, min(180, col - 20)), M + 60 + col * (k + 0.5), top + 640,
@@ -352,7 +416,7 @@ class Reel:
                 p = ease_out(prog(t, 0.3 + 0.08 * r, 0.3))
                 off = (1 - p) * -W
                 ry = top + r * (rh + 16)
-                d.rounded_rectangle([M + off, ry, W - M + off, ry + rh], radius=24, fill=WHITE)
+                self.panel(d, [M + off, ry, W - M + off, ry + rh], radius=24)
                 d.rounded_rectangle([M + off, ry, M + 130 + off, ry + rh], radius=24, fill=col)
                 d.rectangle([M + 110 + off, ry, M + 130 + off, ry + rh], fill=col)
                 d.text((M + 65 + off, ry + rh / 2), name, font=self.F(80, 800), fill="#ffffff", anchor="mm")
@@ -398,7 +462,7 @@ class Reel:
         members = list(dict.fromkeys(m["from"] for m in msgs))
         x0, x1, y0, y1 = M - 24, W - M + 24, TOP - 30, BOTTOM + 20
         cw = x1 - x0 - 40
-        c = Chat(self.root, self.items, self.F, cw, 52)
+        c = Chat(self.root, self.items, self.F0, cw, 52)
         els, total_h = c.layout(msgs)
         head_h = 150
         area_h = y1 - y0 - head_h - 24
@@ -428,11 +492,11 @@ class Reel:
             for k, iid in enumerate(members[:5]):
                 f.paste(c.avatar(iid), (ax + k * 48, y0 + 28 + oy), c.avatar(iid))
             tx = ax + 48 * min(5, len(members)) + 34
-            title = self.text_img(s["headline"], 48, 800, "#1d1d1b")
+            title = self.text_img(s["headline"], 48, 800, "#1d1d1a")
             if title.width > x1 - tx - 30:
                 title = title.resize((x1 - tx - 30, int(title.height * (x1 - tx - 30) / title.width)), Image.LANCZOS)
             f.paste(title, (tx, y0 + 26 + oy), title)
-            d.text((tx, y0 + 92 + oy), f"{len(members)} members", font=self.F(30, 500), fill="#8e8e93")
+            d.text((tx, y0 + 92 + oy), f"{len(members)} members", font=self.F0(30, 500), fill="#8e8e93")
             d.line([x0 + 24, y0 + head_h - 8 + oy, x1 - 24, y0 + head_h - 8 + oy], fill="#e5e5ea", width=2)
             shown, scales, typing, offset = 0, {}, None, 0.0
             for k, (ts, tl) in enumerate(times):
@@ -570,6 +634,28 @@ def frames(scenes, style="up"):
         prev = last
 
 
+def pick_style(folder, post):
+    """The post's reel_style if it names one; else the style it used before (reel_style.txt, so redrawing keeps
+    it); else the style other posts used least recently, so back-to-back Reels look different."""
+    folder = Path(folder)
+    if post.get("reel_style") in STYLES:
+        return post["reel_style"]
+    mine = folder / "reel_style.txt"
+    if mine.exists() and mine.read_text().strip() in STYLES:
+        return mine.read_text().strip()
+    last = {}
+    for rec in folder.parent.glob("*/reel_style.txt"):
+        name = rec.read_text().strip()
+        if rec.parent != folder and name in STYLES:
+            key = (rec.parent.name[:10], rec.stat().st_mtime)
+            last[name] = max(last.get(name, ("", 0)), key)
+    names = list(STYLES)
+    seed = int(hashlib.md5(folder.name.encode()).hexdigest(), 16)
+    pick = min(names, key=lambda n: (last.get(n, ("", 0)), (seed + names.index(n)) % len(names)))
+    mine.write_text(pick + "\n")
+    return pick
+
+
 def build(folder, facts, root, post, music=None):
     """Write <folder>/reel.mp4. Returns the path, or None without ffmpeg."""
     from extras import find_music
@@ -581,6 +667,7 @@ def build(folder, facts, root, post, music=None):
             ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
         except ImportError:
             return None
+    post = dict(post, reel_style=pick_style(folder, post))
     R = Reel(post, facts, root)
     sc = R.scenes(folder)
     total = sum(round(d * FPS) for d, _ in sc) / FPS

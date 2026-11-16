@@ -97,6 +97,8 @@ No emoji in slide headlines, subheads or notes: the slide font can't draw them. 
 
 One entry per slide, in order, describing what the slide shows in plain words (up to 200 characters each). Numbers follow the same rule as the caption.
 
+Optional `reel_style`: "clean", "sticker" or "meme". Leave it out and the Reel takes the style other posts used least recently; set it only when a post clearly suits one (meme for roast-y jokes, sticker for cute or collector-friendly posts).
+
 ## Site screenshots
 
 A `screenshot` slide shows the real site: {"layout": "screenshot", "image": "site-<item id>.png", "focus": [top, bottom], "headline", "note"} (run `.venv/bin/python scripts/social/screenshot.py <folder> <item id>` first; it hides specific sellers' listings). Use it only for parts people take in at a glance: the item's photo and price header (about [0.0, 0.42]) or the price chart (about [0.70, 0.985]). Never the Market read or other long text: a Reel shows each scene for about 3 seconds. Put its key number on a `hero` slide instead, e.g. the `breakeven` fact ("Flip it only if you pay under $5.86"). Reselling talk stays factual: what buyers pay, the break-even after fees, "prices change fast, check before you buy"; never "get rich", "easy money" or "invest".

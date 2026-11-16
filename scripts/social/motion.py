@@ -390,6 +390,51 @@ class Reel:
             return f
         return 2.6, draw
 
+    def scene_screenshot(self, s):
+        """The site itself: a phone-style frame scrolling through the focus region of the screenshot."""
+        shot = Image.open(Path(self.folder) / s["image"]).convert("RGB")
+        fw = W - 2 * M
+        sc = shot.resize((fw, int(shot.height * fw / shot.width)), Image.LANCZOS)
+        f0, f1 = (int(v * sc.height) for v in s["focus"])
+        mask_cache = {}
+        dur = 3.4
+
+        def draw(t):
+            f = self.bg.copy()
+            d = ImageDraw.Draw(f, "RGBA")
+            words, end = self.layout_words(s["headline"], M, TOP, W - 2 * M, 92, 800, 2, 56)
+            self.pop_words(f, words, t, 0, stagger=0.05)
+            top = end + 36
+            fh = BOTTOM - (150 if s.get("note") else 40) - top
+            span = f1 - f0
+            if span > fh:      # scroll down through the region
+                p = prog(t, 0.5, dur - 1.2)
+                p = p * p * (3 - 2 * p)
+                y0, view = f0 + p * (span - fh), fh
+            else:              # region fits: show it, gently zooming in
+                y0, view = f0, span
+            crop = sc.crop((0, int(y0), fw, int(y0 + view)))
+            z = 1 + 0.05 * t / dur
+            if span <= fh:
+                crop = crop.resize((int(crop.width * z), int(crop.height * z)), Image.BILINEAR)
+                cx0 = (crop.width - fw) // 2
+                crop = crop.crop((cx0, 0, cx0 + fw, min(crop.height, fh)))
+            rise = ease_out(prog(t, 0.1, 0.4))
+            yy = int(top + (1 - rise) * 120)
+            key = crop.size
+            if key not in mask_cache:
+                m = Image.new("L", key, 0)
+                ImageDraw.Draw(m).rounded_rectangle([0, 0, key[0] - 1, key[1] - 1], radius=30, fill=255)
+                mask_cache[key] = m
+            d.rounded_rectangle([M - 8, yy - 8, M + fw + 8, yy + crop.height + 8], radius=36,
+                                fill=(255, 255, 255, int(255 * rise)))
+            if rise > 0.05:
+                f.paste(crop, (M, yy), mask_cache[key])
+            if s.get("note"):
+                self.fade_text(f, s["note"], M, yy + crop.height + 34, W - 2 * M, 50, 700, self.ink, t, dur - 1.1)
+            return f
+        return dur, draw
+
     def scene_still(self, slide_path):
         """Fallback for other layouts: the drawn slide, slowly zooming."""
         from extras import place
@@ -404,6 +449,7 @@ class Reel:
         return 2.6, draw
 
     def scenes(self, folder):
+        self.folder = Path(folder)
         out = []
         hook = self.post.get("reel_hook") or {}
         if hook.get("text"):

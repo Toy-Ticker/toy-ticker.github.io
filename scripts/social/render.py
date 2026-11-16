@@ -367,6 +367,28 @@ class Slides:
         self.footer(d)
         return img
 
+    def screenshot(self, s, n, total, topic):
+        """A crop of the site's own item page (focus = [top, bottom] fractions of the image) in a rounded frame."""
+        img, d = self.canvas()
+        self.header(d, n, total)
+        y = text_block(d, (M, 165), s["headline"], self.F, W - 2 * M, 78, 700, self.ink, 2, 48, 1.04)
+        shot = Image.open(Path(self.folder) / s["image"]).convert("RGB")
+        f0, f1 = s["focus"]
+        crop = shot.crop((0, int(f0 * shot.height), shot.width, int(f1 * shot.height)))
+        top, bot = y + 30, H - (200 if s.get("note") else 110)
+        fw, fh = W - 2 * M, bot - top
+        r = min(fw / crop.width, fh / crop.height)
+        crop = crop.resize((int(crop.width * r), int(crop.height * r)), Image.LANCZOS)
+        x = (W - crop.width) // 2
+        mask = Image.new("L", crop.size, 0)
+        ImageDraw.Draw(mask).rounded_rectangle([0, 0, crop.width - 1, crop.height - 1], radius=28, fill=255)
+        d.rounded_rectangle([x - 6, top - 6, x + crop.width + 6, top + crop.height + 6], radius=32, fill=(255, 255, 255, 255))
+        img.paste(crop, (x, top), mask)
+        if s.get("note"):
+            text_block(d, (M, top + crop.height + 30), s["note"], self.F, W - 2 * M, 38, 600, self.ink, 2, 26)
+        self.footer(d, text="toy-ticker.github.io  ·  screenshot of the site")
+        return img
+
     def cta(self, s, n, total, topic):
         img, d = self.canvas()
         d.text((W - M, 81), f"{n} / {total}", font=self.F(28, 600), fill=self.ink, anchor="rm")
@@ -394,6 +416,7 @@ def render(post, facts, out_dir, root):
     out = Path(out_dir) / "slides"
     out.mkdir(parents=True, exist_ok=True)
     S = Slides(facts, root)
+    S.folder = Path(out_dir)
     slides = post["slides"]
     paths = []
     for n, s in enumerate(slides, 1):

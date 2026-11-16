@@ -5,7 +5,7 @@ so the writer can't invent, round or compute a price.
 """
 import re
 
-LAYOUTS = {"cover", "ranked_list", "item", "highlight", "hero", "versus", "tier_list", "cta"}
+LAYOUTS = {"cover", "ranked_list", "item", "highlight", "hero", "versus", "tier_list", "cta", "screenshot"}
 TOPICS = ["weekly_board", "card_spotlight", "toy_spotlight", "fast_sellers", "scarce_finds", "set_or_singles",
           "guess_price", "after_promo", "doubles", "versus", "worth_it", "countdown", "deal_check"]
 BANNED = [
@@ -13,7 +13,7 @@ BANNED = [
     "invest", "guaranteed", "sure thing", "before prices", "buy now", "act fast", "before it's too late",
     "price prediction", "predict", "skyrocket", "to the moon", "goldmine", "gold mine",
 ]
-LIMITS = {"cover": (40, 70), "ranked_list": (36, 0), "item": (36, 0), "highlight": (40, 0), "hero": (40, 0), "versus": (40, 0), "tier_list": (40, 0), "cta": (40, 60)}
+LIMITS = {"cover": (40, 70), "ranked_list": (36, 0), "item": (36, 0), "highlight": (40, 0), "hero": (40, 0), "versus": (40, 0), "tier_list": (40, 0), "cta": (40, 60), "screenshot": (40, 0)}
 NUMBER = re.compile(r"\$?\d[\d,]*(?:\.\d+)?%?")
 
 
@@ -118,6 +118,13 @@ def check(post, facts):
             for iid in ids:
                 if iid not in items or "ask" not in items[iid]["facts"]:
                     errs.append(f"{where}: {iid} isn't an item with an asking price.")
+        if lay == "screenshot":
+            # A crop of the site's own item page (scripts/social/screenshot.py writes site-<item id>.png).
+            focus = s.get("focus") or []
+            if not str(s.get("image", "")).startswith("site-") or not s["image"].endswith(".png"):
+                errs.append(f"{where}: a screenshot slide needs 'image': 'site-<item id>.png' (made by screenshot.py).")
+            if not (len(focus) == 2 and 0 <= focus[0] < focus[1] <= 1):
+                errs.append(f"{where}: a screenshot slide needs 'focus': [top, bottom] as fractions of the image (0 to 1).")
         if lay == "highlight":
             if not 1 <= len(s.get("fact_ids", [])) <= 2:
                 errs.append(f"{where}: a highlight needs 1 or 2 fact_ids.")

@@ -712,6 +712,10 @@
     .tilt.shine::after { animation: none; }
     .status.live::before { animation: none; }
   }
+  /* ?only=1#i=<id>: just one item's card, for screenshots in social posts. */
+  html.only-detail body > *:not(.wrap), html.only-detail .wrap > *:not(#detail) { display: none !important; }
+  html.only-detail #detail { margin-top: 12px; }
+  html.only-detail #dDeals { display: none !important; }   /* specific sellers' listings stay out of posts */
 </style>
 </head>
 <body>
@@ -2628,6 +2632,22 @@ fetch("data/index.json", { cache: "no-store" })
       switchTo(null); window.scrollTo({ top: 0, behavior: "smooth" });
     });
     go(new URLSearchParams(location.search).get("s"));
+    // Direct link to one item: ...#i=<item id> opens its details (used by social posts and screenshots).
+    const deep = location.hash.match(/^#i=([\w-]+)$/);
+    if (deep) {
+      const id = deep[1];
+      const sid = Object.keys(DATA.sets).filter(s => id.startsWith(s + "-")).sort((a, b) => b.length - a.length)[0];
+      if (sid) {
+        KIND = "all";
+        switchTo(shownId(sid), () => {
+          if (!rowsFor(SID).some(x => x.id === id)) return;
+          showDetail(id);
+          // ?only=1 shows just this item's card (for screenshots in social posts); otherwise scroll to it.
+          if (new URLSearchParams(location.search).has("only")) document.documentElement.classList.add("only-detail");
+          else requestAnimationFrame(() => $("detail").scrollIntoView({ block: "start" }));
+        });
+      }
+    }
   })
   .catch(e => { $("meta").textContent = "Couldn't load price data: " + e.message; $("meta").hidden = false; });
 </script>

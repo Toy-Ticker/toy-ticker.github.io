@@ -27,6 +27,7 @@ There is one series per day of the week. The cover gets the series label automat
 - `scarce_finds` (Thursday, SCARCE FINDS): a `ranked_list` of `rankings.fewest_listings` with `listings` as the big fact and `ask` small. Explain that few listings make prices jumpy; never call an item rare or valuable because of it.
 - `set_or_singles` (Friday, SET OR SINGLES): one `highlight` per series in the promo comparing its `complete_set` fact with its `singles` fact (skip a series without both), and what a collector should do.
 - `guess_price` (Saturday, GUESS THE PRICE): a quiz. Cover headline asks what one item sells for (put only that item in `item_ids`; the cover hides its price). Pick an item from the spotlight rankings with a sold price. Slide 2 is a `highlight` revealing its `sold` fact vs its `ask`. The caption invites people to comment their guess before swiping, and gives the answer only at the end.
+- `after_promo` (AFTER THE PROMO): a past series (`promo.ended` is true). What it's worth now: the complete set, the top singles, how many are listed. Frame it as "X days after the promo", using the `days_since` fact; the data only covers recent weeks, so never claim a launch price or a change since launch.
 - `worth_it`: one item. What a Happy Meal costs vs what that item goes for, how many are listed, how fast it sells.
 - `countdown`: days left in restaurants and what to know before the promo ends. History and today's listings only.
 

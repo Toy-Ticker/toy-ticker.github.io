@@ -91,6 +91,7 @@ def main():
     ap.add_argument("--date", help="data date (default: the latest update)")
     ap.add_argument("--sample", action="store_true", help="skip Claude and use a fixed sample post")
     ap.add_argument("--branch", default="main", help="branch the PR images will live on")
+    ap.add_argument("--series", help="a series id to post about instead of the one in restaurants (e.g. a past series)")
     ap.add_argument("--facts-only", action="store_true", help="only write facts.json (for a writer outside this script)")
     ap.add_argument("--post", help="a post.json someone else wrote, next to its facts.json: check it and draw it")
     args = ap.parse_args()
@@ -102,8 +103,9 @@ def main():
         folder = Path(args.post).resolve().parent
         f = json.loads((folder / "facts.json").read_text())
     else:
-        f = facts_mod.build(ROOT, args.date)
-        folder = ROOT / "social" / f"{f['date']}-{args.topic.replace('_', '-')}{'-sample' if args.sample else ''}"
+        f = facts_mod.build(ROOT, args.date, series=args.series)
+        folder = ROOT / "social" / (f"{f['date']}-{args.topic.replace('_', '-')}"
+                                    f"{'-' + args.series if args.series else ''}{'-sample' if args.sample else ''}")
         n = 2
         base = folder
         while (folder / "post.json").exists() and not args.sample:   # never overwrite a drafted post

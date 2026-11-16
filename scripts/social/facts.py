@@ -70,12 +70,18 @@ class Facts:
         return fid
 
 
-def build(root, today=None, social_dir="social"):
+def build(root, today=None, social_dir="social", series=None):
     root = Path(root)
     index = load(root, "data/index.json")
     config = load(root, "data/config.json")
     today = today or index["updated"][:10]
-    live, group = current_series(config, today)
+    if series:   # a past (or any) series by id, e.g. for an "After the promo" post
+        live = [s for s in config["series"] if s["id"] == series]
+        group = next((g for g in config.get("groups", []) if series in g["members"] and len(g["members"]) == 1), None)
+        if not live:
+            raise SystemExit(f"Unknown series {series!r}")
+    else:
+        live, group = current_series(config, today)
     if not live:
         raise SystemExit("No series in restaurants today; nothing to post about.")
     F = Facts()
@@ -83,12 +89,15 @@ def build(root, today=None, social_dir="social"):
 
     end = max(s["end"] for s in live)
     days_left = (date.fromisoformat(end) - date.fromisoformat(today)).days
+    ended = days_left < 0
     promo = {
         "id": group["id"] if group else live[0]["id"],
         "name": group["name"] if group else live[0]["name"],
         "description": group["description"] if group else live[0]["description"],
         "start": min(s["start"] for s in live), "end": end,
+        "ended": ended,
         "facts": [F.add(None, "last day in restaurants", end, short_date(end)),
+                  F.add(None, "days since the promo ended", -days_left, f"{-days_left} days") if ended else
                   F.add(None, "days left in restaurants", days_left, f"{days_left} days")],
     }
 

@@ -18,14 +18,16 @@ INK, GREY, PANEL = "#1d1d1b", "#6b6b66", (255, 255, 255, 240)
 # followers can tell the series apart at a glance.
 TOPIC_LABEL = {"weekly_board": "WEEKLY SUMMARY", "card_spotlight": "CARD SPOTLIGHT", "toy_spotlight": "TOY SPOTLIGHT",
                "fast_sellers": "FAST SELLERS", "scarce_finds": "SCARCE FINDS", "set_or_singles": "SET OR SINGLES",
-               "guess_price": "GUESS THE PRICE", "worth_it": "WORTH IT?", "countdown": "COUNTDOWN"}
+               "guess_price": "GUESS THE PRICE", "after_promo": "AFTER THE PROMO", "worth_it": "WORTH IT?",
+               "countdown": "COUNTDOWN"}
 TOPIC_DOT = {"weekly_board": "#1d1d1b", "card_spotlight": "#2563eb", "toy_spotlight": "#16a34a", "fast_sellers": "#dc2626",
-             "scarce_finds": "#7c3aed", "set_or_singles": "#0891b2", "guess_price": "#db2777"}
+             "scarce_finds": "#7c3aed", "set_or_singles": "#0891b2", "guess_price": "#db2777", "after_promo": "#ca8a04"}
 FACT_LABEL = {"ask": "typical asking price", "listings": "listed today", "change": "price change",
               "sold": "typical sold price", "days_to_sell": "typical time to sell",
               "sells_out": "to sell out at this pace", "sold_window": "of sales tracked",
               "singles": "all bought as singles", "complete_set": "for a complete set",
-              "end": "last day in restaurants", "days_left": "left in restaurants"}
+              "end": "last day in restaurants", "days_left": "left in restaurants",
+              "ended_on": "promo ended", "days_since": "since the promo ended"}
 
 
 def gradient(c1, c2):
@@ -92,7 +94,8 @@ class Slides:
         self.kind_of = {fid: k for i in facts["items"] for k, fid in i["facts"].items()}
         for s in facts["promo"].get("series", []):           # set-level facts (complete set, singles)
             self.kind_of.update({fid: k for k, fid in s["facts"].items()})
-        self.kind_of.update(dict(zip(facts["promo"].get("facts", []), ("end", "days_left"))))
+        self.kind_of.update(dict(zip(facts["promo"].get("facts", []),
+                                     ("ended_on", "days_since") if facts["promo"].get("ended") else ("end", "days_left"))))
         c1, c2, ink = THEMES.get(facts["promo"]["id"], DEFAULT)
         self.c1, self.c2, self.ink = c1, c2, ink
         self.accent = "#d62300" if c1 in ("#ffcb05", "#ffb703") else c1
@@ -290,8 +293,12 @@ class Slides:
         d.text((W // 2, y + 90), "Tap the link in bio", font=self.F(46, 700), fill=INK, anchor="mm")
         d.text((W // 2, y + 196), "toy-ticker.github.io", font=self.F(38, 700), fill=self.ink, anchor="mm")
         d.text((W // 2, y + 246), "Free · no ads · no accounts", font=self.F(28, 500), fill=self.ink, anchor="mm")
-        for dy, line in ((132, "Not affiliated with McDonald's or The Pokémon Company."),
-                         (90, "Images: happymeal.com, pokemon.com")):
+        # Credits follow the post: Pokémon promos name The Pokémon Company; card scans come from pokemon.com.
+        pokemon = "pokemon" in self.facts["promo"]["id"]
+        cards = any((i.get("image") or "").startswith("assets/cards/") for i in self.facts["items"])
+        for dy, line in ((132, "Not affiliated with McDonald's or The Pokémon Company." if pokemon
+                          else "Not affiliated with McDonald's or the brands shown."),
+                         (90, "Images: happymeal.com" + (", pokemon.com" if cards else ""))):
             d.text((W // 2, H - dy), line, font=self.F(24, 500), fill=self.ink, anchor="mm")
         self.footer(d, "Prices from eBay US listings; not advice.")
         return img

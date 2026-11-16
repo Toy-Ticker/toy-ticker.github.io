@@ -19,6 +19,7 @@ Goal: people reading a popular post see a genuinely useful price fact from @toy_
 3. **Find posts** in Chrome (read only: do not like, follow, comment or DM while browsing):
    - Look at https://www.instagram.com/explore/tags/pokemonhappymeal/ and https://www.instagram.com/explore/tags/mcdonaldspokemon/ (and the current promo's tags if it isn't Pokémon).
    - Pick up to **3 posts** that are under 48 hours old (prefer under 24) and have at least 20 comments or 1,000 likes. Skip giveaways, ads, accounts selling toys, and posts not about the Happy Meal toys/cards.
+   - Also check the newest posts on https://www.instagram.com/officialhappymeal/ and https://www.instagram.com/mcdonalds/ that are about Happy Meal toys. If one is under 24 hours old, include it (it counts toward the 3 posts) but draft **at most 1 reply** on it: official brand posts filter spam heavily. A new Happy Meal launch post is the best case: be early, with a useful price fact about the series it announces or the one it replaces.
    - Open each and read its top comments.
 
 4. **Draft replies:** up to **3 per post**, only to comments the data genuinely answers (what something sells for, extras/duplicates, complete sets, which ones are scarce or sell fast, "is it worth it"). The style the owner approved:

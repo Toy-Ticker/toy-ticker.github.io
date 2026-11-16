@@ -242,7 +242,7 @@ const itemsOf = (sid) => Object.entries(IDX.items).filter(([, it]) => it.set ===
   .sort((a, b) => String(a[1].number).localeCompare(String(b[1].number), undefined, { numeric: true }))
   .map(([id, it]) => ({ id, ...it }));
 const toyName = (id) => IDX.items[id]?.name || id;
-const formOpen = () => !!(CFG.form?.action && CFG.form?.fields?.store_id && CFG.form?.fields?.toys);
+const formOpen = () => /^https:\/\/script\.google\.com\//.test(CFG.endpoint || "");
 const windowMs = () => (CFG.window_days || 14) * 864e5;
 
 // Series people can report: toy series that are in restaurants now or ended in the last 3 weeks (leftover stock).
@@ -259,9 +259,10 @@ const curToy = () => $("toySel").value;
 // ---------- data ----------
 async function loadReports() {
   const out = [];
-  if (CFG.csv) {
+  const src = formOpen() ? CFG.endpoint : "";
+  if (src) {
     try {
-      const text = await (await fetch(CFG.csv + (CFG.csv.includes("?") ? "&" : "?") + "t=" + Date.now(), { cache: "no-store" })).text();
+      const text = await (await fetch(src + (src.includes("?") ? "&" : "?") + "t=" + Date.now(), { cache: "no-store" })).text();
       const rows = parseCSV(text);
       const head = (rows.shift() || []).map(h => h.trim().toLowerCase().replace(/\s+/g, "_"));
       const col = (n) => head.indexOf(n);
@@ -277,7 +278,7 @@ async function loadReports() {
       }
     } catch (e) { console.warn("sightings csv", e); }
   }
-  // Keep this browser's own reports visible until the published sheet (refreshes every ~5 min) has them.
+  // Keep this browser's own reports visible until the sheet's read-back (cached ~1 min) has them.
   const mine = store.get(MINE_KEY, []).filter(m => Date.now() - m.ts < 2 * 36e5);
   store.set(MINE_KEY, mine);
   for (const m of mine) {
@@ -443,15 +444,15 @@ function select(id) {
 
 async function submit(s, sid, toys, out) {
   if (!formOpen()) return;
-  const f = CFG.form.fields, body = new URLSearchParams();
-  const put = (k, v) => { if (f[k]) body.append(f[k], v); };
+  const body = new URLSearchParams();
+  const put = (k, v) => body.append(k, v);
   put("store_id", s.id); put("store_name", s.name); put("address", s.address);
   put("lat", s.lat.toFixed(6)); put("lon", s.lon.toFixed(6)); put("series", sid);
   put("toys", toys.join(",")); put("out", out ? "yes" : "no");
   const btn = $("send"); btn.disabled = true; btn.textContent = "Sending…";
   try {
-    // Google Forms doesn't allow reading the reply from another site; an opaque response means it went through.
-    await fetch(CFG.form.action, { method: "POST", mode: "no-cors", body });
+    // Apps Script answers through a redirect another site can't read; an opaque response means it went through.
+    await fetch(CFG.endpoint, { method: "POST", mode: "no-cors", body });
   } catch (e) {
     btn.disabled = false; btn.textContent = "Couldn't send. Try again";
     return;
@@ -461,7 +462,7 @@ async function submit(s, sid, toys, out) {
   const sent = store.get("tt-sightings-sent", {}); sent[s.id + "|" + sid] = rep.ts; store.set("tt-sightings-sent", sent);
   reports.unshift({ ...rep, mine: true });
   select(s.id);
-  setStatus("Thanks! Your report is on the map. Everyone else sees it within about 5 minutes.");
+  setStatus("Thanks! Your report is on the map. Everyone else sees it within a minute or two.");
 }
 
 // ---------- controls ----------

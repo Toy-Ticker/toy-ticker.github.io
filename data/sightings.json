@@ -1,19 +1,6 @@
 {
-  "_comment": "Toy sightings map (sightings.html). Reports go to a Google Form; the map reads the form's response sheet, published to the web as CSV. Leave form.action or csv empty to keep reporting closed. Setup steps: README.md > Toy sightings.",
-  "form": {
-    "action": "",
-    "fields": {
-      "store_id": "",
-      "store_name": "",
-      "address": "",
-      "lat": "",
-      "lon": "",
-      "series": "",
-      "toys": "",
-      "out": ""
-    }
-  },
-  "csv": "",
+  "_comment": "Toy sightings map (sightings.html). endpoint = the Google Apps Script web app (scripts/sightings_apps_script.gs) in the Toy Ticker Map sheet: POST adds a report, GET returns recent ones as CSV. Leave it empty to keep reporting closed. Setup: README.md > Toy sightings map.",
+  "endpoint": "https://script.google.com/macros/s/AKfycbxwo_81r2a0Q7NQzW0xnq-TL8ooxl5w84eoG1ZlVI-Av_wXPykaHbp0J7ozWjQ_R_cV/exec",
   "window_days": 14,
   "_window_help": "window_days: reports older than this drop off the map. Toys rotate by case, so old reports mislead."
 }

@@ -36,24 +36,23 @@ The result goes to `data/backfill/<series>.json` and shows as weekly sold median
 ## Toy sightings map
 
 `sightings.html` lets visitors pick a McDonald's on a map and report which Happy Meal toys they got there.
-There's no server: reports go to a Google Form, and the map reads the form's response sheet, published as CSV.
-Until `data/sightings.json` has a form and a CSV link, the map shows stores but the Send button stays off.
+There's no server: reports are stored in the "Toy Ticker Map" Google Sheet through a small Google Apps Script
+web app ([scripts/sightings_apps_script.gs](scripts/sightings_apps_script.gs)). The page POSTs a report to it
+and GETs recent reports back as CSV. Until `endpoint` in `data/sightings.json` is set, the map shows stores but
+the Send button stays off.
 
 One-time setup:
 
-1. Create a Google Form with eight **Short answer** questions titled exactly:
-   `store_id`, `store_name`, `address`, `lat`, `lon`, `series`, `toys`, `out`.
-   In Settings, turn off "Collect email addresses" and any sign-in requirement.
-2. Get the field IDs: ⋮ menu > **Get pre-filled link**, type the question's name in each box, **Get link**, copy it.
-   The link holds `entry.123456=store_id&entry.789…=store_name…`; each `entry.N` goes into
-   `form.fields` in `data/sightings.json`.
-3. Set `form.action` to the form's link with `/viewform` swapped for `/formResponse`
-   (`https://docs.google.com/forms/d/e/<form id>/formResponse`).
-4. Responses tab > **Link to Sheets**. In the sheet: File > Share > **Publish to web**, pick the responses tab,
-   **Comma-separated values (.csv)**, Publish. Put that link in `csv`.
-5. Send one test report from the map and check it shows up in the sheet and, within ~5 minutes, on the map.
+1. Open the sheet > Extensions > **Apps Script**. Replace the editor's contents with
+   `scripts/sightings_apps_script.gs` and save.
+2. **Deploy > New deployment** > type **Web app**. Execute as: **Me**. Who has access: **Anyone**. Deploy, and
+   allow the permissions it asks for (it only touches this sheet).
+3. Copy the Web app URL (`https://script.google.com/macros/s/…/exec`) into `endpoint` in `data/sightings.json`.
+4. Send one test report from the map and check a row appears in the sheet.
 
-Reports older than `window_days` (14) drop off the map. To remove a bad report, delete its row in the sheet.
+The sheet doesn't need to be shared or published; the script reads it as you. Reports older than `window_days`
+(14) drop off the map. To remove a bad report, delete its row. After changing the script, use
+Deploy > Manage deployments > Edit > **New version** so the URL stays the same.
 
 The restaurant list is `data/stores.json`, every US McDonald's on OpenStreetMap. Refresh it every month or so:
 

@@ -104,7 +104,6 @@
   .seen-row img, .thumb-ph { width: 40px; height: 40px; object-fit: contain; border-radius: 8px; background: var(--bg); }
   .seen-row small { display: block; color: var(--muted); font-size: 12px; }
   .pill { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--up-soft); color: var(--up); white-space: nowrap; }
-  .pill.out { background: var(--accent-soft); color: var(--accent); }
 
   .recent { display: grid; gap: 8px; }
   .recent button { text-align: left; border: 1px solid var(--line); background: var(--bg); border-radius: 12px;
@@ -120,7 +119,6 @@
   .toy img { width: 100%; height: 52px; object-fit: contain; display: block; margin-bottom: 4px; }
   .toy[aria-pressed="true"] { border-color: var(--up); background: var(--up-soft); }
   .toy[aria-pressed="true"]::after { content: "✓"; position: absolute; top: 3px; right: 5px; color: var(--up); font-weight: 700; font-size: 14px; }
-  .check { display: flex; gap: 8px; align-items: center; font-size: 14px; margin: 8px 0 14px; }
   .sent { background: var(--up-soft); border-radius: 12px; padding: 10px 14px; font-size: 14px; margin-top: 10px; }
 
   .leaflet-container { font: inherit; }
@@ -167,7 +165,6 @@
       <div id="map" role="region" aria-label="Map of McDonald's restaurants"></div>
       <div class="legend">
         <span><i style="background:var(--up)"></i>Toys reported</span>
-        <span><i style="background:var(--accent)"></i>Reported out of toys</span>
         <span><i style="background:var(--store)"></i>No reports yet</span>
       </div>
       <p class="status" id="status" aria-live="polite"></p>
@@ -209,7 +206,7 @@ const VIEW_KEY = "tt-sightings-view";      // last map position
 const MIN_ZOOM_STORES = 10;                // show every McDonald's at this zoom and closer
 
 let CFG = {}, IDX = { sets: {}, items: {} };
-let reports = [];                // [{ts, store_id, store_name, address, lat, lon, series, toys:[], out, mine}]
+let reports = [];                // [{ts, store_id, store_name, address, lat, lon, series, toys:[], mine}]
 const stores = new Map();        // id -> {id, name, address, lat, lon}
 const markers = new Map();       // id -> L.circleMarker
 let selected = null;
@@ -268,8 +265,9 @@ async function loadReports() {
         if (!ts || !g("store_id") || !isFinite(lat) || !isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) continue;
         const series = g("series");
         const toys = g("toys").split(/[,;\s]+/).filter(t => IDX.items[t] && IDX.items[t].set === series);
+        if (!toys.length) continue;   // only toy reports count (older "out of toys" rows are ignored)
         out.push({ ts, store_id: g("store_id").slice(0, 40), store_name: g("store_name").slice(0, 80) || "McDonald's",
-                   address: g("address").slice(0, 160), lat, lon, series, toys, out: /^(yes|true|1)$/i.test(g("out")) });
+                   address: g("address").slice(0, 160), lat, lon, series, toys });
       }
     } catch (e) { console.warn("sightings csv", e); }
   }
@@ -305,14 +303,10 @@ function loadStores() {
 function storeSummary(id, series = curSeries()) {
   const rs = reports.filter(r => r.store_id === id && r.series === series);
   const toys = new Map();   // toy -> {n, last}
-  let out = 0, outLast = 0;
   for (const r of rs) {
-    if (r.out) { out++; outLast = Math.max(outLast, r.ts); }
     for (const t of r.toys) { const x = toys.get(t) || { n: 0, last: 0 }; x.n++; x.last = Math.max(x.last, r.ts); toys.set(t, x); }
   }
-  const lastToy = Math.max(0, ...[...toys.values()].map(x => x.last));
-  // "Out" only wins when it's the newest news from that store.
-  return { rs, toys, out, isOut: out > 0 && outLast > lastToy, last: rs[0]?.ts || 0 };
+  return { rs, toys, last: rs[0]?.ts || 0 };
 }
 
 // ---------- map ----------
@@ -326,15 +320,14 @@ const layer = L.layerGroup().addTo(map);
 
 function drawMarkers() {
   const sid = curSeries(), toy = curToy();
-  const up = css("--up"), out = css("--accent"), plain = css("--store"), ring = css("--panel");
+  const up = css("--up"), plain = css("--store"), ring = css("--panel");
   for (const s of stores.values()) {
     const sum = storeSummary(s.id, sid);
     const has = toy ? sum.toys.has(toy) : sum.toys.size > 0;
     const reported = sum.rs.length > 0;
     // Filtering by a toy: hide stores that reported other toys, keep unreported stores faint so people can report.
     const dim = toy && reported && !has;
-    const style = sum.isOut ? { fillColor: out, radius: 9 }
-      : has ? { fillColor: up, radius: 9 + Math.min(5, sum.rs.length) }
+    const style = has ? { fillColor: up, radius: 9 + Math.min(5, sum.rs.length) }
       : { fillColor: plain, radius: 6 };
     const opts = { ...style, color: s.id === selected ? css("--text") : ring, weight: s.id === selected ? 3 : 2,
                    fillOpacity: dim ? 0.25 : 0.95, opacity: dim ? 0.4 : 1 };
@@ -346,7 +339,7 @@ function drawMarkers() {
     } else m.setStyle(opts).setRadius(opts.radius);
     const tip = reported ? `${esc(s.name)} · ${sum.rs.length} report${sum.rs.length > 1 ? "s" : ""}` : esc(s.name);
     m.unbindTooltip().bindTooltip(tip, { direction: "top", offset: [0, -6] });
-    if (has || sum.isOut || s.id === selected) m.bringToFront();
+    if (has || s.id === selected) m.bringToFront();
   }
 }
 function storesHint() {
@@ -384,7 +377,7 @@ function renderIntro() {
     ${recent.length ? `<div class="recent">${recent.map(r => `
       <button type="button" data-store="${esc(r.store_id)}"><b>${esc(r.store_name)}</b>
         <small>${esc(r.address)}</small><br>
-        ${r.out ? `<span class="pill out">Out of toys</span>` : esc(r.toys.map(toyName).join(", "))}</button>`).join("")}</div>`
+        ${esc(r.toys.map(toyName).join(", "))}</button>`).join("")}</div>`
       : `<p class="muted">Nothing yet for ${esc(IDX.sets[sid]?.name || "this series")}. Your report could be the first.</p>`}`;
   $("side").querySelectorAll("[data-store]").forEach(b => b.addEventListener("click", () => {
     const s = stores.get(b.dataset.store); map.setView([s.lat, s.lon], Math.max(map.getZoom(), 14)); select(s.id);
@@ -404,44 +397,37 @@ function select(id) {
     <h2>${esc(s.name)}</h2>
     <p class="addr">${esc(s.address || "Address not on the map")} · <a href="https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lon}" target="_blank" rel="noopener">Directions</a></p>
     <h3>Reported here</h3>
-    ${sum.isOut ? `<p><span class="pill out">Out of toys</span></p>` : ""}
     ${seen.length ? `<div class="seen">${seen.map(([t, x]) => `
       <div class="seen-row">${thumb(t)}<span>${esc(toyName(t))}</span>
       <span class="pill">${x.n}×</span></div>`).join("")}</div>`
-      : sum.isOut ? "" : `<p class="muted">No reports yet for ${esc(IDX.sets[sid]?.name || "this series")}.</p>`}
+      : `<p class="muted">No reports yet for ${esc(IDX.sets[sid]?.name || "this series")}.</p>`}
     <h3>What did you get here?</h3>
     ${recently ? `<p class="sent">Thanks! You reported this store in the last few hours. Come back after your next visit.</p>` : `
     <p class="muted">Tick every toy you got here today.</p>
     <div class="toys">${items.map(it => `
       <button type="button" class="toy" aria-pressed="false" data-toy="${esc(it.id)}">
         ${it.image ? `<img src="${esc(it.image)}" alt="" loading="lazy">` : ""}${esc(it.name)}</button>`).join("")}</div>
-    <label class="check"><input type="checkbox" id="outBox"> They were out of Happy Meal toys</label>
     <button class="btn primary" id="send" type="button" disabled>${formOpen() ? "Send report" : "Reporting opens soon"}</button>
     <p class="muted" style="font-size:12px;margin-top:8px">Anonymous: only the store, the toys and the time are sent.</p>`}`;
   $("side").querySelector(".close").addEventListener("click", renderIntro);
   const send = $("send");
   if (send) {
     const picked = () => [...$("side").querySelectorAll('.toy[aria-pressed="true"]')].map(b => b.dataset.toy);
-    const update = () => { send.disabled = !formOpen() || !(picked().length || $("outBox").checked); };
+    const update = () => { send.disabled = !formOpen() || !picked().length; };
     $("side").querySelectorAll(".toy").forEach(b => b.addEventListener("click", () => {
       b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") === "true" ? "false" : "true");
-      if (b.getAttribute("aria-pressed") === "true") $("outBox").checked = false;
       update();
     }));
-    $("outBox").addEventListener("change", () => {
-      if ($("outBox").checked) $("side").querySelectorAll(".toy").forEach(b => b.setAttribute("aria-pressed", "false"));
-      update();
-    });
-    send.addEventListener("click", () => submit(s, sid, picked(), $("outBox").checked));
+    send.addEventListener("click", () => submit(s, sid, picked()));
   }
   if (matchMedia("(max-width: 900px)").matches) $("side").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-async function submit(s, sid, toys, out) {
+async function submit(s, sid, toys) {
   if (!formOpen()) return;
   const btn = $("send"); btn.disabled = true; btn.textContent = "Sending…";
   let rep;
-  try { rep = await TTReport.send(s, sid, toys, out); }   // assets/sighting-report.js
+  try { rep = await TTReport.send(s, sid, toys); }   // assets/sighting-report.js
   catch (e) { btn.disabled = false; btn.textContent = "Couldn't send. Try again"; return; }
   reports.unshift({ ...rep, mine: true });
   select(s.id);

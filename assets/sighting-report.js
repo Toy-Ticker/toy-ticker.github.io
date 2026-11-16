@@ -22,16 +22,16 @@
 
   // store: {id, name, address, lat, lon}. Resolves once sent; Apps Script's reply can't be read cross-site,
   // so an opaque response counts as delivered.
-  async function send(store, series, toys, out) {
+  async function send(store, series, toys) {
     const c = await config();
     if (!isOpen(c)) throw new Error("Reporting isn't open");
     const body = new URLSearchParams({
       store_id: store.id, store_name: store.name || "McDonald's", address: store.address || "",
-      lat: Number(store.lat).toFixed(6), lon: Number(store.lon).toFixed(6), series, toys: toys.join(","), out: out ? "yes" : "no",
+      lat: Number(store.lat).toFixed(6), lon: Number(store.lon).toFixed(6), series, toys: toys.join(","), out: "no",   // "out" column kept for the Apps Script; always no
     });
     await fetch(c.endpoint, { method: "POST", mode: "no-cors", body });
     const rep = { ts: Date.now(), store_id: store.id, store_name: store.name || "McDonald's", address: store.address || "",
-                  lat: store.lat, lon: store.lon, series, toys, out: !!out };
+                  lat: store.lat, lon: store.lon, series, toys };
     ls.set(MINE_KEY, [...ls.get(MINE_KEY, []).filter(m => Date.now() - m.ts < 2 * 36e5), rep]);
     const sent = ls.get(SENT_KEY, {}); sent[store.id + "|" + series] = rep.ts; ls.set(SENT_KEY, sent);
     return rep;
@@ -125,7 +125,7 @@
   async function report(store) {
     const p = pending; if (!p) return;
     show(`<p>Sending…</p>`);
-    try { await send(store, p.series, p.toys.map(t => t.id), false); }
+    try { await send(store, p.series, p.toys.map(t => t.id)); }
     catch (e) { return show(`<p>Couldn't send that just now. You can add it on the <a href="${mapLink()}">toy map</a>.</p>`); }
     const link = mapLink(), what = names();
     pending = null;

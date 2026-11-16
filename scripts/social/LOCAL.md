@@ -13,6 +13,7 @@ You are the writer. Code picks the facts, checks your work and draws the slides.
    - For each item in `"screenshots"`, retake the site screenshot: `.venv/bin/python scripts/social/screenshot.py <new folder> <item id>`.
    - Update every fact ID and every number in the slides, caption, alt text, Threads posts and hook to tonight's facts (look each one up again by item and fact kind; never reuse an old number). If a claim stopped being true (e.g. "priciest card", a break-even that no longer exists), rewrite that line in the same voice, keeping it short.
    - Run step 4 (check and draw) and step 5 (look at every slide and the Reel's frames) on the new folder, then skip to the report. In the report, say it's the queued post and what changed from the approved version.
+   - If the entry has a `"refresh_note"`, follow it (e.g. re-sort a ranked list by tonight's prices).
    - Remove that entry from `social/queue.json` only after the check passes.
 
 2. **Get the facts for today's series.**

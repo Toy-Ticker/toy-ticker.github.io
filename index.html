@@ -722,7 +722,7 @@
       <a class="about-link" href="about.html">About</a>
     </div>
     <h1><a class="home" href="./" aria-label="Toy Ticker home"><img class="logo" src="assets/logo.svg" alt="" width="44" height="44">Toy <span>Ticker</span></a></h1>
-    <div class="meta" id="meta">Loading…</div>
+    <div class="meta" id="meta" hidden></div>
     <div class="search" role="search">
       <input id="q" type="search" placeholder="Search toys and cards…" autocomplete="off" aria-label="Search toys and cards"
              aria-controls="qResults" aria-expanded="false"><kbd>/</kbd>
@@ -2593,7 +2593,6 @@ fetch("data/index.json", { cache: "no-store" })
     const asked = new URLSearchParams(location.search).get("s");
     const first = DATA.sets[asked] ? shownId(asked) : defaultSeries();
     await loadSeries(first);
-    $("meta").textContent = `Daily eBay prices, including shipping, for McDonald's Happy Meal toys and cards · updated ${new Date(d.updated).toLocaleString()}`;
     document.querySelectorAll("th[data-k]").forEach(th => th.onclick = () => {
       sortDir = th.dataset.k === sortKey ? -sortDir : (["name", "dos"].includes(th.dataset.k) ? 1 : -1);
       sortKey = th.dataset.k; render();
@@ -2630,7 +2629,7 @@ fetch("data/index.json", { cache: "no-store" })
     });
     go(new URLSearchParams(location.search).get("s"));
   })
-  .catch(e => { $("meta").textContent = "Couldn't load price data: " + e.message; });
+  .catch(e => { $("meta").textContent = "Couldn't load price data: " + e.message; $("meta").hidden = false; });
 </script>
 </body>
 </html>

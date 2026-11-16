@@ -5,15 +5,15 @@ so the writer can't invent, round or compute a price.
 """
 import re
 
-LAYOUTS = {"cover", "ranked_list", "item", "highlight", "hero", "versus", "tier_list", "cta", "screenshot"}
+LAYOUTS = {"cover", "ranked_list", "item", "highlight", "hero", "versus", "tier_list", "cta", "screenshot", "chat"}
 TOPICS = ["weekly_board", "card_spotlight", "toy_spotlight", "fast_sellers", "scarce_finds", "set_or_singles",
-          "guess_price", "after_promo", "doubles", "versus", "worth_it", "countdown", "deal_check"]
+          "guess_price", "after_promo", "doubles", "versus", "worth_it", "countdown", "deal_check", "group_chat"]
 BANNED = [
     "will go up", "will rise", "will increase", "going to go up", "will be worth", "will drop", "will fall",
     "invest", "guaranteed", "sure thing", "before prices", "buy now", "act fast", "before it's too late",
     "price prediction", "predict", "skyrocket", "to the moon", "goldmine", "gold mine",
 ]
-LIMITS = {"cover": (40, 70), "ranked_list": (36, 0), "item": (36, 0), "highlight": (40, 0), "hero": (40, 0), "versus": (40, 0), "tier_list": (40, 0), "cta": (40, 60), "screenshot": (40, 0)}
+LIMITS = {"cover": (40, 70), "ranked_list": (36, 0), "item": (36, 0), "highlight": (40, 0), "hero": (40, 0), "versus": (40, 0), "tier_list": (40, 0), "cta": (40, 60), "screenshot": (40, 0), "chat": (32, 0)}
 NUMBER = re.compile(r"\$?\d[\d,]*(?:\.\d+)?%?")
 
 
@@ -118,6 +118,22 @@ def check(post, facts):
             for iid in ids:
                 if iid not in items or "ask" not in items[iid]["facts"]:
                     errs.append(f"{where}: {iid} isn't an item with an asking price.")
+        if lay == "chat":
+            # The toys text each other: headline is the chat's name, messages are [{"from": item_id, "text": ...}].
+            msgs = s.get("messages") or []
+            if not 3 <= len(msgs) <= 10:
+                errs.append(f"{where}: a chat needs 3 to 10 messages.")
+            for k, m in enumerate(msgs, 1):
+                t = m.get("text", "")
+                if m.get("from") not in items:
+                    errs.append(f"{where}, message {k}: 'from' must be an item id ({m.get('from')!r}).")
+                if not 1 <= len(t) <= 70:
+                    errs.append(f"{where}, message {k}: keep messages to 70 characters (got {len(t)}).")
+                if any(ord(c) > 0x2FFF for c in t):
+                    errs.append(f"{where}, message {k}: no emoji (the font can't draw them).")
+                nums_ok(f"{where}, message {k}", t)
+            if len({m.get("from") for m in msgs}) < 2:
+                errs.append(f"{where}: a chat needs at least 2 different toys talking.")
         if lay == "screenshot":
             # A crop of the site's own item page (scripts/social/screenshot.py writes site-<item id>.png).
             focus = s.get("focus") or []
@@ -202,7 +218,8 @@ def check(post, facts):
             errs.append(f"Slide {n}: note is {len(sl['note'])} characters; keep it to 50 (Reels show each slide for about 3 seconds).")
         if any(ord(c) > 0x2FFF for k in ("headline", "subhead", "note") for c in sl.get(k, "")):
             errs.append(f"Slide {n}: no emoji on slides (the slide font can't draw them); keep emoji for the caption.")
-    text = " ".join([cap, htext, *alts, *threads, *(f"{s.get('headline', '')} {s.get('subhead', '')} {s.get('note', '')}" for s in slides)]).lower()
+    chat_text = [m.get("text", "") for s in slides for m in (s.get("messages") or [])]
+    text = " ".join([cap, htext, *chat_text, *alts, *threads, *(f"{s.get('headline', '')} {s.get('subhead', '')} {s.get('note', '')}" for s in slides)]).lower()
     for phrase in BANNED:
         if re.search(rf"\b{re.escape(phrase)}", text):
             errs.append(f"Remove the phrase {phrase!r}: no predictions, investment talk or urgency.")

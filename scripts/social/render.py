@@ -19,9 +19,9 @@ INK, GREY, PANEL = "#1d1d1b", "#6b6b66", (255, 255, 255, 240)
 TOPIC_LABEL = {"weekly_board": "WEEKLY SUMMARY", "card_spotlight": "CARD SPOTLIGHT", "toy_spotlight": "TOY SPOTLIGHT",
                "fast_sellers": "FAST SELLERS", "scarce_finds": "THE RAREST BOX", "set_or_singles": "SET OR SINGLES",
                "guess_price": "GUESS THE PRICE", "after_promo": "AFTER THE PROMO", "doubles": "GOT IT TWICE?", "versus": "VERSUS", "worth_it": "WORTH IT?",
-               "countdown": "COUNTDOWN", "deal_check": "DEAL CHECK"}
+               "countdown": "COUNTDOWN", "deal_check": "DEAL CHECK", "group_chat": "GROUP CHAT"}
 TOPIC_DOT = {"weekly_board": "#1d1d1b", "card_spotlight": "#2563eb", "toy_spotlight": "#16a34a", "fast_sellers": "#dc2626",
-             "scarce_finds": "#7c3aed", "set_or_singles": "#0891b2", "guess_price": "#db2777", "after_promo": "#ca8a04", "doubles": "#0d9488", "versus": "#ea580c", "deal_check": "#059669"}
+             "scarce_finds": "#7c3aed", "set_or_singles": "#0891b2", "guess_price": "#db2777", "after_promo": "#ca8a04", "doubles": "#0d9488", "versus": "#ea580c", "deal_check": "#059669", "group_chat": "#4f46e5"}
 FACT_LABEL = {"ask": "typical asking price", "listings": "listed today", "change": "price change",
               "sold": "typical sold price", "days_to_sell": "typical time to sell",
               "sells_out": "to sell out at this pace", "sold_window": "of sales tracked",
@@ -366,6 +366,35 @@ class Slides:
                     x0 = int(M + 140 + k * cell)
                     self.thumb(img, d, it, (x0 + 4, int(ry + (rh - cell) / 2 + 4), int(x0 + cell - 4), int(ry + (rh + cell) / 2 - 4)))
         self.footer(d)
+        return img
+
+    def chat(self, s, n, total, topic):
+        """The toys' group chat (headline = chat name), all messages, scrolled to the latest if it's long."""
+        from chatui import Chat
+        img, d = self.canvas()
+        self.header(d, n, total)
+        x0, y0, x1, y1 = M, 140, W - M, H - 100
+        d.rounded_rectangle([x0, y0, x1, y1], radius=36, fill=(255, 255, 255, 250))
+        msgs = s.get("messages") or []
+        members = list(dict.fromkeys(m["from"] for m in msgs))
+        area_h = y1 - (y0 + 130) - 24
+        for size in range(34, 21, -2):    # shrink the text until the whole chat fits
+            c = Chat(self.root, self.items, self.F, x1 - x0 - 40, size)
+            if c.layout(msgs)[1] <= area_h:
+                break
+        ax = x0 + 30
+        head = Chat(self.root, self.items, self.F, x1 - x0 - 40, 34)
+        for k, iid in enumerate(members[:5]):
+            img.paste(head.avatar(iid), (ax + k * 40, y0 + 26), head.avatar(iid))
+        tx = ax + 40 * min(5, len(members)) + 30
+        d.text((tx, y0 + 22), s["headline"], font=fit_font(d, s["headline"], self.F, x1 - tx - 30, 38, 800), fill=INK)
+        d.text((tx, y0 + 70), f"{len(members)} members", font=self.F(24, 500), fill=GREY)
+        top = y0 + 130
+        d.line([x0 + 20, top - 16, x1 - 20, top - 16], fill="#e5e5ea", width=2)
+        els, total_h = c.layout(msgs)
+        area = Image.new("RGBA", (x1 - x0 - 40, y1 - top - 24), (0, 0, 0, 0))
+        c.draw(area, els, len(msgs), offset=max(0, total_h - area.height))
+        img.paste(area, (x0 + 20, top), area)
         return img
 
     def screenshot(self, s, n, total, topic):

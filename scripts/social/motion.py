@@ -39,6 +39,7 @@ LOOKS = {
     "weekly_board":   ("#111827", "#4b5563", "#ffffff", "#d62300", "up"),
     "deal_check":     ("#064e3b", "#34d399", "#ffffff", "#047857", "left"),
     "toy_spotlight":  ("#b45309", "#facc15", "#1d1d1b", "#b45309", "up"),
+    "group_chat":     ("#312e81", "#818cf8", "#ffffff", "#4f46e5", "up"),
 }
 
 
@@ -389,6 +390,73 @@ class Reel:
                    font=self.F(24, 500), fill=self.ink, anchor="mm")
             return f
         return 2.6, draw
+
+    def scene_chat(self, s):
+        """The toys' group chat: typing dots, then each bubble pops in; scrolls up like a phone."""
+        from chatui import Chat
+        msgs = s.get("messages") or []
+        members = list(dict.fromkeys(m["from"] for m in msgs))
+        x0, x1, y0, y1 = M - 24, W - M + 24, TOP - 30, BOTTOM + 20
+        cw = x1 - x0 - 40
+        c = Chat(self.root, self.items, self.F, cw, 52)
+        els, total_h = c.layout(msgs)
+        head_h = 150
+        area_h = y1 - y0 - head_h - 24
+        me = msgs[0]["from"] if msgs else None
+        # When each message starts typing and when its bubble lands.
+        times, t = [], 0.55
+        for m in msgs:
+            typing = 0.4 if m["from"] != me else 0.25
+            times.append((t, t + typing))
+            t += typing + min(1.3, 0.5 + 0.026 * len(m["text"]))
+        dur = t + 0.8
+        tops = {el["msg"]: el["y"] for el in els if el["kind"] == "name"}
+        bubbles = {el["msg"]: el for el in els if el["kind"] == "bubble"}
+        mask = Image.new("L", (cw, area_h), 0)
+        ImageDraw.Draw(mask).rectangle([0, 0, cw, area_h], fill=255)
+
+        def need(bottom):
+            return max(0, bottom - area_h)
+
+        def draw(tt):
+            f = self.bg.copy()
+            d = ImageDraw.Draw(f, "RGBA")
+            rise = ease_out(prog(tt, 0, 0.35))
+            oy = int((1 - rise) * 160)
+            d.rounded_rectangle([x0, y0 + oy, x1, y1 + oy], radius=44, fill=(255, 255, 255, int(250 * rise)))
+            ax = x0 + 30
+            for k, iid in enumerate(members[:5]):
+                f.paste(c.avatar(iid), (ax + k * 48, y0 + 28 + oy), c.avatar(iid))
+            tx = ax + 48 * min(5, len(members)) + 34
+            title = self.text_img(s["headline"], 48, 800, "#1d1d1b")
+            if title.width > x1 - tx - 30:
+                title = title.resize((x1 - tx - 30, int(title.height * (x1 - tx - 30) / title.width)), Image.LANCZOS)
+            f.paste(title, (tx, y0 + 26 + oy), title)
+            d.text((tx, y0 + 92 + oy), f"{len(members)} members", font=self.F(30, 500), fill="#8e8e93")
+            d.line([x0 + 24, y0 + head_h - 8 + oy, x1 - 24, y0 + head_h - 8 + oy], fill="#e5e5ea", width=2)
+            shown, scales, typing, offset = 0, {}, None, 0.0
+            for k, (ts, tl) in enumerate(times):
+                el = bubbles[k]
+                if tt >= tl:
+                    shown = k + 1
+                    scales[k] = 0.6 + 0.4 * back_out(prog(tt, tl, 0.25))
+                    offset = max(offset, need(el["y"] + el["h"]) * ease_out(prog(tt, tl, 0.25)))
+                elif tt >= ts:
+                    ty = tops.get(k, el["y"])
+                    if k in tops:      # the name label comes with the typing bubble
+                        shown = max(shown, k)
+                    typing = (msgs[k]["from"], el["y"], el["side"])
+                    offset = max(offset, need(el["y"] + int(52 * 1.5)) * ease_out(prog(tt, ts, 0.25)))
+                    break
+            area = Image.new("RGBA", (cw, area_h), (0, 0, 0, 0))
+            # show the name label of the message being typed
+            show_names = shown + (1 if typing and any(e["kind"] == "name" and e["msg"] == shown for e in els) else 0)
+            c.draw(area, [e for e in els if e["kind"] == "bubble" and e["msg"] < shown or
+                          e["kind"] == "name" and e["msg"] < show_names], max(shown, show_names), offset, scales, typing, tt)
+            if rise > 0.05:
+                f.paste(area, (x0 + 20, y0 + head_h + 12 + oy), area)
+            return f
+        return dur, draw
 
     def scene_screenshot(self, s):
         """The site itself: a phone-style frame scrolling through the focus region of the screenshot."""

@@ -15,7 +15,7 @@ PROMPT = (Path(__file__).with_name("prompt.md")).read_text()
 SLIDE = {
     "type": "object",
     "properties": {
-        "layout": {"type": "string", "enum": ["cover", "ranked_list", "item", "highlight", "cta"]},
+        "layout": {"type": "string", "enum": ["cover", "ranked_list", "item", "highlight", "hero", "versus", "tier_list", "cta"]},
         "headline": {"type": "string"},
         "subhead": {"type": "string"},
         "item_ids": {"type": "array", "items": {"type": "string"}},

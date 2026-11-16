@@ -182,6 +182,13 @@ def build(root, today=None, social_dir="social", series=None):
     rankings["fallers"] = top([r for r in moved if r["change"] <= -MIN_CHANGE], lambda r: r["change"], reverse=False)
     rankings["most_sold"] = top([r for r in ok if r["sold_count"]], lambda r: r["sold_count"])
     # Daily series: fastest to sell out, fewest listed, and spotlight picks not featured in recent posts.
+    # Playful angles: the toys everyone has (most listed = most duplicates), card vs toy of the same Pokémon,
+    # and every item by asking price (for tier lists and versus pairs).
+    rankings["most_listed"] = top([r for r in ok if r["kind"] != "cards"], lambda r: r["listings"])
+    base = lambda r: r["name"].rsplit(" ", 1)[0] if r["name"].endswith((" card", " toy")) else r["name"]  # noqa: E731
+    cards_by = {base(r): r["id"] for r in ok if r["kind"] == "cards"}
+    rankings["card_toy_pairs"] = [[cards_by[base(r)], r["id"]] for r in ok if r["kind"] != "cards" and base(r) in cards_by]
+    rankings["by_price"] = top(ok, lambda r: r["ask"], n=len(ok))
     rankings["fast_sellers"] = top([r for r in items if r["sells_out"]], lambda r: r["sells_out"], reverse=False)
     rankings["fewest_listings"] = top([r for r in items if r["listings"] >= 1], lambda r: r["listings"], reverse=False)
     recent = recent_posts(root / social_dir)

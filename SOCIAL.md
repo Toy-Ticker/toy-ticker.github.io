@@ -51,11 +51,11 @@ One Instagram carousel a day, drafted at 7pm Pacific by the local scheduled task
 
 | Day | Series | What it shows |
 | --- | --- | --- |
-| Sun | WEEKLY SUMMARY | The week's 3–4 takeaways |
-| Mon | CARD SPOTLIGHT | One card not featured lately: sold vs asking, how fast it sells, what to do |
-| Tue | TOY SPOTLIGHT | The same for one toy; a thin market is the story when listings are few |
-| Wed | FAST SELLERS | Top 5 by how fast today's listings would sell out |
-| Thu | SCARCE FINDS | Fewest listings, and why that makes prices jumpy |
+| Sun | WEEKLY SUMMARY | The week's 3–4 takeaways, ending with a tier list of every toy |
+| Mon | CARD SPOTLIGHT | One card: a big-photo hook, sold vs asking, card vs toy |
+| Tue | GOT IT TWICE? | The most-listed toys: what a duplicate is worth, trade or sell |
+| Wed | VERSUS | Two items head to head (card vs toy, or two toys) |
+| Thu | THE RAREST BOX | The toy with the fewest listings, one big photo |
 | Fri | SET OR SINGLES | Complete set vs singles, per series |
 | Sat | GUESS THE PRICE | Quiz: cover hides the price, slide 2 reveals what buyers paid |
 

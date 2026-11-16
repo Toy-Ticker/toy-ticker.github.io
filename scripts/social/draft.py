@@ -22,8 +22,7 @@ from render import render
 
 ROOT = Path(__file__).resolve().parents[2]
 # One series per weekday (Monday = 0), local time. "--topic today" picks from this.
-SCHEDULE = ["card_spotlight", "toy_spotlight", "fast_sellers", "scarce_finds", "set_or_singles", "guess_price",
-            "weekly_board"]
+SCHEDULE = ["card_spotlight", "doubles", "versus", "scarce_finds", "set_or_singles", "guess_price", "weekly_board"]
 
 
 def sample_post(f):

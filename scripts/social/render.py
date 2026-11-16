@@ -17,11 +17,11 @@ INK, GREY, PANEL = "#1d1d1b", "#6b6b66", (255, 255, 255, 240)
 # One series per weekday (see scripts/social/draft.py SCHEDULE): its label on the cover, and a dot colour so
 # followers can tell the series apart at a glance.
 TOPIC_LABEL = {"weekly_board": "WEEKLY SUMMARY", "card_spotlight": "CARD SPOTLIGHT", "toy_spotlight": "TOY SPOTLIGHT",
-               "fast_sellers": "FAST SELLERS", "scarce_finds": "SCARCE FINDS", "set_or_singles": "SET OR SINGLES",
-               "guess_price": "GUESS THE PRICE", "after_promo": "AFTER THE PROMO", "worth_it": "WORTH IT?",
+               "fast_sellers": "FAST SELLERS", "scarce_finds": "THE RAREST BOX", "set_or_singles": "SET OR SINGLES",
+               "guess_price": "GUESS THE PRICE", "after_promo": "AFTER THE PROMO", "doubles": "GOT IT TWICE?", "versus": "VERSUS", "worth_it": "WORTH IT?",
                "countdown": "COUNTDOWN"}
 TOPIC_DOT = {"weekly_board": "#1d1d1b", "card_spotlight": "#2563eb", "toy_spotlight": "#16a34a", "fast_sellers": "#dc2626",
-             "scarce_finds": "#7c3aed", "set_or_singles": "#0891b2", "guess_price": "#db2777", "after_promo": "#ca8a04"}
+             "scarce_finds": "#7c3aed", "set_or_singles": "#0891b2", "guess_price": "#db2777", "after_promo": "#ca8a04", "doubles": "#0d9488", "versus": "#ea580c"}
 FACT_LABEL = {"ask": "typical asking price", "listings": "listed today", "change": "price change",
               "sold": "typical sold price", "days_to_sell": "typical time to sell",
               "sells_out": "to sell out at this pace", "sold_window": "of sales tracked",
@@ -280,6 +280,90 @@ class Slides:
         if s.get("note"):
             text_block(d, (M + 60, bot - 130), s["note"], self.F, inner, 38, 600, INK, 2, 26)
         self.footer(d, fids=fids)
+        return img
+
+    # --- playful layouts --------------------------------------------------------------------
+    def hero(self, s, n, total, topic):
+        """One big photo, one line, at most one number: built to stop the scroll."""
+        img, d = self.canvas()
+        self.header(d, n, total)
+        it = self.items.get(s.get("item_id"))
+        fids = s.get("fact_ids", [])[:1]
+        # Space below the photo: headline (up to 2 lines), the number and its label, the note.
+        below = 170 + (175 if fids else 0) + (100 if s.get("note") else 0)
+        top, bot = 160, H - 110 - below
+        d.rounded_rectangle([M, top, W - M, bot], radius=36, fill=PANEL)
+        if it:
+            self.thumb(img, d, it, (M + 60, top + 36, W - M - 60, bot - 36))
+        y = text_block(d, (M, bot + 36), s["headline"], self.F, W - 2 * M, 72, 700, self.ink, 2, 48, 1.04)
+        if fids:
+            big = self.display(fids[0])
+            d.text((M, y + 8), big, font=fit_font(d, big, self.F, W - 2 * M, 100, 700), fill=self.ink)
+            d.text((M, y + 122), self.label(fids[0]), font=self.F(30, 500), fill=self.ink)
+            y += 175
+        if s.get("note"):
+            text_block(d, (M, y + 6), s["note"], self.F, W - 2 * M, 34, 500, self.ink, 2, 24)
+        self.footer(d, fids=fids)
+        return img
+
+    def versus(self, s, n, total, topic):
+        """Two items side by side, each with its photo and one number, and a VS badge between them."""
+        img, d = self.canvas()
+        self.header(d, n, total)
+        y = text_block(d, (M, 165), s["headline"], self.F, W - 2 * M, 78, 700, self.ink, 2, 48, 1.04)
+        ids, fids = s.get("item_ids", [])[:2], s.get("fact_ids", [])[:2]
+        top = max(y + 30, 360)
+        bot = H - (250 if s.get("note") else 130)
+        gap = 36
+        cw = (W - 2 * M - gap) / 2
+        for i, iid in enumerate(ids):
+            it = self.items[iid]
+            x0 = int(M + i * (cw + gap))
+            x1 = int(x0 + cw)
+            d.rounded_rectangle([x0, top, x1, bot], radius=30, fill=PANEL)
+            self.thumb(img, d, it, (x0 + 30, top + 30, x1 - 30, bot - 230))
+            d.text(((x0 + x1) // 2, bot - 200), it["name"], font=fit_font(d, it["name"], self.F, cw - 40, 38, 700),
+                   fill=INK, anchor="ma")
+            if i < len(fids):
+                big = self.display(fids[i])
+                d.text(((x0 + x1) // 2, bot - 148), big, font=fit_font(d, big, self.F, cw - 40, 76, 700),
+                       fill=self.accent, anchor="ma")
+                d.text(((x0 + x1) // 2, bot - 58), self.label(fids[i]),
+                       font=fit_font(d, self.label(fids[i]), self.F, cw - 40, 26, 500), fill=GREY, anchor="ma")
+        cy = (top + bot) // 2 - 100
+        d.ellipse([W // 2 - 56, cy - 56, W // 2 + 56, cy + 56], fill=self.accent, outline="#ffffff", width=8)
+        d.text((W // 2, cy), "VS", font=self.F(44, 700), fill="#ffffff", anchor="mm")
+        if s.get("note"):
+            text_block(d, (M, bot + 30), s["note"], self.F, W - 2 * M, 38, 600, self.ink, 2, 26)
+        self.footer(d, fids=fids)
+        return img
+
+    def tier_list(self, s, n, total, topic):
+        """Items sorted into S/A/B/C rows by asking price; photos only, no numbers."""
+        img, d = self.canvas()
+        self.header(d, n, total)
+        y = text_block(d, (M, 165), s["headline"], self.F, W - 2 * M, 78, 700, self.ink, 2, 48, 1.04)
+        d.text((M, y + 6), "Ranked by typical eBay asking price", font=self.F(28, 500), fill=self.ink)
+        its = [self.items[i] for i in s.get("item_ids", []) if i in self.items and "ask" in self.items[i]["facts"]]
+        its.sort(key=lambda it: -self.fx[it["facts"]["ask"]]["value"])
+        tiers = [("S", "#e11d48"), ("A", "#f97316"), ("B", "#eab308"), ("C", "#22c55e")]
+        size = -(-len(its) // len(tiers)) if its else 1
+        groups = [its[i * size:(i + 1) * size] for i in range(len(tiers))]
+        top, bot = y + 60, H - 110
+        rh = (bot - top - 3 * 14) / 4
+        for r, ((name, col), grp) in enumerate(zip(tiers, groups)):
+            ry = int(top + r * (rh + 14))
+            d.rounded_rectangle([M, ry, W - M, ry + rh], radius=22, fill=PANEL)
+            d.rounded_rectangle([M, ry, M + 120, ry + rh], radius=22, fill=col)
+            d.rectangle([M + 100, ry, M + 120, ry + rh], fill=col)
+            d.text((M + 60, ry + rh / 2), name, font=self.F(72, 700), fill="#ffffff", anchor="mm")
+            if grp:
+                avail = W - M - 24 - (M + 140)
+                cell = min(rh - 24, avail / len(grp))
+                for k, it in enumerate(grp):
+                    x0 = int(M + 140 + k * cell)
+                    self.thumb(img, d, it, (x0 + 4, int(ry + (rh - cell) / 2 + 4), int(x0 + cell - 4), int(ry + (rh + cell) / 2 - 4)))
+        self.footer(d)
         return img
 
     def cta(self, s, n, total, topic):

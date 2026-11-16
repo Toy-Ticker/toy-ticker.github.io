@@ -5,15 +5,15 @@ so the writer can't invent, round or compute a price.
 """
 import re
 
-LAYOUTS = {"cover", "ranked_list", "item", "highlight", "cta"}
+LAYOUTS = {"cover", "ranked_list", "item", "highlight", "hero", "versus", "tier_list", "cta"}
 TOPICS = ["weekly_board", "card_spotlight", "toy_spotlight", "fast_sellers", "scarce_finds", "set_or_singles",
-          "guess_price", "after_promo", "worth_it", "countdown"]
+          "guess_price", "after_promo", "doubles", "versus", "worth_it", "countdown"]
 BANNED = [
     "will go up", "will rise", "will increase", "going to go up", "will be worth", "will drop", "will fall",
     "invest", "guaranteed", "sure thing", "before prices", "buy now", "act fast", "before it's too late",
     "price prediction", "predict", "skyrocket", "to the moon", "goldmine", "gold mine",
 ]
-LIMITS = {"cover": (40, 70), "ranked_list": (36, 0), "item": (36, 0), "highlight": (40, 0), "cta": (40, 60)}
+LIMITS = {"cover": (40, 70), "ranked_list": (36, 0), "item": (36, 0), "highlight": (40, 0), "hero": (40, 0), "versus": (40, 0), "tier_list": (40, 0), "cta": (40, 60)}
 NUMBER = re.compile(r"\$?\d[\d,]*(?:\.\d+)?%?")
 
 
@@ -94,6 +94,30 @@ def check(post, facts):
                     errs.append(f"{where} row {r}: give 1 or 2 fact_ids.")
                 for fid in row.get("fact_ids", []):
                     fact_ok(f"{where} row {r}", fid, iid)
+        if lay == "hero":
+            if s.get("item_id") not in items:
+                errs.append(f"{where}: a hero slide needs an item_id.")
+            if len(s.get("fact_ids", [])) > 1:
+                errs.append(f"{where}: a hero slide shows at most 1 fact.")
+            for fid in s.get("fact_ids", []):
+                fact_ok(where, fid, s.get("item_id"))
+        if lay == "versus":
+            ids, fids = s.get("item_ids", []), s.get("fact_ids", [])
+            if len(ids) != 2 or len(fids) != 2:
+                errs.append(f"{where}: a versus slide needs exactly 2 item_ids and 2 fact_ids (one per item, same order).")
+            else:
+                for iid, fid in zip(ids, fids):
+                    if iid not in items:
+                        errs.append(f"{where}: unknown item {iid}.")
+                    else:
+                        fact_ok(where, fid, iid)
+        if lay == "tier_list":
+            ids = s.get("item_ids", [])
+            if not 4 <= len(ids) <= 16:
+                errs.append(f"{where}: a tier list needs 4 to 16 item_ids.")
+            for iid in ids:
+                if iid not in items or "ask" not in items[iid]["facts"]:
+                    errs.append(f"{where}: {iid} isn't an item with an asking price.")
         if lay == "highlight":
             if not 1 <= len(s.get("fact_ids", [])) <= 2:
                 errs.append(f"{where}: a highlight needs 1 or 2 fact_ids.")

@@ -28,6 +28,14 @@ The numbers are true but numbers alone are boring. A good post starts from somet
   - "Which tier is your toy?"
 - **One number per slide, as the punchline.** Let photos do the work: prefer `hero`, `versus` and `tier_list` slides over lists of figures.
 - **Warm, playful, plain voice.** Short headlines that sound like a friend who knows prices, not a report ("Weedle: the toy everyone got twice", not "Fast sellers"). Light humour is good; hype isn't.
+- **Be funny, not just friendly** (the owner asked for more jokes). Every post needs at least 2 slides that would make someone smile, and a joke on the cover. Formats that work:
+  - **POV / relatable moment:** "POV: you open it and it's Weedle. Again."
+  - **Deadpan reaction after a number:** "97 Weedles listed. 10 sold." + note "He's fine. He's totally fine."
+  - **Treat toys like characters or athletes:** "The Spare Toy Championship", "Weedle demands a rematch", "Weedle has simply moved in".
+  - **Mock-serious labels:** "B tier on eBay. S tier in our hearts.", "Supply: a lot. Demand: vibes."
+  - **Self-aware closer:** "Got 3 Weedles? We don't judge."
+  - **Comment games:** "Drop a 🐛 for every Weedle you have" (in the caption, not on slides).
+  The joke is always about the situation or the toy, never about people (no mocking sellers, kids or parents). Jokes never bend the numbers: the punchline number is still copied exactly from a fact.
 - **End with a question people can answer in the comments** ("Which one did you get?", "Team Piplup or team Torchic?"), alongside the link-in-bio line. Comments widen reach.
 - Facts only, as always: no predictions, no "rare" or "valuable" claims the numbers don't show, no invented quotes.
 

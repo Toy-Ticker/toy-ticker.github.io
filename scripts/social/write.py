@@ -41,8 +41,10 @@ SCHEMA = {
         "threads": {"type": "array", "items": {"type": "string"}},
         "threads_topic": {"type": "string"},
         "threads_poll": {"type": "array", "items": {"type": "string"}},
+        "reel_hook": {"type": "object", "properties": {"text": {"type": "string"}, "item_ids": {"type": "array", "items": {"type": "string"}}},
+                      "required": ["text", "item_ids"], "additionalProperties": False},
     },
-    "required": ["topic", "slides", "caption", "hashtags", "alt_text", "threads", "threads_topic"],
+    "required": ["topic", "slides", "caption", "hashtags", "alt_text", "threads", "threads_topic", "reel_hook"],
     "additionalProperties": False,
 }
 

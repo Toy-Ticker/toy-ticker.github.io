@@ -168,6 +168,19 @@ def check(post, facts):
         errs.append("A Threads poll needs 2 to 4 options of up to 25 characters each.")
     for o in poll:
         nums_ok("Threads poll", o)
+    hook = post.get("reel_hook") or {}
+    htext = hook.get("text", "")
+    if not 3 <= len(htext) <= 36:
+        errs.append("Give a 'reel_hook' with 'text' of 3 to 36 characters (the Reel's first second) and 'item_ids'.")
+    if any(ord(c) > 0x2FFF for c in htext):
+        errs.append("reel_hook: no emoji (the font can't draw them).")
+    hids = hook.get("item_ids") or ([hook["item_id"]] if hook.get("item_id") else [])
+    if not 1 <= len(hids) <= 2:
+        errs.append("reel_hook: give 1 or 2 'item_ids' (2 shows them side by side with VS).")
+    for i in hids:
+        if i not in items:
+            errs.append(f"reel_hook: unknown item {i}.")
+    nums_ok("Reel hook", htext)
     topic_tag = post.get("threads_topic", "")
     if not (1 <= len(topic_tag) <= 50) or "#" in topic_tag:
         errs.append("Give one 'threads_topic' (1 to 50 characters, no #), e.g. 'Pokemon Happy Meal'.")
@@ -182,7 +195,7 @@ def check(post, facts):
             errs.append(f"Slide {n}: note is {len(sl['note'])} characters; keep it to 50 (Reels show each slide for about 3 seconds).")
         if any(ord(c) > 0x2FFF for k in ("headline", "subhead", "note") for c in sl.get(k, "")):
             errs.append(f"Slide {n}: no emoji on slides (the slide font can't draw them); keep emoji for the caption.")
-    text = " ".join([cap, *alts, *threads, *(f"{s.get('headline', '')} {s.get('subhead', '')} {s.get('note', '')}" for s in slides)]).lower()
+    text = " ".join([cap, htext, *alts, *threads, *(f"{s.get('headline', '')} {s.get('subhead', '')} {s.get('note', '')}" for s in slides)]).lower()
     for phrase in BANNED:
         if re.search(rf"\b{re.escape(phrase)}", text):
             errs.append(f"Remove the phrase {phrase!r}: no predictions, investment talk or urgency.")

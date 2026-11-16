@@ -51,7 +51,8 @@ def sample_post(f):
             "hashtags": ["#HappyMeal", "#PokemonTCG", "#McDonaldsToys"],
             "alt_text": [f"Slide {n}" for n in range(1, len(slides) + 1)],
             "threads": ["SAMPLE POST (no AI). A fixed test Threads post. See every toy's price: toy-ticker.github.io"],
-            "threads_topic": "Pokemon Happy Meal"}
+            "threads_topic": "Pokemon Happy Meal",
+            "reel_hook": {"text": "SAMPLE hook", "item_ids": slides[0]["item_ids"][:1]}}
 
 
 def pr_body(post, f, problems, folder, branch):
@@ -146,7 +147,7 @@ def main():
         import extras
         try:
             extras.story(folder, f, ROOT)
-            if not extras.reel(folder, f, ROOT):
+            if not extras.reel(folder, f, ROOT, hook=post.get("reel_hook")):
                 print("(no ffmpeg: skipped reel.mp4)")
         except Exception as e:  # noqa: BLE001 - extras never block the post
             print(f"! story/reel: {e!r}")

@@ -95,6 +95,15 @@ No emoji in slide headlines, subheads or notes: the slide font can't draw them. 
 
 One entry per slide, in order, describing what the slide shows in plain words (up to 200 characters each). Numbers follow the same rule as the caption.
 
+## Reel hook
+
+Also write `reel_hook`: {"text": "...", "item_ids": ["..."]}. The Reel opens on a full-screen card for 1.6 seconds: this text, huge, over the item's photo. Give 2 item_ids to show two toys side by side with a VS badge (best for "X beat Y" hooks). It's the frame people see before deciding to scroll past, so it's the most important line of the day.
+
+- 2 to 6 words, up to 36 characters, no emoji. It must make someone stop: a surprise, a fight, or a "wait, what?".
+- Lead with the most surprising true thing in the post, not the topic. Good: "Weedle beat Pikachu. Somehow.", "This box sold in 2 days", "Nobody wants Torchic??". Bad: "Weedle prices this week", "Card spotlight".
+- It can tease the punchline without the number ("Guess what Weedle sells for"), or use one number copied exactly from a fact.
+- Don't repeat the cover headline; the cover comes right after it.
+
 ## Threads
 
 Also write `threads`: 1 or 2 short Threads posts (text only, 60 to 500 characters each), plus `threads_topic`: one topic tag without # (usually "Pokemon Happy Meal", or the series name such as "Happy Meal Toys").

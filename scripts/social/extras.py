@@ -92,9 +92,46 @@ def find_music(folder, root):
     return tracks[pick % len(tracks)]
 
 
-def reel(folder, facts, root, seconds=3.0, fade=0.35, fps=30, music=None):
+def hook_frames(hook, facts, root, out_dir, fps=30, seconds=1.6):
+    """The Reel's opener: a full-screen card with the hook text big at the top and the toy's photo below it,
+    slowly zooming in. Text is there from the very first frame (that frame is what people see before it
+    plays, and what decides whether they keep scrolling). Returns the PNG paths, one per video frame."""
+    from render import text_block, trim
+    root = Path(root)
+    c1, c2, ink = THEMES.get(facts["promo"]["id"], DEFAULT)
+    F = Fonts(root / "assets" / "fonts" / "BricolageGrotesque.ttf")
+    base = backdrop(c1, c2)
+    d = ImageDraw.Draw(base)
+    text_block(d, (72, 290), hook["text"], F, W - 144, 170, 800, ink, 3, 84, 1.0)
+    items = {i["id"]: i for i in facts["items"]}
+    ids = hook.get("item_ids") or ([hook["item_id"]] if hook.get("item_id") else [])
+    photos = [trim(Image.open(root / items[i]["image"]).convert("RGBA")) for i in ids[:2] if items.get(i, {}).get("image")]
+    paths, n = [], round(fps * seconds)
+    for k in range(n):
+        f = base.copy()
+        t = k / max(1, n - 1)
+        pop = 1 - (1 - min(1, t / 0.25)) ** 3            # quick ease-out pop over the first quarter
+        scale = (0.80 + 0.20 * pop) * (1 + 0.10 * t)       # then a push in
+        box = (820 if len(photos) == 1 else 470) * scale
+        centers = [W // 2] if len(photos) == 1 else [W // 2 - 255, W // 2 + 255]
+        for ph0, cx in zip(photos, centers):
+            r = box / max(ph0.size)
+            ph = ph0.resize((max(1, int(ph0.width * r)), max(1, int(ph0.height * r))), Image.LANCZOS)
+            f.paste(ph, (cx - ph.width // 2, 1180 - ph.height // 2), ph)
+        if len(photos) == 2:   # a VS badge between them
+            dd = ImageDraw.Draw(f)
+            rr = int(70 * scale)
+            dd.ellipse([W // 2 - rr, 1180 - rr, W // 2 + rr, 1180 + rr], fill="#dc2626", outline="white", width=8)
+            dd.text((W // 2, 1180), "VS", font=F(int(64 * scale), 800), fill="white", anchor="mm")
+        paths.append(Path(out_dir) / f"hook_{k:03d}.png")
+        f.save(paths[-1])
+    return paths
+
+
+def reel(folder, facts, root, seconds=3.0, fade=0.35, fps=30, music=None, hook=None):
     """reel.mp4 from every slide, with music if a track is found (find_music) or given; needs ffmpeg
-    (Homebrew or imageio-ffmpeg). Returns the path, or None."""
+    (Homebrew or imageio-ffmpeg). With a hook ({"text", "item_ids"} (1 or 2 items) from post.json's reel_hook) it opens on a
+    1.6 s full-screen hook card and the slides move faster (2.5 s each). Returns the path, or None."""
     folder = Path(folder)
     music = Path(music) if music else find_music(folder, root)
     ffmpeg = shutil.which("ffmpeg")
@@ -115,15 +152,31 @@ def reel(folder, facts, root, seconds=3.0, fade=0.35, fps=30, music=None):
             place(f, Image.open(p), 960, 300)
             frames.append(Path(tmp) / f"{i:02d}.png")
             f.save(frames[-1])
-        hold = [seconds + 0.5 if i == 0 else seconds for i in range(len(frames))]   # a beat longer on the cover
         cmd = [ffmpeg, "-y", "-loglevel", "error"]
+        if hook and hook.get("text"):
+            seconds, hook_s = 2.5, 1.6
+            hook_frames(hook, facts, root, tmp, fps, hook_s)
+            hold = [hook_s] + [seconds] * len(frames)
+            cmd += ["-framerate", str(fps), "-i", str(Path(tmp) / "hook_%03d.png")]
+            frames = [None] + frames
+        else:
+            hold = [seconds + 0.5 if i == 0 else seconds for i in range(len(frames))]   # a beat longer on the cover
         for p, t in zip(frames, hold):
-            cmd += ["-loop", "1", "-t", f"{t + fade:.2f}", "-i", str(p)]
+            if p is not None:
+                cmd += ["-loop", "1", "-t", f"{t + fade:.2f}", "-i", str(p)]
         chain, last, offset = [], "[0:v]", 0.0
+        src = [f"[{i}:v]" for i in range(len(frames))]
+        if frames and frames[0] is None:
+            # The hook clip and the still slides must share frame rate and timebase for xfade.
+            chain.append(f"[0:v]fps={fps},settb=AVTB,tpad=stop_mode=clone:stop_duration={fade:.2f}[h0]")
+            last = "[h0]"
+            for i in range(1, len(frames)):
+                chain.append(f"[{i}:v]fps={fps},settb=AVTB[s{i}]")
+                src[i] = f"[s{i}]"
         for i in range(1, len(frames)):
             offset += hold[i - 1]
             out = f"[v{i}]"
-            chain.append(f"{last}[{i}:v]xfade=transition=fade:duration={fade}:offset={offset:.2f}{out}")
+            chain.append(f"{last}{src[i]}xfade=transition=fade:duration={fade}:offset={offset:.2f}{out}")
             last = out
         graph = ";".join(chain) + f";{last}format=yuv420p,fps={fps}[out]" if chain else f"[0:v]format=yuv420p,fps={fps}[out]"
         out = folder / "reel.mp4"

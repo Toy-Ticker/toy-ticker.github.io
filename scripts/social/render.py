@@ -397,7 +397,11 @@ class Slides:
         img.paste(area, (x0 + 20, top), area)
         return img
 
-    def checklist(self, s, n, total, topic):
+    def rapid(self, s, n, total, topic):
+        """The rapid-fire list as a carousel slide: the same rows as a checklist, cheapest to priciest."""
+        return self.checklist(s, n, total, topic, boxes=False)
+
+    def checklist(self, s, n, total, topic, boxes=True):
         """Every item in two columns with an empty checkbox, its photo, name and price (sold, else asking)."""
         img, d = self.canvas()
         self.header(d, n, total)
@@ -414,8 +418,11 @@ class Slides:
             x0, y0 = M + col * (cw + 20), top + row * (rh + gap)
             d.rounded_rectangle([x0, y0, x0 + cw, y0 + rh], radius=18, fill=PANEL)
             b = min(34, rh * 0.42)
-            d.rounded_rectangle([x0 + 16, y0 + (rh - b) / 2, x0 + 16 + b, y0 + (rh + b) / 2], radius=7,
-                                outline="#9ca3af", width=3)
+            if boxes:
+                d.rounded_rectangle([x0 + 16, y0 + (rh - b) / 2, x0 + 16 + b, y0 + (rh + b) / 2], radius=7,
+                                    outline="#9ca3af", width=3)
+            else:   # rank number instead of a checkbox
+                d.text((x0 + 16 + b / 2, y0 + rh / 2), str(k + 1), font=self.F(26, 700), fill=GREY, anchor="mm")
             it = self.items[r["item_id"]]
             tsz = rh - 14
             self.thumb(img, d, it, (int(x0 + 28 + b), int(y0 + 7), int(x0 + 28 + b + tsz), int(y0 + 7 + tsz)))

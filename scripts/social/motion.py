@@ -527,6 +527,45 @@ class Reel:
             return f
         return dur, draw
 
+    def scene_rapid(self, s):
+        """Rapid fire: one item per second, cheapest to priciest. Full-screen photo on its own colour wash,
+        name and price as Instagram-style labels, a counter, and a hard cut with a white flash on each beat."""
+        from native import Native
+        nat = getattr(self, "_nat", None) or Native(self)
+        self._nat = nat
+        rows = s.get("rows") or []
+        beat = 1.0
+        n = len(rows)
+        intro = 0.0 if (self.post.get("reel_hook") or {}).get("text") else 1.2   # the hook already says it
+
+        def draw(t):
+            if t < intro:     # the headline, then go
+                f = nat.backdrop([rows[0]["item_id"]])
+                nat.caption(f, s["headline"], 820, t, 0, size=80)
+                if s.get("subhead"):
+                    nat.caption(f, s["subhead"], 1060, t, 0.35, size=46, dark=True)
+                return f
+            k = min(n - 1, int((t - intro) / beat))
+            lt = t - intro - k * beat
+            r = rows[k]
+            iid, fid = r["item_id"], r["fact_ids"][0]
+            f = nat.backdrop([iid])
+            pop = back_out(prog(lt, 0, 0.18))
+            last = k == n - 1
+            size = 720 if last else 640
+            self.paste(f, self.photo(iid, size), W // 2, 900, (0.75 + 0.25 * pop) * (1 + 0.05 * lt), 1)
+            it = self.items[iid]
+            name = it["name"].rsplit(" ", 1)[0] if it["name"].endswith((" toy", " card")) else it["name"]
+            self.paste(f, nat.label(f"{k + 1}/{n}", 40, dark=True), W // 2, TOP + 20, 1)
+            self.paste(f, nat.label(name, 72), W // 2, 1340, 0.85 + 0.15 * pop)
+            self.paste(f, nat.label(self.fx[fid]["display"], 110, dark=True), W // 2, 1480, 0.8 + 0.2 * pop)
+            if last:
+                self.paste(f, nat.label("the priciest", 48), W // 2, TOP + 110, back_out(prog(lt, 0.15, 0.25)))
+            if lt < 0.06:     # flash on the cut
+                f = Image.blend(f, Image.new("RGB", (W, H), "#ffffff"), 0.55 * (1 - lt / 0.06))
+            return f
+        return intro + n * beat + 0.8, draw
+
     def scene_checklist(self, s):
         """The checklist: rows drop in one by one with an empty checkbox, then it holds so people can screenshot."""
         rows = s.get("rows") or []
@@ -662,7 +701,10 @@ class Reel:
         if hook.get("text"):
             out.append(pick("scene_hook")(hook))
         slides = sorted((Path(folder) / "slides").glob("*.jpg"))
+        rapid = any(sl["layout"] == "rapid" for sl in self.post["slides"])
         for k, s in enumerate(self.post["slides"]):
+            if rapid and s["layout"] == "cover":     # a rapid Reel goes straight from the hook into the list
+                continue
             fn = pick(f"scene_{s['layout']}")
             if fn:
                 out.append(fn(s))

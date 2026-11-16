@@ -137,6 +137,13 @@ def build(root, today=None, social_dir="social", series=None):
                 p = sold[-1]
                 fid["sold"] = F.add(iid, f"typical sold price, {short_date(p['date'])} to {short_date(p['end'])}",
                                     p["median"], money(p["median"]))
+                # Break-even buy price for reselling at the typical sold price, with the site's default resale
+                # settings (index.html FLIP_DEFAULT: ~13.25% eBay fees, $0.40 per order, $1.50 card / $5.00 toy
+                # postage). Keep in sync with the Market read's "Pays to resell if you buy at ... or less".
+                be = round(p["median"] * (1 - 0.1325) - 0.40 - (1.50 if kind == "cards" else 5.00), 2)
+                if be > 0:
+                    fid["breakeven"] = F.add(iid, "most you can pay and still break even reselling at the typical sold price, "
+                                             "after ~13.25% eBay fees, $0.40 per order and postage", be, money(be))
                 # Deal check: how far today's typical asking price sits above (or below) what buyers paid.
                 gap = round(latest["median"] - p["median"], 2)
                 markup = gap

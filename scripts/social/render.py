@@ -28,7 +28,8 @@ FACT_LABEL = {"ask": "typical asking price", "listings": "listed today", "change
               "singles": "all bought as singles", "complete_set": "for a complete set",
               "end": "last day in restaurants", "days_left": "left in restaurants",
               "ended_on": "promo ended", "days_since": "since the promo ended",
-              "markup": "more than buyers pay", "below": "less than buyers paid", "set_saves": "saved with a complete set"}
+              "markup": "more than buyers pay", "below": "less than buyers paid", "set_saves": "saved with a complete set",
+              "breakeven": "break-even buy price after fees and postage"}
 
 
 def gradient(c1, c2):

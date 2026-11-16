@@ -51,13 +51,15 @@ One Instagram carousel a day, drafted at 7pm Pacific by the local scheduled task
 
 | Day | Series | What it shows |
 | --- | --- | --- |
-| Sun | WEEKLY SUMMARY | The week's 3–4 takeaways, ending with a tier list of every toy |
-| Mon | CARD SPOTLIGHT | One card: a big-photo hook, sold vs asking, card vs toy |
-| Tue | GOT IT TWICE? | The most-listed toys: what a duplicate is worth, trade or sell |
-| Wed | VERSUS | Two items head to head (card vs toy, or two toys) |
-| Thu | THE RAREST BOX | The toy with the fewest listings, one big photo |
-| Fri | SET OR SINGLES | Complete set vs singles, per series |
+| Sun | WEEKLY SUMMARY | The post people save: the week's takeaways and every toy ranked |
+| Mon | DEAL CHECK | Am I overpaying? Asking vs what buyers really paid |
+| Tue | GOT IT TWICE? | What do I do with my spare? What it sells for, how fast, sell/trade/keep |
+| Wed | CARD SPOTLIGHT | Is this card worth it? Sold price, sell speed, card vs toy |
+| Thu | THE RAREST BOX | Which ones are hard to find? Fewest listings |
+| Fri | SET OR SINGLES | How do I finish the set cheaply? Set vs singles |
 | Sat | GUESS THE PRICE | Quiz: cover hides the price, slide 2 reveals what buyers paid |
+
+Every post answers one real question for parents, collectors or sellers, with a real number, and ends with something to do (the "Value first" section of `scripts/social/prompt.md`). Mostly high-value posts, some medium (guess the price, the group chat, card vs toy); no reach-only games or quizzes unless asked.
 
 Each draft also comes with `story.jpg` (the cover on a 9:16 Story, with space for a link sticker to toy-ticker.github.io) and `reel.mp4` (a ~19 s slideshow of the slides). Reels get music from `music.mp3` (or .m4a/.wav) in the post's folder, or else the track in `assets/music/` that other Reels used least recently (recorded in each post's `reel_music.txt`), so back-to-back Reels never share music. Reels also alternate between two visual styles (clean designed cards, and "native": the toy photo on a blurred wash with Instagram-style text labels, like a Reel made in the app; "sticker" and "meme" are available on request; recorded in each post's `reel_style.txt`, or set `reel_style` in post.json). In the clean style each series has its own Reel colours and transition (blue for Card Spotlight, green for Deal Check, purple for The Rarest Box, and so on); with neither they're silent. Tracks there are kept out of git: the repo is public and the music is licensed for posts, not for sharing the files. The 7pm draft also suggests 2–3 new Meta Sound Collection tracks (facebook.com/sound) for its Reel; on approval it downloads the track and adds it with `scripts/social/add_music.py` (audio only, volume-matched, 44.1 kHz, silence trimmed). Use only music licensed for Instagram, such as Meta Sound Collection: baked-in popular songs can get a Reel muted or removed. Post the carousel, share it or story.jpg to your Story with a link sticker, and post the Reel for reach beyond followers.
 

@@ -63,6 +63,14 @@ Each draft also comes with `story.jpg` (the cover on a 9:16 Story, with space fo
 
 After Dec 14: Thursday becomes AFTER THE PROMO and Friday THEN VS NOW (needs facts for finished series; not built yet). The schedule lives in `SCHEDULE` in `scripts/social/draft.py`; series rules are in `scripts/social/prompt.md`.
 
+## Pinned intro post
+
+`scripts/social/intro.py --screenshot <png>` draws the 3-slide "What is Toy Ticker?" carousel into `social/intro/` (no prices on the slides, since it stays pinned). The phone screenshot is captured with headless Chrome at 500 px wide (Chrome's minimum) with reduced motion, so the site's count-up numbers are final:
+
+```bash
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars --force-prefers-reduced-motion --window-size=500,2100 --force-device-scale-factor=2 --virtual-time-budget=10000 --screenshot=site.png "https://toy-ticker.github.io/?s=pokemon-happy-meal-2026"
+```
+
 ## Replies on popular posts (from Nov 15)
 
 A scheduled task, "Toy Ticker reply drafts", runs at 9am, noon, 3pm, 6pm and 9pm Pacific. It finds popular #pokemonhappymeal / #mcdonaldspokemon posts from the last 48 hours, drafts casual one-fact replies to commenters from that day's prices, and asks for approval; nothing is posted without it. Limits: 3 replies per post, 10 a day. Steps and style rules: [scripts/social/REPLIES.md](scripts/social/REPLIES.md). Drafts and the posted log live in `social/replies/` (not committed).

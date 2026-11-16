@@ -124,7 +124,7 @@ def reel(folder, facts, root, seconds=3.0, fade=0.35, fps=30, music=None):
             a = len(frames)
             graph += (f";[{a}:a]atrim=0:{total:.2f},asetpts=PTS-STARTPTS,afade=t=in:d=0.6,"
                       f"afade=t=out:st={max(0, total - 1.8):.2f}:d=1.8,volume=0.9[aout]")
-            maps += ["-map", "[aout]", "-c:a", "aac", "-b:a", "192k"]
+            maps += ["-map", "[aout]", "-c:a", "aac", "-b:a", "192k", "-ar", "44100", "-ac", "2"]
         cmd += ["-filter_complex", graph, *maps, "-c:v", "libx264", "-preset", "medium", "-crf", "20",
                 "-t", f"{total:.2f}", "-movflags", "+faststart", str(out)]
         subprocess.run(cmd, check=True)

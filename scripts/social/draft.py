@@ -147,7 +147,13 @@ def main():
         import extras
         try:
             extras.story(folder, f, ROOT)
-            if not extras.reel(folder, f, ROOT, hook=post.get("reel_hook")):
+            import motion   # animated Reel; the plain slideshow (extras.reel) is the fallback
+            try:
+                made = motion.build(folder, f, ROOT, post)
+            except Exception as e:  # noqa: BLE001
+                print(f"! animated reel failed ({e!r}); using the slideshow")
+                made = extras.reel(folder, f, ROOT, hook=post.get("reel_hook"))
+            if not made:
                 print("(no ffmpeg: skipped reel.mp4)")
         except Exception as e:  # noqa: BLE001 - extras never block the post
             print(f"! story/reel: {e!r}")

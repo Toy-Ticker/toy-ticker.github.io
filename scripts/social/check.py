@@ -7,7 +7,7 @@ import re
 
 LAYOUTS = {"cover", "ranked_list", "item", "highlight", "hero", "versus", "tier_list", "cta"}
 TOPICS = ["weekly_board", "card_spotlight", "toy_spotlight", "fast_sellers", "scarce_finds", "set_or_singles",
-          "guess_price", "after_promo", "doubles", "versus", "worth_it", "countdown"]
+          "guess_price", "after_promo", "doubles", "versus", "worth_it", "countdown", "deal_check"]
 BANNED = [
     "will go up", "will rise", "will increase", "going to go up", "will be worth", "will drop", "will fall",
     "invest", "guaranteed", "sure thing", "before prices", "buy now", "act fast", "before it's too late",

@@ -131,11 +131,21 @@ def build(root, today=None, social_dir="social", series=None):
             if ch:
                 fid["change"] = F.add(iid, f"change in asking price since {short_date(ch[1])}", round(ch[0], 4),
                                       f"{pct(ch[0])} since {short_date(ch[1])}")
+            markup = None
             sold = [p for p in series_data.get("sold", {}).get(iid, []) if p.get("count", 0) >= MIN_LISTINGS]
             if sold:
                 p = sold[-1]
                 fid["sold"] = F.add(iid, f"typical sold price, {short_date(p['date'])} to {short_date(p['end'])}",
                                     p["median"], money(p["median"]))
+                # Deal check: how far today's typical asking price sits above (or below) what buyers paid.
+                gap = round(latest["median"] - p["median"], 2)
+                markup = gap
+                if gap > 0:
+                    fid["markup"] = F.add(iid, "typical asking price minus typical sold price (how much more sellers ask than buyers pay)",
+                                          gap, money(gap))
+                elif gap < 0:
+                    fid["below"] = F.add(iid, "typical sold price minus typical asking price (buyers paid more than today's asks)",
+                                          -gap, money(-gap))
             sl = sales.get(iid)
             sells = None
             if sl and sl.get("sold", 0) >= MIN_LISTINGS and span and span >= MIN_CHANGE_DAYS:
@@ -158,6 +168,7 @@ def build(root, today=None, social_dir="social", series=None):
                 "image": local,
                 "listings": latest["count"], "ask": latest["median"],
                 "change": ch[0] if ch else None, "sold_count": (sl or {}).get("sold"), "sells_out": sells,
+                "markup": markup,
                 "facts": fid,
             })
         # Complete set vs singles.
@@ -167,6 +178,10 @@ def build(root, today=None, social_dir="social", series=None):
         if full and full[-1].get("count", 0) >= 3:
             set_facts["complete_set"] = F.add(sid, "typical asking price for a complete set listing",
                                               full[-1]["median"], money(full[-1]["median"]))
+            saved = round(singles - full[-1]["median"], 2)
+            if saved > 0:
+                set_facts["set_saves"] = F.add(sid, "saved by buying a complete set instead of all singles (singles sum minus set price)",
+                                               saved, money(saved))
         promo.setdefault("series", []).append({"id": sid, "name": s["name"], "kind": kind, "size": len(s["items"]),
                                                "facts": set_facts})
 
@@ -190,6 +205,10 @@ def build(root, today=None, social_dir="social", series=None):
     rankings["card_toy_pairs"] = [[cards_by[base(r)], r["id"]] for r in ok if r["kind"] != "cards" and base(r) in cards_by]
     rankings["by_price"] = top(ok, lambda r: r["ask"], n=len(ok))
     rankings["fast_sellers"] = top([r for r in items if r["sells_out"]], lambda r: r["sells_out"], reverse=False)
+    # Deal check: biggest gap between asking and sold (sellers ask most over what buyers pay), and the smallest.
+    priced = [r for r in ok if r["markup"] is not None]
+    rankings["biggest_markup"] = top(priced, lambda r: r["markup"])
+    rankings["smallest_markup"] = top(priced, lambda r: r["markup"], reverse=False)
     rankings["fewest_listings"] = top([r for r in items if r["listings"] >= 1], lambda r: r["listings"], reverse=False)
     recent = recent_posts(root / social_dir)
     featured = {i for p in recent if p.get("topic") in SPOTLIGHTS for i in p.get("items", [])}

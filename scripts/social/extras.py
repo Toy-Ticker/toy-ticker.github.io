@@ -102,7 +102,7 @@ def hook_frames(hook, facts, root, out_dir, fps=30, seconds=1.6):
     F = Fonts(root / "assets" / "fonts" / "BricolageGrotesque.ttf")
     base = backdrop(c1, c2)
     d = ImageDraw.Draw(base)
-    text_block(d, (72, 290), hook["text"], F, W - 144, 170, 800, ink, 3, 84, 1.0)
+    text_end = text_block(d, (72, 290), hook["text"], F, W - 144, 170, 800, ink, 3, 84, 1.0)
     items = {i["id"]: i for i in facts["items"]}
     ids = hook.get("item_ids") or ([hook["item_id"]] if hook.get("item_id") else [])
     photos = [trim(Image.open(root / items[i]["image"]).convert("RGBA")) for i in ids[:2] if items.get(i, {}).get("image")]
@@ -112,17 +112,20 @@ def hook_frames(hook, facts, root, out_dir, fps=30, seconds=1.6):
         t = k / max(1, n - 1)
         pop = 1 - (1 - min(1, t / 0.25)) ** 3            # quick ease-out pop over the first quarter
         scale = (0.80 + 0.20 * pop) * (1 + 0.10 * t)       # then a push in
-        box = (820 if len(photos) == 1 else 470) * scale
+        size = 620 if len(photos) == 1 else 470
+        box = size * scale
+        # Below the text (sized at full zoom so it never grows into it), above Instagram's bottom buttons (~340 px).
+        cy = int(min(H - 360 - size * 1.1 / 2, max(1180, text_end + 50 + size * 1.1 / 2)))
         centers = [W // 2] if len(photos) == 1 else [W // 2 - 255, W // 2 + 255]
         for ph0, cx in zip(photos, centers):
             r = box / max(ph0.size)
             ph = ph0.resize((max(1, int(ph0.width * r)), max(1, int(ph0.height * r))), Image.LANCZOS)
-            f.paste(ph, (cx - ph.width // 2, 1180 - ph.height // 2), ph)
+            f.paste(ph, (cx - ph.width // 2, cy - ph.height // 2), ph)
         if len(photos) == 2:   # a VS badge between them
             dd = ImageDraw.Draw(f)
             rr = int(70 * scale)
-            dd.ellipse([W // 2 - rr, 1180 - rr, W // 2 + rr, 1180 + rr], fill="#dc2626", outline="white", width=8)
-            dd.text((W // 2, 1180), "VS", font=F(int(64 * scale), 800), fill="white", anchor="mm")
+            dd.ellipse([W // 2 - rr, cy - rr, W // 2 + rr, cy + rr], fill="#dc2626", outline="white", width=8)
+            dd.text((W // 2, cy), "VS", font=F(int(64 * scale), 800), fill="white", anchor="mm")
         paths.append(Path(out_dir) / f"hook_{k:03d}.png")
         f.save(paths[-1])
     return paths

@@ -19,15 +19,16 @@ INK, GREY, PANEL = "#1d1d1b", "#6b6b66", (255, 255, 255, 240)
 TOPIC_LABEL = {"weekly_board": "WEEKLY SUMMARY", "card_spotlight": "CARD SPOTLIGHT", "toy_spotlight": "TOY SPOTLIGHT",
                "fast_sellers": "FAST SELLERS", "scarce_finds": "THE RAREST BOX", "set_or_singles": "SET OR SINGLES",
                "guess_price": "GUESS THE PRICE", "after_promo": "AFTER THE PROMO", "doubles": "GOT IT TWICE?", "versus": "VERSUS", "worth_it": "WORTH IT?",
-               "countdown": "COUNTDOWN"}
+               "countdown": "COUNTDOWN", "deal_check": "DEAL CHECK"}
 TOPIC_DOT = {"weekly_board": "#1d1d1b", "card_spotlight": "#2563eb", "toy_spotlight": "#16a34a", "fast_sellers": "#dc2626",
-             "scarce_finds": "#7c3aed", "set_or_singles": "#0891b2", "guess_price": "#db2777", "after_promo": "#ca8a04", "doubles": "#0d9488", "versus": "#ea580c"}
+             "scarce_finds": "#7c3aed", "set_or_singles": "#0891b2", "guess_price": "#db2777", "after_promo": "#ca8a04", "doubles": "#0d9488", "versus": "#ea580c", "deal_check": "#059669"}
 FACT_LABEL = {"ask": "typical asking price", "listings": "listed today", "change": "price change",
               "sold": "typical sold price", "days_to_sell": "typical time to sell",
               "sells_out": "to sell out at this pace", "sold_window": "of sales tracked",
               "singles": "all bought as singles", "complete_set": "for a complete set",
               "end": "last day in restaurants", "days_left": "left in restaurants",
-              "ended_on": "promo ended", "days_since": "since the promo ended"}
+              "ended_on": "promo ended", "days_since": "since the promo ended",
+              "markup": "more than buyers pay", "below": "less than buyers paid", "set_saves": "saved with a complete set"}
 
 
 def gradient(c1, c2):

@@ -35,6 +35,12 @@ The numbers are true but numbers alone are boring. A good post starts from somet
   - **Mock-serious labels:** "B tier on eBay. S tier in our hearts.", "Supply: a lot. Demand: vibes."
   - **Self-aware closer:** "Got 3 Weedles? We don't judge."
   - **Comment games:** "Drop a 🐛 for every Weedle you have" (in the caption, not on slides).
+  - **Fake news / science:** "BREAKING: spare Weedle still worth money" + note "Scientists are baffled. Weedle is unbothered."
+  - **Internet phrases:** "Weedle has entered the chat. Again.", "He's not visiting. He lives here now."
+  - **Toys talking** (a one-line quote from the toy is fine; never invent quotes from real people): Munchlax: 100 listings. Weedle: "I'll allow it."
+  - **Numbered caption bits:** "The 5 stages of Weedle: 1. 'Ooh, a Pokémon!' 2. 'Wait… Weedle?' 3. 'Weedle. Again.' 4. You check eBay… 5. Acceptance."
+  - **Absurd closers on the cta slide:** "Weedle adoption center: link in bio".
+  Aim for funnier than safe: if a headline would fit in a price report, rewrite it. Build a running bit through the post (Weedle "living here now", "unbothered") so slides call back to each other.
   The joke is always about the situation or the toy, never about people (no mocking sellers, kids or parents). Jokes never bend the numbers: the punchline number is still copied exactly from a fact.
 - **End with a question people can answer in the comments** ("Which one did you get?", "Team Piplup or team Torchic?"), alongside the link-in-bio line. Comments widen reach.
 - Facts only, as always: no predictions, no "rare" or "valuable" claims the numbers don't show, no invented quotes.

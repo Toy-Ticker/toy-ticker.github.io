@@ -21,6 +21,7 @@
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Toy Ticker", "url": "https://toy-ticker.github.io/", "description": "Daily eBay prices for McDonald's Happy Meal toys and cards."}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Toy Ticker: daily eBay prices for McDonald's Happy Meal toys and cards", "description": "Daily median, 25th-percentile and lowest eBay US Buy It Now asking prices (shipping included) and listing counts for every toy and card in recent McDonald's Happy Meal series, 91 items across 7 series.", "url": "https://toy-ticker.github.io/", "isAccessibleForFree": true, "dateModified": "2026-11-16", "temporalCoverage": "2026-06-09/..", "keywords": ["Happy Meal toys", "McDonald's toys", "toy prices", "eBay prices", "collectibles"], "creator": {"@type": "Organization", "name": "Toy Ticker", "url": "https://toy-ticker.github.io/"}, "distribution": [{"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://toy-ticker.github.io/data/index.json"}]}</script>
 <!-- /seo:jsonld -->
+<script src="assets/sighting-report.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   :root { --display: "Bricolage Grotesque", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -991,8 +992,15 @@ try {
 } catch (e) {}
 const owns = (id) => (OWN.get(id) || 0) > 0;
 function setOwn(id, n) {
+  const before = OWN.get(id) || 0;
   n > 0 ? OWN.set(id, n) : OWN.delete(id);
   try { localStorage.setItem("own", JSON.stringify(Object.fromEntries(OWN))); } catch (e) {}
+  // Just got a toy? Ask which McDonald's it came from, for the toy map (assets/sighting-report.js).
+  const it = DATA && DATA.cards[id], set = it && DATA.sets[it.set];
+  if (window.TTReport && set) {
+    if (n > before) TTReport.gotToy({ id, name: it.name, series: it.set, seriesName: set.name, kind: set.kind, current: set.current, end: set.end });
+    else if (n <= 0) TTReport.lostToy(id);
+  }
 }
 
 // Series colours. band = top stripe gradient; acc/pill/pillInk = text-safe colours on a light card

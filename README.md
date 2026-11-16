@@ -50,8 +50,8 @@ One-time setup:
 3. Copy the Web app URL (`https://script.google.com/macros/s/…/exec`) into `endpoint` in `data/sightings.json`.
 4. Send one test report from the map and check a row appears in the sheet.
 
-The sheet doesn't need to be shared or published; the script reads it as you. Reports older than `window_days`
-(14) drop off the map. To remove a bad report, delete its row. After changing the script, use
+The sheet doesn't need to be shared or published; the script reads it as you. Reports stay on the map until their row is
+deleted. To remove a bad report, delete its row. After changing the script, use
 Deploy > Manage deployments > Edit > **New version** so the URL stays the same.
 
 The restaurant list is `data/stores.json`, every US McDonald's on OpenStreetMap. Refresh it every month or so:

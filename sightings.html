@@ -178,7 +178,7 @@
   <section class="how">
     <h2>About these reports</h2>
     <details><summary>Where do the reports come from?</summary>
-      <p>From collectors like you. Anyone can report what they got at a McDonald's: no account and no sign-in. Reports drop off the map after <span class="win">14</span> days, because stores move on to new cases.</p></details>
+      <p>From collectors like you. Anyone can report what they got at a McDonald's: no account and no sign-in. To remove a report, email the address below.</p></details>
     <details><summary>Why does one store only have a few of the toys?</summary>
       <p>Happy Meal toys ship to restaurants in cases that each hold a few of the toys in a series. A store hands out whatever case is open, so two McDonald's a mile apart can have different toys the same week. Ask at the counter: many crews will swap if they have another case open.</p></details>
     <details><summary>What is sent when I report?</summary>
@@ -194,6 +194,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="assets/sighting-report.js"></script>
 <script>
 "use strict";
 const $ = (id) => document.getElementById(id);
@@ -203,7 +204,7 @@ const store = {
   get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
 };
-const MINE_KEY = "tt-sightings-mine";      // reports sent from this browser (shown until the sheet catches up)
+const MINE_KEY = "tt-sightings-mine";      // reports sent from this browser (shown until the sheet catches up); written by TTReport.send
 const VIEW_KEY = "tt-sightings-view";      // last map position
 const MIN_ZOOM_STORES = 10;                // show every McDonald's at this zoom and closer
 
@@ -214,11 +215,6 @@ const markers = new Map();       // id -> L.circleMarker
 let selected = null;
 
 // ---------- helpers ----------
-function daysAgo(ts) {
-  const d = Math.floor((Date.now() - ts) / 864e5);
-  if (d <= 0) { const h = Math.floor((Date.now() - ts) / 36e5); return h <= 0 ? "just now" : h === 1 ? "1 hour ago" : `${h} hours ago`; }
-  return d === 1 ? "yesterday" : `${d} days ago`;
-}
 function parseCSV(text) {
   const rows = []; let row = [], cell = "", q = false;
   for (let i = 0; i < text.length; i++) {
@@ -243,7 +239,6 @@ const itemsOf = (sid) => Object.entries(IDX.items).filter(([, it]) => it.set ===
   .map(([id, it]) => ({ id, ...it }));
 const toyName = (id) => IDX.items[id]?.name || id;
 const formOpen = () => /^https:\/\/script\.google\.com\//.test(CFG.endpoint || "");
-const windowMs = () => (CFG.window_days || 14) * 864e5;
 
 // Series people can report: toy series that are in restaurants now or ended in the last 3 weeks (leftover stock).
 function reportableSeries() {
@@ -285,7 +280,7 @@ async function loadReports() {
     const dup = out.some(r => r.store_id === m.store_id && r.series === m.series && Math.abs(r.ts - m.ts) < 30 * 6e4);
     if (!dup) out.push({ ...m, mine: true });
   }
-  reports = out.filter(r => Date.now() - r.ts < windowMs()).sort((a, b) => b.ts - a.ts);
+  reports = out.sort((a, b) => b.ts - a.ts);
   for (const r of reports) if (!stores.has(r.store_id))
     stores.set(r.store_id, { id: r.store_id, name: r.store_name, address: r.address, lat: r.lat, lon: r.lon });
 }
@@ -358,7 +353,7 @@ function storesHint() {
   const sid = curSeries();
   const rs = reports.filter(r => r.series === sid);
   const n = new Set(rs.map(r => r.store_id)).size;
-  const tally = rs.length ? `${rs.length} report${rs.length > 1 ? "s" : ""} from ${n} store${n > 1 ? "s" : ""} in the last ${CFG.window_days || 14} days.` : "No reports for this series yet. Be the first!";
+  const tally = rs.length ? `${rs.length} report${rs.length > 1 ? "s" : ""} from ${n} store${n > 1 ? "s" : ""}.` : "No reports for this series yet. Be the first!";
   return map.getZoom() < MIN_ZOOM_STORES ? `${tally} Zoom in on a town to see every McDonald's there.` : tally;
 }
 function setStatus(t) { $("status").textContent = t; }
@@ -388,7 +383,7 @@ function renderIntro() {
     <h3>Latest reports</h3>
     ${recent.length ? `<div class="recent">${recent.map(r => `
       <button type="button" data-store="${esc(r.store_id)}"><b>${esc(r.store_name)}</b>
-        <small>${esc(r.address)}${r.address ? " · " : ""}${daysAgo(r.ts)}</small><br>
+        <small>${esc(r.address)}</small><br>
         ${r.out ? `<span class="pill out">Out of toys</span>` : esc(r.toys.map(toyName).join(", "))}</button>`).join("")}</div>`
       : `<p class="muted">Nothing yet for ${esc(IDX.sets[sid]?.name || "this series")}. Your report could be the first.</p>`}`;
   $("side").querySelectorAll("[data-store]").forEach(b => b.addEventListener("click", () => {
@@ -402,16 +397,16 @@ function select(id) {
   const sid = curSeries(), sum = storeSummary(id, sid);
   const seen = [...sum.toys.entries()].sort((a, b) => b[1].last - a[1].last);
   const items = itemsOf(sid);
-  const lastMine = store.get("tt-sightings-sent", {})[id + "|" + sid] || 0;
+  const lastMine = store.get(TTReport.SENT_KEY, {})[id + "|" + sid] || 0;
   const recently = Date.now() - lastMine < 6 * 36e5;
   $("side").innerHTML = `
     <button class="close" type="button" aria-label="Close">×</button>
     <h2>${esc(s.name)}</h2>
     <p class="addr">${esc(s.address || "Address not on the map")} · <a href="https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lon}" target="_blank" rel="noopener">Directions</a></p>
-    <h3>Reported in the last ${CFG.window_days || 14} days</h3>
-    ${sum.isOut ? `<p><span class="pill out">Out of toys</span> <span class="muted">${daysAgo(Math.max(...sum.rs.filter(r => r.out).map(r => r.ts)))}</span></p>` : ""}
+    <h3>Reported here</h3>
+    ${sum.isOut ? `<p><span class="pill out">Out of toys</span></p>` : ""}
     ${seen.length ? `<div class="seen">${seen.map(([t, x]) => `
-      <div class="seen-row">${thumb(t)}<span>${esc(toyName(t))}<small>last seen ${daysAgo(x.last)}</small></span>
+      <div class="seen-row">${thumb(t)}<span>${esc(toyName(t))}</span>
       <span class="pill">${x.n}×</span></div>`).join("")}</div>`
       : sum.isOut ? "" : `<p class="muted">No reports yet for ${esc(IDX.sets[sid]?.name || "this series")}.</p>`}
     <h3>What did you get here?</h3>
@@ -444,22 +439,10 @@ function select(id) {
 
 async function submit(s, sid, toys, out) {
   if (!formOpen()) return;
-  const body = new URLSearchParams();
-  const put = (k, v) => body.append(k, v);
-  put("store_id", s.id); put("store_name", s.name); put("address", s.address);
-  put("lat", s.lat.toFixed(6)); put("lon", s.lon.toFixed(6)); put("series", sid);
-  put("toys", toys.join(",")); put("out", out ? "yes" : "no");
   const btn = $("send"); btn.disabled = true; btn.textContent = "Sending…";
-  try {
-    // Apps Script answers through a redirect another site can't read; an opaque response means it went through.
-    await fetch(CFG.endpoint, { method: "POST", mode: "no-cors", body });
-  } catch (e) {
-    btn.disabled = false; btn.textContent = "Couldn't send. Try again";
-    return;
-  }
-  const rep = { ts: Date.now(), store_id: s.id, store_name: s.name, address: s.address, lat: s.lat, lon: s.lon, series: sid, toys, out };
-  store.set(MINE_KEY, [...store.get(MINE_KEY, []), rep]);
-  const sent = store.get("tt-sightings-sent", {}); sent[s.id + "|" + sid] = rep.ts; store.set("tt-sightings-sent", sent);
+  let rep;
+  try { rep = await TTReport.send(s, sid, toys, out); }   // assets/sighting-report.js
+  catch (e) { btn.disabled = false; btn.textContent = "Couldn't send. Try again"; return; }
   reports.unshift({ ...rep, mine: true });
   select(s.id);
   setStatus("Thanks! Your report is on the map. Everyone else sees it within a minute or two.");
@@ -501,7 +484,6 @@ $("find").addEventListener("submit", async (e) => {
     fetch("data/sightings.json", { cache: "no-store" }).then(r => r.json()).catch(() => ({})),
     fetch("data/index.json").then(r => r.json()),
   ]);
-  document.querySelectorAll(".win").forEach(el => el.textContent = CFG.window_days || 14);
   $("closed").hidden = formOpen();
   const series = reportableSeries();
   $("seriesSel").innerHTML = series.map(s => `<option value="${esc(s.id)}">${esc(s.name)}${s.current ? "" : " (ended)"}</option>`).join("");

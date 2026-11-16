@@ -7,11 +7,10 @@
  * (the URL stays the same).
  *
  * POST (form-encoded store_id, store_name, address, lat, lon, series, toys, out): appends one row.
- * GET: the last WINDOW_DAYS of reports as CSV, header row first.
+ * GET: every report as CSV, header row first.
  */
 const SHEET = 'Sheet1';
 const HEADER = ['timestamp', 'store_id', 'store_name', 'address', 'lat', 'lon', 'series', 'toys', 'out'];
-const WINDOW_DAYS = 30;        // GET returns this much; the page shows its own window (14 days) within it
 const MAX_PER_MINUTE = 30;     // all visitors together; stops a flood of junk rows
 
 function doPost(e) {
@@ -48,11 +47,10 @@ function doGet() {
   const hit = cache.get('csv');
   if (hit) return csv_(hit);
   const rows = sheet_().getDataRange().getValues().slice(1);
-  const since = Date.now() - WINDOW_DAYS * 864e5;
   const lines = [HEADER.join(',')];
   for (const r of rows) {
     const ts = r[0] instanceof Date ? r[0] : new Date(r[0]);
-    if (isNaN(ts) || ts.getTime() < since || !r[1]) continue;
+    if (isNaN(ts) || !r[1]) continue;
     lines.push([ts.toISOString()].concat(r.slice(1, HEADER.length)).map(cell_).join(','));
   }
   const out = lines.join('\n');

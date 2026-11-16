@@ -7,10 +7,12 @@
 Instagram covers the top and bottom of Stories and Reels with its own buttons, so content stays inside a safe
 area (roughly 250 px top, 340 px bottom).
 """
+import hashlib
 import shutil
 import subprocess
 import sys
 import tempfile
+from datetime import date
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter
@@ -71,14 +73,23 @@ MUSIC_EXTS = (".mp3", ".m4a", ".aac", ".wav")
 
 
 def find_music(folder, root):
-    """The track for a Reel: music.* in the post's folder, else the signature track in assets/music/, else None.
+    """The track for a Reel: music.* in the post's folder if there is one, else one of the tracks in assets/music/,
+    rotating day by day (by the date in the post's folder name), so redrawing a post keeps its track.
+    assets/music/ is kept out of git (the repo is public; the tracks are licensed for Instagram use, not to share).
     Use only music licensed for Instagram (e.g. Meta Sound Collection); see SOCIAL.md."""
-    for d, stem in ((Path(folder), "music"), (Path(root) / "assets" / "music", None)):
-        if d.is_dir():
-            for p in sorted(d.iterdir()):
-                if p.suffix.lower() in MUSIC_EXTS and (stem is None or p.stem == stem):
-                    return p
-    return None
+    folder = Path(folder)
+    own = [p for p in sorted(folder.glob("music.*")) if p.suffix.lower() in MUSIC_EXTS]
+    if own:
+        return own[0]
+    lib = Path(root) / "assets" / "music"
+    tracks = sorted(p for p in lib.iterdir() if p.suffix.lower() in MUSIC_EXTS) if lib.is_dir() else []
+    if not tracks:
+        return None
+    try:   # rotate by the post's date so consecutive days get different tracks
+        pick = date.fromisoformat(folder.name[:10]).toordinal()
+    except ValueError:
+        pick = int(hashlib.md5(folder.name.encode()).hexdigest(), 16)
+    return tracks[pick % len(tracks)]
 
 
 def reel(folder, facts, root, seconds=3.0, fade=0.35, fps=30, music=None):

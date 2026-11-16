@@ -1,0 +1,19 @@
+{
+  "_comment": "Toy sightings map (sightings.html). Reports go to a Google Form; the map reads the form's response sheet, published to the web as CSV. Leave form.action or csv empty to keep reporting closed. Setup steps: README.md > Toy sightings.",
+  "form": {
+    "action": "",
+    "fields": {
+      "store_id": "",
+      "store_name": "",
+      "address": "",
+      "lat": "",
+      "lon": "",
+      "series": "",
+      "toys": "",
+      "out": ""
+    }
+  },
+  "csv": "",
+  "window_days": 14,
+  "_window_help": "window_days: reports older than this drop off the map. Toys rotate by case, so old reports mislead."
+}

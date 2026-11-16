@@ -437,7 +437,7 @@ def build(data, root, site_url):
     today = date.today().isoformat()
     shown, members = site.units()
     updated = data.get("updated")
-    entries = [(site_url, (updated or today)[:10]), (f"{site_url}about.html", None)]
+    entries = [(site_url, (updated or today)[:10]), (f"{site_url}about.html", None), (f"{site_url}sightings.html", None)]
 
     for uid, s, ms in shown + members:
         parent = None

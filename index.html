@@ -460,17 +460,17 @@
   .coffee-link { background: #ffd23f; border-color: #f2c200; color: #1d1d1b; }
   .coffee-link:hover { filter: brightness(1.08); }
   /* Phones: the title leaves room for an icon-only coffee button next to About. */
-  @media (max-width: 520px) { .coffee-link .long { display: none; } .about-link, .coffee-link { padding: 6px 12px; } }
+  @media (max-width: 520px) { .coffee-link .long, .map-link .long { display: none; } .about-link, .coffee-link { padding: 6px 12px; } }
   /* Small phones (iPhone SE, small Androids): the corner buttons sit over the title row, so keep the title clear
      of them and shrink both a little. */
   @media (max-width: 400px) {
-    header h1 { padding-right: 112px; font-size: 24px; gap: 8px; }
+    header h1 { padding-right: 150px; font-size: 24px; gap: 8px; }
     header h1 .logo { width: 36px; height: 36px; }
     .head-links { gap: 6px; top: 4px; }
     .about-link, .coffee-link { padding: 5px 10px; font-size: 13px; }
   }
   /* The narrowest phones: only About fits beside the title; Ko-fi stays linked in the footer. */
-  @media (max-width: 330px) { .head-links .coffee-link { display: none; } header h1 { padding-right: 76px; } }
+  @media (max-width: 330px) { .head-links .coffee-link, .head-links .map-link { display: none; } header h1 { padding-right: 76px; } }
   footer .disclaimer { padding-top: 8px; border-top: 1px solid var(--line); }
 
   /* Hero banner: light card; the series colour lives in the top band, status pill and price.
@@ -725,6 +725,7 @@
   <header>
     <div class="head-links">
       <a class="coffee-link" href="https://ko-fi.com/toyticker" target="_blank" rel="noopener" title="Support Toy Ticker on Ko-fi" aria-label="Buy me a coffee on Ko-fi">☕<span class="long"> Buy me a coffee</span></a>
+      <a class="about-link map-link" href="sightings.html" title="Which toys is each McDonald's giving out?" aria-label="Toy map">📍<span class="long"> Toy map</span></a>
       <a class="about-link" href="about.html">About</a>
     </div>
     <h1><a class="home" href="./" aria-label="Toy Ticker home"><img class="logo" src="assets/logo.svg" alt="" width="44" height="44">Toy <span>Ticker</span></a></h1>
@@ -889,7 +890,7 @@
   </div>
 
   <footer>
-    <p>Daily eBay US asking prices, shipping included. Photos from happymeal.com, pokemon.com and eBay listings. Not financial advice. <a href="about.html">How prices work</a></p>
+    <p>Daily eBay US asking prices, shipping included. Photos from happymeal.com, pokemon.com and eBay listings. Not financial advice. <a href="about.html">How prices work</a> · <a href="sightings.html">Toy map: which toys each McDonald&#39;s is giving out</a></p>
     <p class="follow-line">Daily price highlights and deal checks: follow <a href="https://www.instagram.com/toy_ticker/" target="_blank" rel="noopener">@toy_ticker on Instagram</a> and <a href="https://www.threads.com/@toy_ticker" target="_blank" rel="noopener">Threads</a>.</p>
     <p class="disclaimer">Unofficial fan site, not affiliated with McDonald’s or any toy brand. Toy Ticker may earn a commission from eBay links. Free and ad-free: <a class="kofi" href="https://ko-fi.com/toyticker" target="_blank" rel="noopener">support it on Ko-fi ☕</a> · Contact: <a href="mailto:toyticker@gmail.com">toyticker@gmail.com</a></p>
     <!-- seo:links -->

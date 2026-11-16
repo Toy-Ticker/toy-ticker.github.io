@@ -24,7 +24,22 @@ FPS = 30
 M = 72                       # side margin
 TOP, BOTTOM = 290, 1560      # safe area for content
 INK, GREY, WHITE = "#1d1d1b", "#6b6b66", (255, 255, 255, 245)
-PUSH = 0.24                  # seconds for the push-up transition between scenes
+PUSH = 0.24                  # seconds for the transition between scenes
+
+# Each series has its own Reel look (gradient start, end, text colour, number colour, transition), so followers
+# can tell Monday from Thursday at a glance and back-to-back Reels don't look the same. Slides keep the
+# promo's own colours.
+LOOKS = {
+    "card_spotlight": ("#1e3a8a", "#3b82f6", "#ffffff", "#1d4ed8", "left"),
+    "doubles":        ("#0f766e", "#2dd4bf", "#ffffff", "#0f766e", "up"),
+    "versus":         ("#c2410c", "#fbbf24", "#1d1d1b", "#c2410c", "zoom"),
+    "scarce_finds":   ("#3b0764", "#8b5cf6", "#ffffff", "#6d28d9", "zoom"),
+    "set_or_singles": ("#155e75", "#22d3ee", "#ffffff", "#0e7490", "left"),
+    "guess_price":    ("#9d174d", "#f472b6", "#ffffff", "#be185d", "zoom"),
+    "weekly_board":   ("#111827", "#4b5563", "#ffffff", "#d62300", "up"),
+    "deal_check":     ("#064e3b", "#34d399", "#ffffff", "#047857", "left"),
+    "toy_spotlight":  ("#b45309", "#facc15", "#1d1d1b", "#b45309", "up"),
+}
 
 
 def clamp(v, a=0.0, b=1.0):
@@ -65,8 +80,10 @@ class Reel:
         self.post, self.facts, self.root = post, facts, Path(root)
         self.F = Fonts(self.root / "assets" / "fonts" / "BricolageGrotesque.ttf")
         c1, c2, ink = THEMES.get(facts["promo"]["id"], DEFAULT)
-        self.ink = ink
-        self.accent = "#d62300" if c1 in ("#ffcb05", "#ffb703") else c1
+        accent, self.transition = ("#d62300" if c1 in ("#ffcb05", "#ffb703") else c1), "up"
+        if post.get("topic") in LOOKS:
+            c1, c2, ink, accent, self.transition = LOOKS[post["topic"]]
+        self.ink, self.accent = ink, accent
         self.bg = backdrop(c1, c2)
         self.fx = {f["id"]: f for f in facts["facts"]}
         self.items = {i["id"]: i for i in facts["items"]}
@@ -401,8 +418,9 @@ class Reel:
         return out
 
 
-def frames(scenes):
-    """Every video frame in order, with a push-up transition into each new scene and the VS shake."""
+def frames(scenes, style="up"):
+    """Every video frame in order, with a transition into each new scene (push up, push left, or zoom-through)
+    and the VS shake."""
     prev = None
     for i, (dur, draw) in enumerate(scenes):
         n = round(dur * FPS)
@@ -418,10 +436,21 @@ def frames(scenes):
                 f = g
             last = f
             if prev is not None and t < PUSH:
-                off = int(ease_out(t / PUSH) * H)
+                e = ease_out(t / PUSH)
                 g = Image.new("RGB", (W, H))
-                g.paste(prev, (0, -off))
-                g.paste(f, (0, H - off))
+                if style == "left":
+                    off = int(e * W)
+                    g.paste(prev, (-off, 0))
+                    g.paste(f, (W - off, 0))
+                elif style == "zoom":       # old scene zooms past the camera while the new one fades in
+                    z = 1 + 0.35 * e
+                    big = prev.resize((int(W * z), int(H * z)), Image.BILINEAR)
+                    g.paste(big, (-(big.width - W) // 2, -(big.height - H) // 2))
+                    g = Image.blend(g, f, e)
+                else:
+                    off = int(e * H)
+                    g.paste(prev, (0, -off))
+                    g.paste(f, (0, H - off))
                 f = g
             yield f
         prev = last
@@ -455,7 +484,7 @@ def build(folder, facts, root, post, music=None):
             "-movflags", "+faststart", str(out)]
     p = subprocess.Popen(cmd, stdin=subprocess.PIPE)
     try:
-        for f in frames(sc):
+        for f in frames(sc, R.transition):
             p.stdin.write(f.convert("RGB").tobytes())
     finally:
         p.stdin.close()

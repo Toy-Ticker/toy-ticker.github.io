@@ -12,7 +12,6 @@ import shutil
 import subprocess
 import sys
 import tempfile
-from datetime import date
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter
@@ -73,10 +72,11 @@ MUSIC_EXTS = (".mp3", ".m4a", ".aac", ".wav")
 
 
 def find_music(folder, root):
-    """The track for a Reel: music.* in the post's folder if there is one, else one of the tracks in assets/music/,
-    rotating day by day (by the date in the post's folder name), so redrawing a post keeps its track.
-    assets/music/ is kept out of git (the repo is public; the tracks are licensed for Instagram use, not to share).
-    Use only music licensed for Instagram (e.g. Meta Sound Collection); see SOCIAL.md."""
+    """The track for a Reel: music.* in the post's folder if there is one; else the library track this post used
+    before (reel_music.txt, so redrawing keeps it); else the library track used least recently by other posts'
+    Reels, so back-to-back Reels don't share music. assets/music/ is kept out of git (the repo is public; the
+    tracks are licensed for Instagram use, not to share). Use only music licensed for Instagram (e.g. Meta Sound
+    Collection); see SOCIAL.md."""
     folder = Path(folder)
     own = [p for p in sorted(folder.glob("music.*")) if p.suffix.lower() in MUSIC_EXTS]
     if own:
@@ -85,11 +85,23 @@ def find_music(folder, root):
     tracks = sorted(p for p in lib.iterdir() if p.suffix.lower() in MUSIC_EXTS) if lib.is_dir() else []
     if not tracks:
         return None
-    try:   # rotate by the post's date so consecutive days get different tracks
-        pick = date.fromisoformat(folder.name[:10]).toordinal()
-    except ValueError:
-        pick = int(hashlib.md5(folder.name.encode()).hexdigest(), 16)
-    return tracks[pick % len(tracks)]
+    by_name = {t.name: t for t in tracks}
+    mine = folder / "reel_music.txt"
+    if mine.exists() and mine.read_text().strip() in by_name:
+        return by_name[mine.read_text().strip()]
+    # When each other post last used each track (newest folder first: date in the name, then file time).
+    last_used = {}
+    for rec in folder.parent.glob("*/reel_music.txt"):
+        if rec.parent == folder:
+            continue
+        name = rec.read_text().strip()
+        key = (rec.parent.name[:10], rec.stat().st_mtime)
+        if name in by_name and key > last_used.get(name, ("", 0)):
+            last_used[name] = key
+    seed = int(hashlib.md5(folder.name.encode()).hexdigest(), 16)
+    pick = min(tracks, key=lambda t: (last_used.get(t.name, ("", 0)), (seed + tracks.index(t)) % len(tracks)))
+    mine.write_text(pick.name + "\n")
+    return pick
 
 
 def hook_frames(hook, facts, root, out_dir, fps=30, seconds=1.6):

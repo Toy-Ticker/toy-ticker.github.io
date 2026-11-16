@@ -77,7 +77,7 @@ You find the posts, Claude drafts the replies, you post them from your phone. Wh
 
 ## Account safety (from Nov 15)
 
-**What happened.** On Nov 15, the account's first day, Claude drove Instagram in desktop Chrome for about two hours: 4 posts, 5 comments (one on @mcdonalds), and many page loads between them. Instagram then locked @toy_ticker behind a "Confirm you're human" check. A brand-new account, a desktop browser being driven by software, and a burst of posting and commenting are the three things Instagram's spam systems watch most closely, and that day had all three.
+**What happened.** On Nov 15, the account's first day, Claude drove Instagram in desktop Chrome for about two hours: 4 posts, 5 comments (one on @mcdonalds), and many page loads between them. Instagram then locked @toy_ticker (renamed @whatsmytoyworth on Nov 15) behind a "Confirm you're human" check. A brand-new account, a desktop browser being driven by software, and a burst of posting and commenting are the three things Instagram's spam systems watch most closely, and that day had all three.
 
 **The rule from now on: automation drafts, people act.**
 

@@ -63,6 +63,10 @@ Each draft also comes with `story.jpg` (the cover on a 9:16 Story, with space fo
 
 After Dec 14: Thursday becomes AFTER THE PROMO and Friday THEN VS NOW (needs facts for finished series; not built yet). The schedule lives in `SCHEDULE` in `scripts/social/draft.py`; series rules are in `scripts/social/prompt.md`.
 
+## Replies on popular posts (from Nov 15)
+
+A scheduled task, "Toy Ticker reply drafts", runs at 9am, noon, 3pm, 6pm and 9pm Pacific. It finds popular #pokemonhappymeal / #mcdonaldspokemon posts from the last 48 hours, drafts casual one-fact replies to commenters from that day's prices, and asks for approval; nothing is posted without it. Limits: 3 replies per post, 10 a day. Steps and style rules: [scripts/social/REPLIES.md](scripts/social/REPLIES.md). Drafts and the posted log live in `social/replies/` (not committed).
+
 ## Content pillars
 
 Every post is one of these. Each one comes straight from data the site already has, so there's nothing to research.

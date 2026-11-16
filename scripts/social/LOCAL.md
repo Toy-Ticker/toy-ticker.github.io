@@ -8,6 +8,13 @@ You are the writer. Code picks the facts, checks your work and draws the slides.
 
 1. **Get today's data.** From the repo root: `git pull --rebase --autostash -q origin main`. If that fails (offline, conflict), continue with the data already here and mention it in your report.
 
+1b. **Check the queue first.** Read `social/queue.json` (a list; missing or empty means nothing is queued). If an entry has `"post_on"` equal to today's date, today's post is that queued post instead of the weekday series (when `"replaces_series"` is true): the owner already approved its idea and wording, so refresh it rather than writing something new:
+   - Make today's folder by copying the queued folder's `post.json` (and any `music.*`) into `social/<today>-<same name after the date>/`, then build today's facts there: `.venv/bin/python -c "import sys,json; sys.path.insert(0,'scripts/social'); import facts; json.dump(facts.build('.'), open('<new folder>/facts.json','w'), ensure_ascii=False, indent=1)"`.
+   - For each item in `"screenshots"`, retake the site screenshot: `.venv/bin/python scripts/social/screenshot.py <new folder> <item id>`.
+   - Update every fact ID and every number in the slides, caption, alt text, Threads posts and hook to tonight's facts (look each one up again by item and fact kind; never reuse an old number). If a claim stopped being true (e.g. "priciest card", a break-even that no longer exists), rewrite that line in the same voice, keeping it short.
+   - Run step 4 (check and draw) and step 5 (look at every slide and the Reel's frames) on the new folder, then skip to the report. In the report, say it's the queued post and what changed from the approved version.
+   - Remove that entry from `social/queue.json` only after the check passes.
+
 2. **Get the facts for today's series.**
    ```bash
    .venv/bin/python scripts/social/draft.py --facts-only --topic today

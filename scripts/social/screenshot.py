@@ -2,7 +2,7 @@
 
 Uses the site's screenshot mode (index.html ?only=1#i=<id>), which shows just that item's details, prices,
 Market read and chart, and hides specific sellers' listings. Needs Google Chrome; serves nothing itself, so
-point --base at a running copy (the local dev server, or the live site).
+defaults to the live site; --base http://localhost:8765/ uses the local dev server.
 
     .venv/bin/python scripts/social/screenshot.py social/<folder> pokemon-2026-004
 """
@@ -18,7 +18,7 @@ from PIL import Image, ImageChops
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
 
-def shoot(folder, item_id, base="http://localhost:8765/", width=500, scale=3):
+def shoot(folder, item_id, base="https://toy-ticker.github.io/", width=500, scale=3):
     out = Path(folder) / f"site-{item_id}.png"
     with tempfile.TemporaryDirectory() as prof:
         subprocess.run([CHROME, "--headless=new", "--hide-scrollbars", f"--user-data-dir={prof}",
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("folder")
     ap.add_argument("item_id")
-    ap.add_argument("--base", default="http://localhost:8765/")
+    ap.add_argument("--base", default="https://toy-ticker.github.io/")
     a = ap.parse_args()
     print(shoot(a.folder, a.item_id, a.base))
     sys.exit(0)

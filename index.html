@@ -354,11 +354,10 @@
   .hunt-note { color: var(--muted); font-size: 12px; line-height: 1.45; }
   .hunt-note a { color: var(--accent); font-weight: 600; }
   @media (max-width: 420px) { .hunt-grid { grid-template-columns: 1fr; } }
-  .rar-bar { grid-template-columns: minmax(0, 8em) 1fr minmax(7.5em, auto); }
-  .rar-bar em { text-align: right; }
-  .rar-bar em small { display: block; font-weight: 400; color: var(--muted); font-size: 11px; }
-  .rar-key { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px !important; color: var(--muted); }
-  .rar-key i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+  .rar-link { padding: 12px 18px; }
+  .rar-link p { margin: 0; }
+  .rar-link button { border: 0; background: none; padding: 0; font: inherit; font-weight: 600; color: var(--accent); cursor: pointer; }
+  .rar-link button:hover { text-decoration: underline; }
   @media (max-width: 640px) { .mr-row.miss-row { grid-template-columns: 30px minmax(0, 1fr) auto auto; gap: 8px; } }
   .complete summary { cursor: pointer; }
   .complete .big { font-size: 16px; }
@@ -783,6 +782,7 @@
     <div class="hero-foot">
       <span id="sFacts"></span>
       <span class="hero-acts">
+        <a class="share-btn" href="about.html#tour">▶ Watch the intro</a>
         <a class="share-btn follow" href="https://www.instagram.com/toy_ticker/" target="_blank" rel="noopener">Follow @toy_ticker</a>
         <button class="share-btn" id="shareBtn" type="button">↗ Share</button>
       </span>
@@ -1586,6 +1586,7 @@ function renderMineTab() {
   renderMineResult(full);
   renderComplete(full);
   $("mineMeal").innerHTML = insMeal() + insRarity();
+  $("mineMeal").querySelector("[data-rarity]")?.addEventListener("click", showRarest);
 }
 // Keep the picker's scroll position while counts change.
 function afterOwnChange() { render(); }
@@ -1686,7 +1687,7 @@ async function shareCollection() {
   }, `my-${SID}-happy-meals.png`, `My ${series().name} Happy Meal haul is worth ${usd(worth)} on Toy Ticker`);
 }
 function wireMine() {
-  $("mealPaid").oninput = () => { renderMineResult(rowsFor(SID)); $("mineMeal").innerHTML = insMeal() + insRarity(); renderComplete(rowsFor(SID)); try { localStorage.setItem("mealPaid", $("mealPaid").value); } catch (e) {} };
+  $("mealPaid").oninput = () => { renderMineResult(rowsFor(SID)); $("mineMeal").innerHTML = insMeal() + insRarity(); $("mineMeal").querySelector("[data-rarity]")?.addEventListener("click", showRarest); renderComplete(rowsFor(SID)); try { localStorage.setItem("mealPaid", $("mealPaid").value); } catch (e) {} };
   try { const v = localStorage.getItem("mealPaid"); if (v) $("mealPaid").value = v; } catch (e) {}
   $("mineClear").onclick = () => {
     if (!confirm(`Remove all your ${series().name} items from this browser?`)) return;
@@ -2184,20 +2185,16 @@ function rarity(sid) {
   return out.sort((a, b) => b.score - a.score);
 }
 const rarityTier = (s) => s >= 2 ? ["Very hard to find", "#b42318"] : s >= 1.3 ? ["Hard to find", "#d97706"] : s >= 0.75 ? ["Typical", "#8a8a84"] : ["Easy to find", "#1a7f37"];
+// One line on My Happy Meals pointing to the Items tab sorted by rarity (the full ranking lives there).
 function insRarity() {
-  const all = rarity(SID);
-  if (all.length < 4) return "";
-  const kinds = [...new Set(all.map(x => x.kind))];
-  const block = (list) => `<div class="ins-bars">${list.map(x => { const [label, c] = rarityTier(x.score); return `
-    <div class="ins-bar rar-bar" style="--c:${c}" title="${esc(label)}: ${usd(x.r.price)} (${x.pr >= 1 ? x.pr.toFixed(1) + "× the typical price" : Math.round((1 - x.pr) * 100) + "% under typical"}), ${x.sup} listed">
-      <span>${esc(x.r.name)}</span><i><b style="width:${Math.max(3, Math.min(100, Math.log2(x.score * 4) / 4 * 100))}%"></b></i>
-      <em>${x.score.toFixed(1)}<small>${usd(x.r.price)} · ${x.sup} listed</small></em></div>`; }).join("")}</div>`;
-  const top = all[0], [topLabel] = rarityTier(top.score);
-  return `<div class="ins wide"><h4>Rarity index</h4><p class="q">How hard each ${kinds.length > 1 ? "item" : kindWord(series(), true)} is to find right now, from eBay prices and how many are listed</p>
-    <p><b>${esc(top.r.name)}</b>${kinds.length > 1 ? ` (${top.kind === "cards" ? "card" : "toy"})` : ""} is the hardest to find: ${topLabel.toLowerCase()}, at ${usd(top.r.price)} with ${top.sup} listed.</p>
-    ${kinds.length > 1 ? kinds.map(k => `<p class="ins-sub">${k === "cards" ? "Cards" : "Toys"}</p>${block(all.filter(x => x.kind === k))}`).join("") : block(all)}
-    <p class="rar-key">${[2, 1.3, 1, 0.5].map(s => { const [l, c] = rarityTier(s); return `<span><i style="background:${c}"></i>${l}</span>`; }).join("")}</p>
-    <div class="foot">1.0 is typical for the set. Higher means pricier and fewer listed than the others: scarce in restaurants, or just more wanted. Items with only a few listings can swing day to day. From today's eBay asking prices, shipping included.</div></div>`;
+  const top = rarity(SID).find(x => hardToFind(x.r.id));
+  if (!top) return "";
+  return `<div class="ins wide rar-link"><p>${esc(top.r.name)}${isGroup() ? (top.kind === "cards" ? " card" : " toy") : ""} is the hardest to find right now.
+    <button type="button" data-rarity>See which ${isGroup() ? "items" : kindWord(series())} are hardest to find →</button></p></div>`;
+}
+function showRarest() {
+  KIND = "all"; sortKey = "rar"; sortDir = -1; VIEW = "gallery";
+  render(); showSection("items");
 }
 
 

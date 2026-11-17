@@ -80,6 +80,14 @@ def get_item(item_id):
         time.sleep(2 ** i * 2)
 
 
+def zip3(it):
+    """First 3 digits of a US seller's zip code (eBay masks the rest, e.g. "945**"): a region, never an address.
+    Collected from 2026-11-16 to see whether hard-to-find toys turn up in some regions first."""
+    loc = it.get("itemLocation") or {}
+    z = str(loc.get("postalCode") or "")[:3]
+    return z if loc.get("country") in (None, "US") and len(z) == 3 and z.isdigit() else None
+
+
 def availability(it):
     ea = (it.get("estimatedAvailabilities") or [{}])[0]
     sold = ea.get("estimatedSoldQuantity")
@@ -103,6 +111,7 @@ def update(sid, today):
                        "listed": (it.get("itemCreationDate") or today)[:10], "first": old.get("first", today),
                        "seen": today, "price": round(price, 2), "ship": round(ship, 2), "total": total,
                        **({"watch": ebay.watchers(it)} if ebay.watchers(it) is not None else {}),
+                       **({"zip3": zip3(it)} if zip3(it) else {}),
                        **({"sold": old["sold"]} if "sold" in old else {})}
     # Still in the raw results (e.g. now rejected by a stricter rule): it's listed, so not missing.
     for lid in run["raw"] & active.keys():

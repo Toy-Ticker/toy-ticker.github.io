@@ -437,7 +437,13 @@ def build(data, root, site_url):
     today = date.today().isoformat()
     shown, members = site.units()
     updated = data.get("updated")
-    entries = [(site_url, (updated or today)[:10]), (f"{site_url}about.html", None), (f"{site_url}sightings.html", None)]
+    entries = [(site_url, (updated or today)[:10]), (f"{site_url}about.html", None)]
+    # Weekly market reports (scripts/weekly_report.py), newest first.
+    reports = root / "data" / "reports.json"
+    weeks = json.loads(reports.read_text()) if reports.exists() else []
+    if weeks:
+        entries.append((f"{site_url}reports/", weeks[0]["date"]))
+        entries += [(f"{site_url}reports/{w['date']}/", w["date"]) for w in weeks]
 
     for uid, s, ms in shown + members:
         parent = None

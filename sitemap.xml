@@ -2,7 +2,8 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url><loc>https://toy-ticker.github.io/</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://toy-ticker.github.io/about.html</loc></url>
-<url><loc>https://toy-ticker.github.io/sightings.html</loc></url>
+<url><loc>https://toy-ticker.github.io/reports/</loc><lastmod>2026-11-16</lastmod></url>
+<url><loc>https://toy-ticker.github.io/reports/2026-11-16/</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://toy-ticker.github.io/s/pokemon-happy-meal-2026/</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://toy-ticker.github.io/s/boo-buckets-2026/</loc><lastmod>2026-11-16</lastmod></url>
 <url><loc>https://toy-ticker.github.io/s/spongebob-onepiece-2026/</loc><lastmod>2026-11-16</lastmod></url>

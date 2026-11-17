@@ -21,7 +21,6 @@
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Toy Ticker", "url": "https://toy-ticker.github.io/", "description": "Daily eBay prices for McDonald's Happy Meal toys and cards."}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "Toy Ticker: daily eBay prices for McDonald's Happy Meal toys and cards", "description": "Daily median, 25th-percentile and lowest eBay US Buy It Now asking prices (shipping included) and listing counts for every toy and card in recent McDonald's Happy Meal series, 91 items across 7 series.", "url": "https://toy-ticker.github.io/", "isAccessibleForFree": true, "dateModified": "2026-11-16", "temporalCoverage": "2026-06-09/..", "keywords": ["Happy Meal toys", "McDonald's toys", "toy prices", "eBay prices", "collectibles"], "creator": {"@type": "Organization", "name": "Toy Ticker", "url": "https://toy-ticker.github.io/"}, "distribution": [{"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://toy-ticker.github.io/data/index.json"}]}</script>
 <!-- /seo:jsonld -->
-<script src="assets/sighting-report.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   :root { --display: "Bricolage Grotesque", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -343,6 +342,23 @@
   .miss-go { justify-self: end; font-size: 13px; font-weight: 600; color: var(--accent); text-decoration: none; border: 1px solid var(--line);
              border-radius: 999px; padding: 3px 10px; white-space: nowrap; background: var(--panel); }
   .miss-go:hover { border-color: var(--accent); }
+  .hunt { margin-top: 14px; padding: 14px 16px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); }
+  .hunt > b { font-family: var(--display); font-size: 17px; font-weight: 600; }
+  .hunt p { margin: 8px 0 0; }
+  .hunt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .hunt-grid > div { padding: 10px 12px; border-radius: 10px; background: var(--bg); min-width: 0; }
+  .hunt-grid small { display: block; color: var(--muted); font-size: 12px; line-height: 1.35; }
+  .hunt-grid strong { display: block; font-family: var(--display); font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; margin: 2px 0; }
+  .hunt-verdict { font-size: 15px; }
+  .hunt-verdict.up b { color: #1a7f37; }
+  .hunt-note { color: var(--muted); font-size: 12px; line-height: 1.45; }
+  .hunt-note a { color: var(--accent); font-weight: 600; }
+  @media (max-width: 420px) { .hunt-grid { grid-template-columns: 1fr; } }
+  .rar-bar { grid-template-columns: minmax(0, 8em) 1fr minmax(7.5em, auto); }
+  .rar-bar em { text-align: right; }
+  .rar-bar em small { display: block; font-weight: 400; color: var(--muted); font-size: 11px; }
+  .rar-key { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px !important; color: var(--muted); }
+  .rar-key i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
   @media (max-width: 640px) { .mr-row.miss-row { grid-template-columns: 30px minmax(0, 1fr) auto auto; gap: 8px; } }
   .complete summary { cursor: pointer; }
   .complete .big { font-size: 16px; }
@@ -460,8 +476,8 @@
   .about-link:hover { border-color: var(--accent); color: var(--accent); }
   .coffee-link { background: #ffd23f; border-color: #f2c200; color: #1d1d1b; }
   .coffee-link:hover { filter: brightness(1.08); }
-  /* Phones: the title leaves room for an icon-only coffee button next to About. */
-  @media (max-width: 520px) { .coffee-link .long, .map-link .long { display: none; } .about-link, .coffee-link { padding: 6px 12px; } }
+  /* Phones and narrow windows: icon-only buttons so they never cover the title. */
+  @media (max-width: 640px) { .coffee-link .long, .map-link .long, .about-link .ico { display: none; } .about-link, .coffee-link { padding: 6px 12px; } }
   /* Small phones (iPhone SE, small Androids): the corner buttons sit over the title row, so keep the title clear
      of them and shrink both a little. */
   @media (max-width: 400px) {
@@ -550,7 +566,7 @@
   .speed { font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 999px; white-space: nowrap; }
   .speed.fast { background: color-mix(in srgb, var(--up) 15%, transparent); color: var(--up); }
   .speed.steady { background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
-  .speed.rare { background: color-mix(in srgb, var(--gold) 22%, transparent); color: color-mix(in srgb, var(--gold) 45%, var(--text)); }
+  .speed.rare { background: color-mix(in srgb, var(--rc, var(--gold)) 15%, transparent); color: color-mix(in srgb, var(--rc, var(--gold)) 70%, var(--text)); }
   .speed.slow { background: color-mix(in srgb, var(--down) 13%, transparent); color: var(--down); }
 
   /* Confidence badges: how much to trust a price, from listing count and how tightly prices cluster */
@@ -726,8 +742,8 @@
   <header>
     <div class="head-links">
       <a class="coffee-link" href="https://ko-fi.com/toyticker" target="_blank" rel="noopener" title="Support Toy Ticker on Ko-fi" aria-label="Buy me a coffee on Ko-fi">☕<span class="long"> Buy me a coffee</span></a>
-      <a class="about-link map-link" href="sightings.html" title="Which toys is each McDonald's giving out?" aria-label="Toy map">📍<span class="long"> Toy map</span></a>
-      <a class="about-link" href="about.html">About</a>
+      <a class="about-link map-link" href="reports/" title="This week's Happy Meal toy market report" aria-label="Weekly report">📈<span class="long"> Weekly report</span></a>
+      <a class="about-link" href="about.html"><span class="ico">ℹ️ </span>About</a>
     </div>
     <h1><a class="home" href="./" aria-label="Toy Ticker home"><img class="logo" src="assets/logo.svg" alt="" width="44" height="44">Toy <span>Ticker</span></a></h1>
     <div class="meta" id="meta" hidden></div>
@@ -827,6 +843,7 @@
         <option value="since:-1">Biggest rise since tracking began</option>
         <option value="since:1">Biggest drop since tracking began</option>
         <option value="dos:1">Sells out soonest</option>
+        <option value="rar:-1">Hardest to find</option>
         <option value="number:1">Number</option>
         <option value="name:1">Name</option>
       </select>
@@ -891,7 +908,7 @@
   </div>
 
   <footer>
-    <p>Daily eBay US asking prices, shipping included. Photos from happymeal.com, pokemon.com and eBay listings. Not financial advice. <a href="about.html">How prices work</a> · <a href="sightings.html">Toy map: which toys each McDonald&#39;s is giving out</a></p>
+    <p>Daily eBay US asking prices, shipping included. Photos from happymeal.com, pokemon.com and eBay listings. Not financial advice. <a href="about.html">How prices work</a> · <a href="reports/">Weekly market report</a></p>
     <p class="follow-line">Daily price highlights and deal checks: follow <a href="https://www.instagram.com/toy_ticker/" target="_blank" rel="noopener">@toy_ticker on Instagram</a> and <a href="https://www.threads.com/@toy_ticker" target="_blank" rel="noopener">Threads</a>.</p>
     <p class="disclaimer">Unofficial fan site, not affiliated with McDonald’s or any toy brand. Toy Ticker may earn a commission from eBay links. Free and ad-free: <a class="kofi" href="https://ko-fi.com/toyticker" target="_blank" rel="noopener">support it on Ko-fi ☕</a> · Contact: <a href="mailto:toyticker@gmail.com">toyticker@gmail.com</a></p>
     <!-- seo:links -->
@@ -932,8 +949,9 @@ function soldGap(r) {
 }
 // Selling-speed tag for gallery tiles, from "Sells out in": a word anyone can read at a glance.
 const speedTag = (r) => r.dos == null ? "" : `<span class="speed ${r.dos <= 14 ? "fast" : r.dos > SELLOUT_CAP ? "slow" : "steady"}" title="Today's listings would sell out in ${sellOutText(r.dos)} at the recent pace">${r.dos <= 14 ? "Selling fast" : r.dos > SELLOUT_CAP ? "Piling up" : "Steady"}</span>`;
-// "Rare find": far fewer listed than the rest of its set, on both the priced count and eBay's estimate (scarcity()).
-const rareTag = (r) => { const x = SCARCE.get(r.id); return x ? `<span class="speed rare" title="Only ${x.n} listed vs about ${x.typical} for each of the others in its set">Rare find</span>` : ""; };
+// Hard-to-find tag: from the rarity index (rarity(), hardToFind()), the same score the Deals and My Happy Meals tabs use.
+const rareTag = (r) => { const x = hardToFind(r.id); if (!x) return ""; const [label, c] = rarityTier(x.score);
+  return `<span class="speed rare" style="--rc:${c}" title="Rarity ${x.score.toFixed(1)} (1.0 is typical for the set): ${usd(r.price)}, ${x.sup} listed">${label}</span>`; };
 const sellOutText = (d) => d > 60 ? "60+ days" : `about ${Math.max(1, Math.round(d))} day${Math.round(d) > 1 ? "s" : ""}`;
 // "Sells out in": capped at 60+ days, since a few days of sales can't support a precise long forecast.
 const SELLOUT_CAP = 60;
@@ -992,15 +1010,8 @@ try {
 } catch (e) {}
 const owns = (id) => (OWN.get(id) || 0) > 0;
 function setOwn(id, n) {
-  const before = OWN.get(id) || 0;
   n > 0 ? OWN.set(id, n) : OWN.delete(id);
   try { localStorage.setItem("own", JSON.stringify(Object.fromEntries(OWN))); } catch (e) {}
-  // Just got a toy? Ask which McDonald's it came from, for the toy map (assets/sighting-report.js).
-  const it = DATA && DATA.cards[id], set = it && DATA.sets[it.set];
-  if (window.TTReport && set) {
-    if (n > before) TTReport.gotToy({ id, name: it.name, series: it.set, seriesName: set.name, kind: set.kind, current: set.current, end: set.end });
-    else if (n <= 0) TTReport.lostToy(id);
-  }
 }
 
 // Series colours. band = top stripe gradient; acc/pill/pillInk = text-safe colours on a light card
@@ -1281,6 +1292,7 @@ function go(sid) {
 
 function render() {
   const full = rowsFor(SID);
+  RARE = new Map(rarity(SID).map(x => [x.r.id, x]));
   const all = KIND === "all" ? full : full.filter(r => kindOf(r) === KIND);
   renderKindBar(full);
   // Value rank and share of the full set, among priced items.
@@ -1291,7 +1303,7 @@ function render() {
   const first = [...new Set(full.flatMap(r => r.h.map(p => p.date)))].sort()[0];
   for (const r of all) { const a = r.h.find(p => p.date === first)?.median; r.since = a && r.price != null && r.h.length > 1 ? r.price / a - 1 : null; }
   for (const r of all) {
-    const sd = supplyDays(r); r.dos = sd?.days ?? null;
+    const sd = supplyDays(r); r.dos = sd?.days ?? null; r.rar = RARE.get(r.id)?.score ?? null;
     r.sold = DATA.sets[r.set].insights?.sales?.items?.[r.id]?.sold ?? null; r.pay = soldGap(r)?.sold ?? null;
   }
 
@@ -1360,7 +1372,8 @@ function render() {
       <div class="tile-name">${isGroup() ? `<span class="kind-tag">${kindOf(r) === "cards" ? "Card" : "Toy"}</span>` : ""}<span class="no">#${esc(r.number)}</span>${esc(r.name)}${r.rarity === "Holo" ? ' <span class="holo" title="Holo">✦</span>' : ""}</div>
       <div class="tile-row">
         <span class="tile-price">${usd(r.price)}</span>
-        ${sortKey === "dos" ? (r.dos != null ? `<span class="badge" title="How long today's listings would take to sell at the recent pace of sales">${r.dos > SELLOUT_CAP ? SELLOUT_CAP + "+d" : "~" + Math.max(1, Math.round(r.dos)) + "d"} <small>to sell out</small></span>` : "")
+        ${sortKey === "rar" ? (r.rar != null ? `<span class="badge" style="color:${rarityTier(r.rar)[1]}" title="Rarity: 1.0 is typical for the set">${r.rar.toFixed(1)} <small>rarity</small></span>` : "")
+          : sortKey === "dos" ? (r.dos != null ? `<span class="badge" title="How long today's listings would take to sell at the recent pace of sales">${r.dos > SELLOUT_CAP ? SELLOUT_CAP + "+d" : "~" + Math.max(1, Math.round(r.dos)) + "d"} <small>to sell out</small></span>` : "")
           : ch != null ? `<span class="badge ${cls(ch)}">${ch > 0 ? "▲" : ch < 0 ? "▼" : ""} ${pct(Math.abs(ch)).replace("+", "")} <small>${label}</small></span>` : ""}
       </div>
       ${r.pay != null ? `<div class="tile-sells" title="What it actually sold for, shipping included (${r.sold} sales)">sells for <b>${usd(r.pay)}</b></div>` : ""}
@@ -1572,7 +1585,7 @@ function renderMineTab() {
   $("mineClear").hidden = !here;
   renderMineResult(full);
   renderComplete(full);
-  $("mineMeal").innerHTML = insMeal();
+  $("mineMeal").innerHTML = insMeal() + insRarity();
 }
 // Keep the picker's scroll position while counts change.
 function afterOwnChange() { render(); }
@@ -1673,7 +1686,7 @@ async function shareCollection() {
   }, `my-${SID}-happy-meals.png`, `My ${series().name} Happy Meal haul is worth ${usd(worth)} on Toy Ticker`);
 }
 function wireMine() {
-  $("mealPaid").oninput = () => { renderMineResult(rowsFor(SID)); $("mineMeal").innerHTML = insMeal(); try { localStorage.setItem("mealPaid", $("mealPaid").value); } catch (e) {} };
+  $("mealPaid").oninput = () => { renderMineResult(rowsFor(SID)); $("mineMeal").innerHTML = insMeal() + insRarity(); renderComplete(rowsFor(SID)); try { localStorage.setItem("mealPaid", $("mealPaid").value); } catch (e) {} };
   try { const v = localStorage.getItem("mealPaid"); if (v) $("mealPaid").value = v; } catch (e) {}
   $("mineClear").onclick = () => {
     if (!confirm(`Remove all your ${series().name} items from this browser?`)) return;
@@ -1912,27 +1925,15 @@ function chartEvents(sid) {
 // Deal finder: today's listings asking at least 20% under the median, across this series.
 const ebaySearch = (r) => `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(
   `mcdonalds ${r.set === "pokemon-2026" ? r.name + " " + r.number + "/015 2026" : (DATA.sets[r.set]?.name || "").replace(/[×()]/g, " ") + " " + r.name.replace(/[×()]/g, " ")}`)}`;
-// An item is scarce when it has under 40% of the typical listings for the rest of its set (4+ items, 20+ typical),
-// on both counts we have: the listings we priced, and eBay's estimated supply. Either alone misleads: a broad search
-// (e.g. "Hello Kitty Godzilla") only gets its first 200 results priced, and the estimate swings with how wide a query is.
-function scarcity(sid) {
-  const rows = rowsFor(sid).filter(r => r.count != null);
-  const low = (r, f) => {
-    const others = rows.filter(x => x !== r && kindOf(x) === kindOf(r)).map(f).filter(v => v != null).sort((a, b) => a - b);
-    const typical = others.length >= 3 ? others[Math.floor(others.length / 2)] : null;
-    return f(r) != null && typical >= 20 && f(r) < typical * 0.4 ? typical : null;
-  };
-  return new Map(rows.map(r => {
-    const typical = low(r, x => x.count), est = low(r, x => x.last?.supply ?? x.count);
-    return [r.id, typical && est ? { n: r.count, typical } : null];
-  }).filter(([, v]) => v));
-}
-let SCARCE = new Map();
+// One rarity score for the whole page (rarity() below): id -> {score, sup, pr, fewer}. Refreshed on each render.
+let RARE = new Map();
+// Tagged as hard to find only when it's also listed less than is typical, so a pricey-but-plentiful item isn't called rare.
+const hardToFind = (id) => { const x = RARE.get(id); return x && x.fewer && x.score >= 1.3 ? x : null; };
 function dealCard(d, r) {
   const img = d.image ? `<img src="${esc(d.image)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<div class="ph sm"><span>#${esc(r.number)}</span></div>`;
   return `<a class="deal" href="${esc(aff(d.url, "deal"))}" target="_blank" rel="sponsored noopener" title="${esc(d.title)}">${img}
     <div><b>${esc(r.name)}</b>
-    <div class="deal-row"><span class="deal-price">${usd(d.price)}</span><span class="off">${Math.round(d.below * 100)}% under</span>${SCARCE.has(r.id) ? `<span class="scarce" title="${SCARCE.get(r.id).n} listings today vs about ${SCARCE.get(r.id).typical} for each of the others">Only ${SCARCE.get(r.id).n} listed</span>` : ""}</div>
+    <div class="deal-row"><span class="deal-price">${usd(d.price)}</span><span class="off">${Math.round(d.below * 100)}% under</span>${hardToFind(r.id) ? `<span class="scarce" title="Rarity ${hardToFind(r.id).score.toFixed(1)} (1.0 is typical): only ${hardToFind(r.id).sup} listed">${rarityTier(hardToFind(r.id).score)[0]}</span>` : ""}</div>
     <small>${d.ship != null ? (d.ship ? `${usd(d.item)} + ${usd(d.ship)} shipping` : "free shipping") : "incl. shipping"}</small>
     ${r.price ? (() => { const p = netSale(r.price, postFor(r)) - d.price; return `<small class="flip ${p >= 0 ? "up" : "down"}" title="Resell at ${FLIP.at}% of the ${usd(r.price)} median, minus ~${FLIP.fee}% fees + ${usd(FLIP.order)} and ${usd(postFor(r))} postage">${p >= 0 ? `≈ ${signUsd(p)} if resold` : `≈ ${signUsd(p)} if resold (no flip)`}</small>`; })() : ""}
     <small>${esc(d.title)} · eBay ↗</small></div></a>`;
@@ -1980,8 +1981,8 @@ function dealTakeaways(all, every) {
   let resell = flips.length
     ? `${flips.length} cheap listing${flips.length > 1 ? "s" : ""} would resell at a profit after fees and postage; best is <b>${name(flips[0].r)} at ${usd(flips[0].d.price)}</b> (about ${signUsd(flips[0].p)}).`
     : every.length ? `No cheap single resells at a profit after fees and postage today.` : `No cheap listings to flip today.`;
-  const sc = all.filter(r => SCARCE.has(r.id)).sort((a, b) => SCARCE.get(a.id).n / SCARCE.get(a.id).typical - SCARCE.get(b.id).n / SCARCE.get(b.id).typical)[0];
-  if (sc) resell += ` <b>${name(sc)}</b> is the scarce one: ${SCARCE.get(sc.id).n} listed vs about ${SCARCE.get(sc.id).typical} for each of the others.`;
+  const sc = all.filter(r => hardToFind(r.id)).sort((a, b) => RARE.get(b.id).score - RARE.get(a.id).score)[0];
+  if (sc) { const x = RARE.get(sc.id); resell += ` <b>${name(sc)}</b> is the hardest to find (rarity ${x.score.toFixed(1)}, where 1.0 is typical): ${x.sup} listed at ${usd(sc.price)}.`; }
   lines.push(["If you resell", resell]);
   // Complete sets: the Reseller math sentence(s), worked out in insFlip.
   if (SET_LEADS.length) lines.push(["Complete sets", SET_LEADS.join(" ")]);
@@ -2005,7 +2006,7 @@ function renderDeals(all) {
   $("flipMore")?.addEventListener("toggle", (e) => { FLIP_MORE = e.target.open; });
   const priced = all.some(r => r.price != null);
   const every = all.flatMap(r => (r.deals || []).map(d => ({ d, r, p: dealProfit(d, r) })));
-  SCARCE = scarcity(SID);
+  RARE = new Map(rarity(SID).map(x => [x.r.id, x]));
   $("dealsTake").innerHTML = priced ? dealTakeaways(all, every) : "";
   $("dealsTake").hidden = !priced;
   $("dealsTake").querySelectorAll("[data-jump]").forEach(x => x.onclick = (e) => {
@@ -2101,7 +2102,102 @@ function renderComplete(all) {
     </div>
     <p class="mr-note">Today's lowest asking prices incl. shipping.${setPrice != null && priced.length === missing.length && setPrice < cost
       ? ` A whole set costs less (about ${usd(setPrice)}): <a href="${esc(aff(members(SID).map(id => DATA.sets[id].fullSet).find(fs => fs?.search)?.search || ebaySearch(missing[0]), "missing-set"))}" target="_blank" rel="sponsored noopener">find a complete set ↗</a>` : ""}</p>
+    ${huntOrBuy(all, missing, priced.length === missing.length ? cost : null)}
   </div>`;
+}
+
+// ---------- Hunt or buy: more Happy Meals vs eBay for the items still missing ----------
+// Simulates buying meals until every missing item turns up, assuming each item in a set is equally likely
+// (Pokémon meals: 1 toy + 2 cards). A fixed seed keeps the numbers steady between re-renders.
+function seededRandom(seed) {
+  return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+function huntSim(all, missing, runs = 2000) {
+  const need = new Set(missing.map(r => r.id));
+  const parts = [...new Set(all.map(r => r.set))].map(sid => {
+    const items = all.filter(r => r.set === sid);
+    return { items, per: DATA.sets[sid].kind === "cards" ? 2 : 1 };
+  });
+  const rnd = seededRandom(20261116), meals = [];
+  let spares = 0;
+  for (let k = 0; k < runs; k++) {
+    const left = new Set(need); let m = 0;
+    while (left.size && m < 1000) {
+      m++;
+      for (const p of parts) for (let j = 0; j < p.per; j++) {
+        const id = p.items[Math.floor(rnd() * p.items.length)].id;
+        if (left.has(id)) left.delete(id); else spares++;
+      }
+    }
+    meals.push(m);
+  }
+  meals.sort((a, b) => a - b);
+  return { avg: mean(meals), p90: meals[Math.floor(runs * 0.9)], spares: spares / runs };
+}
+function huntOrBuy(all, missing, buy) {
+  if (!missing.length) return "";
+  const live = members(SID).some(id => DATA.sets[id].current);
+  if (!live) return `<div class="hunt"><b>Hunt or buy?</b><p>${esc(series().name)} isn't in Happy Meals any more, so eBay is the way to finish the set.</p></div>`;
+  const h = huntSim(all, missing), P = mealPrice(), hunt = h.avg * P, n = Math.round(h.avg);
+  const what = missing.length === 1 ? esc(missing[0].name) : `the ${missing.length} you're missing`;
+  const verdict = buy == null ? ""
+    : buy < hunt * 0.8 ? `<p class="hunt-verdict up">Buying saves about <b>${usd(hunt - buy)}</b>.</p>`
+    : hunt < buy * 0.8 ? `<p class="hunt-verdict up">Hunting is cheaper by about <b>${usd(buy - hunt)}</b>, and the meals are dinner.</p>`
+    : `<p class="hunt-verdict">About the same either way. Hunting is more fun; buying is certain.</p>`;
+  const sp = Math.round(h.spares);
+  if (!RARE.size) RARE = new Map(rarity(SID).map(x => [x.r.id, x]));
+  const rareMissing = missing.filter(r => hardToFind(r.id)).sort((a, b) => RARE.get(b.id).score - RARE.get(a.id).score).slice(0, 3);
+  const toy = missing.some(r => DATA.sets[r.set].kind !== "cards");
+  return `<div class="hunt">
+    <b>Hunt or buy?</b>
+    <div class="hunt-grid">
+      <div><small>Keep buying Happy Meals</small><strong>${usd(hunt)}</strong>
+        <small>about ${n} more meal${n > 1 ? "s" : ""} at $${P.toFixed(2)} to get ${what}${h.p90 > n + 1 ? `. With bad luck (1 in 10) it's ${h.p90}+` : ""}</small></div>
+      <div><small>Buy on eBay</small><strong>${buy == null ? "—" : usd(buy)}</strong>
+        <small>${buy == null ? "some have no listing yet" : "today's lowest prices, shipping included"}</small></div>
+    </div>
+    ${verdict}
+    <p class="hunt-note">Hunting also leaves about ${sp} spare${sp === 1 ? "" : "s"} you already have.
+      ${rareMissing.length ? `<b>${rareMissing.map(r => esc(r.name)).join(", ").replace(/, ([^,]*)$/, " and $1")}</b> ${rareMissing.length > 1 ? "are" : "is"} hard to find right now, so hunting will likely take longer than this and buying is the safer route.`
+        : `Assumes every ${kindWord(series(), true)} is equally likely.`}
+      ${toy ? "Some McDonald's let you pick your toy or buy it on its own, so it's worth asking." : ""}</p>
+  </div>`;
+}
+
+// ---------- Rarity index: how hard each item is to find right now ----------
+// Two eBay signals against the rest of its set: price (what buyers will pay) and supply (how many are listed).
+// Score = geometric mean of price ÷ typical price and typical supply ÷ supply, so 1.0 is typical for the set.
+function rarity(sid) {
+  const rows = rowsFor(sid).filter(r => r.price != null && (r.last?.supply ?? r.count) > 0);
+  const med = (a) => { a = [...a].sort((x, y) => x - y); return a.length ? a[Math.floor(a.length / 2)] : null; };
+  const out = [];
+  for (const kind of [...new Set(rows.map(kindOf))]) {
+    const g = rows.filter(r => kindOf(r) === kind);
+    if (g.length < 4) continue;
+    const mp = med(g.map(r => r.price)), ms = med(g.map(r => r.last?.supply ?? r.count));
+    for (const r of g) {
+      const sup = r.last?.supply ?? r.count;
+      out.push({ r, kind, sup, pr: r.price / mp, fewer: sup < ms, score: Math.sqrt(r.price / mp * (ms / sup)) });
+    }
+  }
+  return out.sort((a, b) => b.score - a.score);
+}
+const rarityTier = (s) => s >= 2 ? ["Very hard to find", "#b42318"] : s >= 1.3 ? ["Hard to find", "#d97706"] : s >= 0.75 ? ["Typical", "#8a8a84"] : ["Easy to find", "#1a7f37"];
+function insRarity() {
+  const all = rarity(SID);
+  if (all.length < 4) return "";
+  const kinds = [...new Set(all.map(x => x.kind))];
+  const block = (list) => `<div class="ins-bars">${list.map(x => { const [label, c] = rarityTier(x.score); return `
+    <div class="ins-bar rar-bar" style="--c:${c}" title="${esc(label)}: ${usd(x.r.price)} (${x.pr >= 1 ? x.pr.toFixed(1) + "× the typical price" : Math.round((1 - x.pr) * 100) + "% under typical"}), ${x.sup} listed">
+      <span>${esc(x.r.name)}</span><i><b style="width:${Math.max(3, Math.min(100, Math.log2(x.score * 4) / 4 * 100))}%"></b></i>
+      <em>${x.score.toFixed(1)}<small>${usd(x.r.price)} · ${x.sup} listed</small></em></div>`; }).join("")}</div>`;
+  const top = all[0], [topLabel] = rarityTier(top.score);
+  return `<div class="ins wide"><h4>Rarity index</h4><p class="q">How hard each ${kinds.length > 1 ? "item" : kindWord(series(), true)} is to find right now, from eBay prices and how many are listed</p>
+    <p><b>${esc(top.r.name)}</b>${kinds.length > 1 ? ` (${top.kind === "cards" ? "card" : "toy"})` : ""} is the hardest to find: ${topLabel.toLowerCase()}, at ${usd(top.r.price)} with ${top.sup} listed.</p>
+    ${kinds.length > 1 ? kinds.map(k => `<p class="ins-sub">${k === "cards" ? "Cards" : "Toys"}</p>${block(all.filter(x => x.kind === k))}`).join("") : block(all)}
+    <p class="rar-key">${[2, 1.3, 1, 0.5].map(s => { const [l, c] = rarityTier(s); return `<span><i style="background:${c}"></i>${l}</span>`; }).join("")}</p>
+    <div class="foot">1.0 is typical for the set. Higher means pricier and fewer listed than the others: scarce in restaurants, or just more wanted. Items with only a few listings can swing day to day. From today's eBay asking prices, shipping included.</div></div>`;
 }
 
 

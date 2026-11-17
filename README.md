@@ -33,29 +33,3 @@ python3 scripts/import_terapeak.py boo-buckets-2026 ~/Downloads/terapeak-*.csv -
 Rows go through the same title rules as the daily prices; check the report for what was skipped.
 The result goes to `data/backfill/<series>.json` and shows as weekly sold medians on each item's chart.
 
-## Toy sightings map
-
-`sightings.html` lets visitors pick a McDonald's on a map and report which Happy Meal toys they got there.
-There's no server: reports are stored in the "Toy Ticker Map" Google Sheet through a small Google Apps Script
-web app ([scripts/sightings_apps_script.gs](scripts/sightings_apps_script.gs)). The page POSTs a report to it
-and GETs recent reports back as CSV. Until `endpoint` in `data/sightings.json` is set, the map shows stores but
-the Send button stays off.
-
-One-time setup:
-
-1. Open the sheet > Extensions > **Apps Script**. Replace the editor's contents with
-   `scripts/sightings_apps_script.gs` and save.
-2. **Deploy > New deployment** > type **Web app**. Execute as: **Me**. Who has access: **Anyone**. Deploy, and
-   allow the permissions it asks for (it only touches this sheet).
-3. Copy the Web app URL (`https://script.google.com/macros/s/…/exec`) into `endpoint` in `data/sightings.json`.
-4. Send one test report from the map and check a row appears in the sheet.
-
-The sheet doesn't need to be shared or published; the script reads it as you. Reports stay on the map until their row is
-deleted. To remove a bad report, delete its row. After changing the script, use
-Deploy > Manage deployments > Edit > **New version** so the URL stays the same.
-
-The restaurant list is `data/stores.json`, every US McDonald's on OpenStreetMap. Refresh it every month or so:
-
-```bash
-python3 scripts/fetch_stores.py
-```

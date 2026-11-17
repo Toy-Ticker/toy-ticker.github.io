@@ -28,6 +28,8 @@ jobs:
           EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
           MATCH_REPORT: ${{ runner.temp }}/match-report.json
           REFRESH_ALL: ${{ inputs.refresh_all && '1' || '' }}
+      - name: Weekly market report (Sundays only)
+        run: python scripts/weekly_report.py --publish --if-sunday
       - name: Keep the match report (private to the run, not published)
         if: always()
         uses: actions/upload-artifact@v4
@@ -40,6 +42,6 @@ jobs:
         run: |
           git config user.name "toy-ticker-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A data og s i assets/toys sitemap.xml index.html about.html
+          git add -A data og s i reports assets/toys sitemap.xml index.html about.html
           git diff --cached --quiet || git commit -m "Prices for $(date -u +%F)"
           git push
